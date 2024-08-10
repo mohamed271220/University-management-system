@@ -1,0 +1,72 @@
+### 1. **User Model**
+- **Profile:** One-to-One (a user has one profile).
+- **Courses:** Many-to-Many (students and professors can enroll in or teach many courses).
+
+### 2. **Profile Model**
+- **User:** One-to-One (a profile is associated with one user).
+
+### 3. **Department Model**
+- **Courses:** One-to-Many (a department can have many courses).
+- **Halls:** One-to-Many (a department can have many halls).
+
+### 4. **Course Model**
+- **Department:** Many-to-One (a course belongs to one department).
+- **Professor:** Many-to-One (a course is taught by one professor).
+- **Students:** Many-to-Many (students can enroll in many courses, and a course can have many students through enrollments).
+- **Lectures:** One-to-Many (a course can have many lectures).
+
+### 5. **Hall Model**
+- **Department:** Many-to-One (a hall belongs to one department).
+- **Lectures:** One-to-Many (a hall can be used for many lectures).
+
+### 6. **Lecture Model**
+- **Course:** Many-to-One (a lecture is associated with one course).
+- **Professor:** Many-to-One (a lecture is taught by one professor).
+- **Hall:** Many-to-One (a lecture takes place in one hall).
+- **Attendance:** One-to-Many (a lecture can have many attendance records).
+
+### 7. **Attendance Model**
+- **Student:** Many-to-One (an attendance record is for one student).
+- **Lecture:** Many-to-One (an attendance record is for one lecture).
+
+### 8. **Grade Model**
+- **Student:** Many-to-One (a grade is assigned to one student).
+- **Course:** Many-to-One (a grade is for one course).
+- **Semester:** Many-to-One (a grade is associated with one semester).
+
+### 9. **Timetable Model**
+- **Lecture:** Many-to-One (a timetable entry is associated with one lecture).
+- **Entity (Student, Professor, Hall):** Many-to-One (a timetable entry can be associated with a student, professor, or hall).
+
+### 10. **Lecture History Model**
+- **Lecture:** Many-to-One (a history record is associated with one lecture).
+- **Course:** Many-to-One (a history record is related to one course).
+- **Professor:** Many-to-One (a history record is associated with one professor).
+- **Hall:** Many-to-One (a history record is related to one hall).
+
+### 11. **Audit Log Model**
+- **User:** Many-to-One (an audit log entry is associated with one user).
+
+### 12. **Course Cache Model**
+- **Course:** One-to-One (cache entry is for one course).
+
+### 13. **Hall Constraints Model**
+- **Hall:** One-to-One (constraints are associated with one hall).
+
+### 14. **Professor Courses Model**
+- **Professor:** Many-to-One (a professor can be linked to many courses).
+- **Course:** Many-to-One (a course can be linked to many professors).
+
+### 15. **Student Courses Model**
+- **Student:** Many-to-One (a student can enroll in many courses).
+- **Course:** Many-to-One (a course can have many students enrolled).
+- **Semester:** Many-to-One (enrollment is associated with one semester).
+
+### 16. **Semester Model**
+- **Grades:** One-to-Many (a semester can have many grades).
+- **Student Courses:** One-to-Many (a semester can have many student enrollments).
+
+### 17. **Student Years Model**
+- **Student:** Many-to-One (a year record is associated with one student).
+
+Each relationship helps in structuring the data effectively and supports complex queries and operations in your university system.

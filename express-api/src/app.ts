@@ -1,0 +1,58 @@
+import express from "express";
+import dbConnection from "./config/database";
+import morgan from "morgan";
+import helmet from "helmet";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+import "./models"; // Import the models and relationships
+import { authenticateToken } from "./middleware/authMiddleware";
+import { authorizeRoles } from "./middleware/roleMiddleware";
+
+// routes
+import authRoutes from "./routes/auth";
+
+const app = express();
+app.use(express.json());
+app.use(morgan("dev"));
+app.use(helmet());
+app.use(
+  cors({
+    origin: "*",
+    optionsSuccessStatus: 200,
+    credentials: true,
+  })
+);
+app.use(cookieParser());
+
+dbConnection
+  .authenticate()
+  .then(() => {
+    console.log("Connection has been established successfully.");
+    return dbConnection.sync(); // This will create the tables in your database
+  })
+  .then(() => {
+    console.log("Database synchronized successfully.");
+  })
+  .catch((err) => {
+    console.error("Unable to connect to the database:", err);
+  });
+
+app.use("/api/v1/auth", authRoutes);
+
+app.get(
+  "/protected",
+  authenticateToken,
+  authorizeRoles("admin"),
+  (req, res) => {
+    res.send("This is a protected route for admin users.");
+  }
+);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
