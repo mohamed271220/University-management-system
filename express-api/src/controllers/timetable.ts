@@ -1,0 +1,9 @@
+export const createTimetable = () => {};
+export const getAllTimetables = () => {};
+export const getTimetableByDepartment = () => {};
+export const getTimetableByStudent = () => {};
+export const getTimetableByProfessor = () => {};
+export const getTimetableByHall = () => {};
+export const getTimetableByLecture = () => {};
+export const updateTimetable = () => {};
+export const deleteTimetable = () => {};

@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getLecturesByHall = exports.deleteHall = exports.updateHall = exports.getHallById = exports.getAllHalls = exports.createHall = void 0;
+const createHall = () => { };
+exports.createHall = createHall;
+const getAllHalls = () => { };
+exports.getAllHalls = getAllHalls;
+const getHallById = () => { };
+exports.getHallById = getHallById;
+const updateHall = () => { };
+exports.updateHall = updateHall;
+const deleteHall = () => { };
+exports.deleteHall = deleteHall;
+const getLecturesByHall = () => { };
+exports.getLecturesByHall = getLecturesByHall;

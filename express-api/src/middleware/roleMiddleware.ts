@@ -9,7 +9,9 @@ export function authorizeRoles(...allowedRoles: string[]) {
   return (req: userRequest, res: Response, next: NextFunction) => {
     const user = req.user;
     if (!user) return res.status(401).json({ message: "Unauthorized" });
-    if (!allowedRoles.includes(user.role)) return res.status(403).json({ message: "Forbidden" });
+    console.log(user.role);
+    if (!allowedRoles.includes(user.role))
+      return res.status(403).json({ message: "Forbidden" });
     next();
   };
 }

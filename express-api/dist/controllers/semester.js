@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getStudentEnrolledCourses = exports.getSemesterGrades = exports.deleteSemester = exports.updateSemester = exports.getSemesterById = exports.getAllSemesters = exports.createSemester = void 0;
+const createSemester = () => { };
+exports.createSemester = createSemester;
+const getAllSemesters = () => { };
+exports.getAllSemesters = getAllSemesters;
+const getSemesterById = () => { };
+exports.getSemesterById = getSemesterById;
+const updateSemester = () => { };
+exports.updateSemester = updateSemester;
+const deleteSemester = () => { };
+exports.deleteSemester = deleteSemester;
+const getSemesterGrades = () => { };
+exports.getSemesterGrades = getSemesterGrades;
+const getStudentEnrolledCourses = () => { };
+exports.getStudentEnrolledCourses = getStudentEnrolledCourses;

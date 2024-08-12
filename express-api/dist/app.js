@@ -16,6 +16,9 @@ const authMiddleware_1 = require("./middleware/authMiddleware");
 const roleMiddleware_1 = require("./middleware/roleMiddleware");
 // routes
 const auth_1 = __importDefault(require("./routes/auth"));
+const profile_1 = __importDefault(require("./routes/profile"));
+const user_1 = __importDefault(require("./routes/user"));
+const swagger_1 = __importDefault(require("./config/swagger"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, morgan_1.default)("dev"));
@@ -39,9 +42,12 @@ database_1.default
     console.error("Unable to connect to the database:", err);
 });
 app.use("/api/v1/auth", auth_1.default);
+app.use("/api/v1/profile", profile_1.default);
+app.use("/api/v1/users", user_1.default);
 app.get("/protected", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), (req, res) => {
     res.send("This is a protected route for admin users.");
 });
+app.use("/api-doc", swagger_1.default);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
