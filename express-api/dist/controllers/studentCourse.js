@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteStudentCourse = exports.updateStudentCourse = exports.getStudentCourseById = exports.getAllStudentsByCourse = exports.getAllCoursesByStudentId = exports.enrollCourses = void 0;
+const enrollCourses = () => { };
+exports.enrollCourses = enrollCourses;
+const getAllCoursesByStudentId = () => { };
+exports.getAllCoursesByStudentId = getAllCoursesByStudentId;
+const getAllStudentsByCourse = () => { };
+exports.getAllStudentsByCourse = getAllStudentsByCourse;
+const getStudentCourseById = () => { };
+exports.getStudentCourseById = getStudentCourseById;
+const updateStudentCourse = () => { };
+exports.updateStudentCourse = updateStudentCourse;
+const deleteStudentCourse = () => { };
+exports.deleteStudentCourse = deleteStudentCourse;

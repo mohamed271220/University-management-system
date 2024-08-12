@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.validateSession = exports.login = exports.signup = void 0;
+exports.refreshToken = exports.logout = exports.validateSession = exports.login = exports.signup = void 0;
 const jwt_1 = require("../utils/jwt");
 const User_1 = __importDefault(require("../models/User"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -34,10 +34,16 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             role: "Student",
         });
         const token = (0, jwt_1.generateToken)({ id: savedUser.id, role: savedUser.role });
+        const refreshToken = (0, jwt_1.generateRefreshToken)({ id: savedUser.id });
         res.cookie("auth_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             maxAge: 604800000,
+        });
+        res.cookie("refresh_token", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 604800000, // 1 week
         });
         res
             .status(201)
@@ -71,10 +77,16 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isPasswordValid)
             return res.status(400).json({ message: "Invalid credentials" });
         const token = (0, jwt_1.generateToken)({ id: user.id, role: user.role });
+        const refreshToken = (0, jwt_1.generateRefreshToken)({ id: user.id });
         res.cookie("auth_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             maxAge: 604800000,
+        });
+        res.cookie("refresh_token", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 604800000, // 1 week
         });
         res.status(200).json({ message: "Login successful", userId: user.id });
     }
@@ -96,6 +108,7 @@ const validateSession = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.validateSession = validateSession;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        res.clearCookie("refresh_token");
         res.clearCookie("auth_token");
         res.status(200).json({ message: "Logout successful" });
     }
@@ -104,3 +117,34 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.logout = logout;
+const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const refreshToken = req.cookies.refresh_token;
+        if (!refreshToken)
+            return res.status(401).json({ message: "Unauthorized" });
+        const user = (0, jwt_1.verifyRefreshToken)(refreshToken);
+        if (!user)
+            return res.status(401).json({ message: "Unauthorized" });
+        const newAccessToken = (0, jwt_1.generateToken)({ id: user.id, role: user.role });
+        const newRefreshToken = (0, jwt_1.generateRefreshToken)({
+            id: user.id,
+            role: user.role,
+        });
+        res.cookie("refresh_token", newRefreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 604800000,
+        });
+        res.cookie("auth_token", newAccessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 604800000,
+        });
+        return res.json({ message: "Token refreshed successfully" });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+exports.refreshToken = refreshToken;

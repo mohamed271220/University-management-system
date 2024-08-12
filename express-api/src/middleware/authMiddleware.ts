@@ -16,7 +16,7 @@ export function authenticateToken(
 
     const user = verifyToken(token);
     if (!user) return res.status(401).json({ message: "Unauthorized" });
-    req.user = user;
+    req.user = { id: user.id, role: user.role.toLocaleLowerCase() };
     next();
   } catch (error) {
     console.error(error);

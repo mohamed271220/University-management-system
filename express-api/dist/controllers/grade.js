@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteGrade = exports.updateGrade = exports.getGradesByStudent = exports.getGradeById = exports.getAllGrades = exports.createGrade = void 0;
+const createGrade = () => { };
+exports.createGrade = createGrade;
+const getAllGrades = () => { };
+exports.getAllGrades = getAllGrades;
+const getGradeById = () => { };
+exports.getGradeById = getGradeById;
+const getGradesByStudent = () => { };
+exports.getGradesByStudent = getGradesByStudent;
+const updateGrade = () => { };
+exports.updateGrade = updateGrade;
+const deleteGrade = () => { };
+exports.deleteGrade = deleteGrade;

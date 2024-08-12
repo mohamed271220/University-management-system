@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getHallsByDepartment = exports.getCoursesByDepartment = exports.deleteDepartment = exports.updateDepartment = exports.getDepartmentById = exports.getAllDepartments = exports.createDepartment = void 0;
+const createDepartment = () => { };
+exports.createDepartment = createDepartment;
+const getAllDepartments = () => { };
+exports.getAllDepartments = getAllDepartments;
+const getDepartmentById = () => { };
+exports.getDepartmentById = getDepartmentById;
+const updateDepartment = () => { };
+exports.updateDepartment = updateDepartment;
+const deleteDepartment = () => { };
+exports.deleteDepartment = deleteDepartment;
+const getCoursesByDepartment = () => { };
+exports.getCoursesByDepartment = getCoursesByDepartment;
+const getHallsByDepartment = () => { };
+exports.getHallsByDepartment = getHallsByDepartment;

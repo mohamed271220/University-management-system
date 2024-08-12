@@ -1,5 +1,10 @@
 import express, { Request, Response } from "express";
-import { generateToken, verifyToken } from "../utils/jwt";
+import {
+  generateRefreshToken,
+  generateToken,
+  verifyRefreshToken,
+  verifyToken,
+} from "../utils/jwt";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
@@ -25,11 +30,18 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     const token = generateToken({ id: savedUser.id, role: savedUser.role });
+    const refreshToken = generateRefreshToken({ id: savedUser.id });
 
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 604800000,
+    });
+
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 604800000, // 1 week
     });
 
     res
@@ -70,12 +82,20 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid credentials" });
 
     const token = generateToken({ id: user.id, role: user.role });
+    const refreshToken = generateRefreshToken({ id: user.id });
 
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 604800000,
     });
+
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 604800000, // 1 week
+    });
+
     res.status(200).json({ message: "Login successful", userId: user.id });
   } catch (error) {
     console.log(error);
@@ -94,9 +114,43 @@ export const validateSession = async (req: userRequest, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
   try {
+    res.clearCookie("refresh_token");
     res.clearCookie("auth_token");
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies.refresh_token;
+    if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+
+    const user = verifyRefreshToken(refreshToken);
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    const newAccessToken = generateToken({ id: user.id, role: user.role });
+    const newRefreshToken = generateRefreshToken({
+      id: user.id,
+      role: user.role,
+    });
+
+    res.cookie("refresh_token", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 604800000,
+    });
+
+    res.cookie("auth_token", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 604800000,
+    });
+
+    return res.json({ message: "Token refreshed successfully" });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteCourseCache = exports.updateCourseCache = exports.getCourseCacheById = exports.createCourseCache = void 0;
+const createCourseCache = () => { };
+exports.createCourseCache = createCourseCache;
+const getCourseCacheById = () => { };
+exports.getCourseCacheById = getCourseCacheById;
+const updateCourseCache = () => { };
+exports.updateCourseCache = updateCourseCache;
+const deleteCourseCache = () => { };
+exports.deleteCourseCache = deleteCourseCache;

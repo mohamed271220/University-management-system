@@ -14,6 +14,9 @@ import { authorizeRoles } from "./middleware/roleMiddleware";
 
 // routes
 import authRoutes from "./routes/auth";
+import profileRoutes from "./routes/profile";
+import userRoutes from "./routes/user";
+import swaggerRouter from "./config/swagger";
 
 const app = express();
 app.use(express.json());
@@ -42,6 +45,8 @@ dbConnection
   });
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/profile", profileRoutes);
+app.use("/api/v1/users", userRoutes);
 
 app.get(
   "/protected",
@@ -51,6 +56,8 @@ app.get(
     res.send("This is a protected route for admin users.");
   }
 );
+
+app.use("/api-doc", swaggerRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

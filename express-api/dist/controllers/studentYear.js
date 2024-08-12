@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteStudentYear = exports.updateStudentYear = exports.getYearRecordsByStudent = exports.getAllStudentYears = exports.createStudentYear = void 0;
+const createStudentYear = () => { };
+exports.createStudentYear = createStudentYear;
+const getAllStudentYears = () => { };
+exports.getAllStudentYears = getAllStudentYears;
+const getYearRecordsByStudent = () => { };
+exports.getYearRecordsByStudent = getYearRecordsByStudent;
+const updateStudentYear = () => { };
+exports.updateStudentYear = updateStudentYear;
+const deleteStudentYear = () => { };
+exports.deleteStudentYear = deleteStudentYear;

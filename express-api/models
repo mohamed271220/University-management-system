@@ -50,8 +50,6 @@
 ### 12. **Course Cache Model**
 - **Course:** One-to-One (cache entry is for one course).
 
-### 13. **Hall Constraints Model**
-- **Hall:** One-to-One (constraints are associated with one hall).
 
 ### 14. **Professor Courses Model**
 - **Professor:** Many-to-One (a professor can be linked to many courses).
