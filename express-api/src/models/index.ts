@@ -44,7 +44,7 @@ Department.hasMany(Course, { foreignKey: "departmentId" });
 Course.belongsTo(Department, { foreignKey: "departmentId" });
 
 User.hasMany(Course, { foreignKey: "professorId" });
-Course.belongsTo(User, { foreignKey: "professorId" });
+Course.belongsTo(User, { as: "professor", foreignKey: "professorId" });
 
 Course.hasMany(Lecture, { foreignKey: "courseId" });
 Lecture.belongsTo(Course, { foreignKey: "courseId" });
@@ -73,26 +73,42 @@ Grade.belongsTo(Semester, { foreignKey: "semesterId" });
 Course.belongsToMany(User, {
   through: ProfessorCourse,
   foreignKey: "courseId",
+  as: "professors",
 });
 User.belongsToMany(Course, {
   through: ProfessorCourse,
   foreignKey: "professorId",
+  as: "teachingCourses",
 });
 
 Course.belongsToMany(User, {
   through: StudentCourse,
   foreignKey: "courseId",
+  as: "students",
 });
 User.belongsToMany(Course, {
   through: StudentCourse,
   foreignKey: "studentId",
+  as: "enrolledCourses",
 });
+
+// Many to Many associations
+ProfessorCourse.belongsTo(User, { foreignKey: "professorId" });
+User.hasMany(ProfessorCourse, { foreignKey: "professorId" });
+
+ProfessorCourse.belongsTo(Course, { foreignKey: "courseId" });
+Course.hasMany(ProfessorCourse, { foreignKey: "courseId" });
+
+StudentCourse.belongsTo(User, { foreignKey: "studentId" });
+User.hasMany(StudentCourse, { foreignKey: "studentId" });
+
+StudentCourse.belongsTo(Course, { foreignKey: "courseId" });
+Course.hasMany(StudentCourse, { foreignKey: "courseId" });
 
 Semester.hasMany(StudentCourse, { foreignKey: "semesterId" });
 StudentCourse.belongsTo(Semester, { foreignKey: "semesterId" });
 
 User.hasMany(StudentYear, { foreignKey: "studentId" });
 StudentYear.belongsTo(User, { foreignKey: "studentId" });
-
 
 export default models;

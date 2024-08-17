@@ -18,6 +18,11 @@ const roleMiddleware_1 = require("./middleware/roleMiddleware");
 const auth_1 = __importDefault(require("./routes/auth"));
 const profile_1 = __importDefault(require("./routes/profile"));
 const user_1 = __importDefault(require("./routes/user"));
+const course_1 = __importDefault(require("./routes/course"));
+const department_1 = __importDefault(require("./routes/department"));
+const professorCourse_1 = __importDefault(require("./routes/professorCourse"));
+const studentCourse_1 = __importDefault(require("./routes/studentCourse"));
+const semester_1 = __importDefault(require("./routes/semester"));
 const swagger_1 = __importDefault(require("./config/swagger"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -44,6 +49,11 @@ database_1.default
 app.use("/api/v1/auth", auth_1.default);
 app.use("/api/v1/profile", profile_1.default);
 app.use("/api/v1/users", user_1.default);
+app.use("/api/v1/courses", course_1.default);
+app.use("/api/v1/departments", department_1.default);
+app.use("/api/v1/professorCourses", professorCourse_1.default);
+app.use("/api/v1/studentCourses", studentCourse_1.default);
+app.use("/api/v1/semesters", semester_1.default);
 app.get("/protected", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), (req, res) => {
     res.send("This is a protected route for admin users.");
 });

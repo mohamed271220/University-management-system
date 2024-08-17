@@ -32,14 +32,16 @@ const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const professorCourseController = __importStar(require("../controllers/professorCourse"));
 const router = express_1.default.Router();
 // api/v1/professorCourses
-router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.createProfessorCourse);
+// Add Professor to Course
+router.post("/courses/:courseId/professors/:professorId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.createProfessorCourse);
+// Remove Professor from Course
+router.delete("/courses/:courseId/professors/:professorId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.deleteProfessorCourse);
+// Retrieve all courses associated with a specific professor. ✅
 router.get("/allProfessorCourses", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.getAllCourses);
 // Retrieve a specific professor course by its ID.
 router.get("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.getProfessorCourseById);
-// Retrieve all courses associated with a specific professor.
-router.get("/professor/:professorId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), professorCourseController.getAllProfessorCourses);
-// Retrieve all professors associated with a specific course.
-router.get("/course/:courseId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.getAllProfessorsByCourse);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.updateProfessorCourse);
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.deleteProfessorCourse);
+// Retrieve all courses associated with a specific professor. ✅
+router.get("/professors/:professorId/courses", authMiddleware_1.authenticateToken, professorCourseController.getAllProfessorCourses);
+// Retrieve all professors associated with a specific course. ✅
+router.get("/courses/:courseId/professors", authMiddleware_1.authenticateToken, professorCourseController.getAllProfessorsByCourse);
 exports.default = router;

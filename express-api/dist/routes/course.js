@@ -37,7 +37,5 @@ router.get("/allCourses", authMiddleware_1.authenticateToken, courseController.g
 router.get("/:id", authMiddleware_1.authenticateToken, courseController.getCourseById);
 router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseController.updateCourse);
 router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseController.deleteCourse);
-router.get("/:id/professors", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "admin", "staff"), courseController.getProfessorsByCourse);
-router.get("/:id/students", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), courseController.getStudentsByCourse);
-router.get("/:id/lectures", courseController.getLecturesByCourse);
+router.get("/:id/lectures", authMiddleware_1.authenticateToken, courseController.getLecturesByCourseId);
 exports.default = router;

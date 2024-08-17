@@ -16,6 +16,12 @@ import { authorizeRoles } from "./middleware/roleMiddleware";
 import authRoutes from "./routes/auth";
 import profileRoutes from "./routes/profile";
 import userRoutes from "./routes/user";
+import courseRouter from "./routes/course";
+import departmentRouter from "./routes/department";
+import professorCourseRouter from "./routes/professorCourse";
+import studentCourseRouter from "./routes/studentCourse";
+import semesterRouter from "./routes/semester";
+
 import swaggerRouter from "./config/swagger";
 
 const app = express();
@@ -47,6 +53,12 @@ dbConnection
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/courses", courseRouter);
+app.use("/api/v1/departments", departmentRouter);
+app.use("/api/v1/professorCourses", professorCourseRouter);
+app.use("/api/v1/studentCourses", studentCourseRouter);
+app.use("/api/v1/semesters", semesterRouter);
+
 
 app.get(
   "/protected",

@@ -47,14 +47,6 @@ Course.init({
     },
     onDelete: 'SET NULL'
   },
-  professorId: {
-    type: DataTypes.UUID,
-    references: {
-      model: 'users',
-      key: 'id'
-    },
-    onDelete: 'SET NULL'
-  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
