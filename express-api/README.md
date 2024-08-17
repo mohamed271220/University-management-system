@@ -47,24 +47,33 @@
 ### Steps
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/yourusername/University-Express-API.git
-   cd University-Express-API
+   git clone https://github.com/mohamed271220/University-management-system
+   cd express-api
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Set up environment variables by creating a `.env` file in the root directory:
+
    ```env
-   DATABASE_URL=your_database_url
+   DB_NAME= Your database name.
+   DB_USER= Your user name.
+   DB_PWD= Your password.
    JWT_SECRET=your_jwt_secret
    ```
-   Replace `your_database_url` and `your_jwt_secret` with appropriate values.
+
+```
+Replace db info and `your_jwt_secret` with appropriate values.
+```
 
 4. Run the database migrations (if any):
+
    ```bash
    npx sequelize-cli db:migrate
    ```
@@ -124,7 +133,6 @@ http://localhost:3000/api-docs
 - `DB_USER`: Your user name.
 - `DB_PWD`: Your password.
 
-
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
@@ -138,4 +146,3 @@ Contributions are welcome! Please follow these steps to contribute:
 ## License
 
 This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for more details.
-

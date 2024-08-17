@@ -1,4 +1,3 @@
-
 # University Management System
 
 ## Overview
@@ -13,6 +12,7 @@ The University Management System is a solution designed to manage various aspect
 ## Features
 
 ### Express API
+
 - **Authentication & Authorization**: Secure authentication using JWT, with role-based access control for different user roles (students, professors, admin, etc.).
 - **User Management**: CRUD operations for managing users, including professors, students, and administrative staff.
 - **Course Management**: Manage courses, including enrollment, scheduling, and professor assignments.
@@ -21,16 +21,19 @@ The University Management System is a solution designed to manage various aspect
 - **Grades & Reports**: Manage and retrieve grades for students across various courses and semesters.
 
 ### React SPA
+
 - **User Dashboard**: Personalized dashboards for students, professors, and administrators.
 - **Course Enrollment**: Students can browse and enroll in courses, while professors can manage the courses they teach.
 - **Profile Management**: Users can view and update their profiles, including contact details and academic records.
 - **Real-time Notifications**: Users receive updates on course schedules, grade postings, and other relevant information.
 
 ### Landing Page
+
 - **Overview of Features**: A static landing page that highlights the system's capabilities and provides access links.
 - **Responsive Design**: Accessible on both desktop and mobile devices.
 
 ### Future Plans: NestJS API
+
 - **Modular Architecture**: Rebuild the API using NestJS for improved scalability and maintainability.
 - **Dependency Injection**: Utilize NestJS's built-in dependency injection for cleaner and more testable code.
 - **Enhanced Validation & Error Handling**: Leverage NestJS's advanced validation and error handling capabilities.
@@ -38,23 +41,28 @@ The University Management System is a solution designed to manage various aspect
 ## Installation
 
 ### Prerequisites
+
 - Node.js (v14 or later)
 - PostgreSQL (for the Express API)
 - React (for the SPA)
 
 ### Backend (Express API)
+
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/your-username/university-management-system.git
-   cd university-management-system/backend
+   git clone https://github.com/mohamed271220/University-management-system
+   cd university-management-system/express-api
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Set up environment variables:
+
    ```bash
    cp .env.example .env
    ```
@@ -66,12 +74,15 @@ The University Management System is a solution designed to manage various aspect
    ```
 
 ### Frontend (React SPA)
+
 1. Navigate to the frontend directory:
+
    ```bash
    cd university-management-system/frontend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -82,7 +93,9 @@ The University Management System is a solution designed to manage various aspect
    ```
 
 ### Landing Page
+
 1. Navigate to the landing page directory:
+
    ```bash
    cd university-management-system/landing-page
    ```
@@ -92,13 +105,17 @@ The University Management System is a solution designed to manage various aspect
 ## Testing
 
 ### Backend
+
 Run tests for the Express API:
+
 ```bash
 npm run test
 ```
 
 ### Frontend
+
 Run tests for the React SPA:
+
 ```bash
 npm run test
 ```
@@ -106,6 +123,7 @@ npm run test
 ## Contributing
 
 We welcome contributions! Please follow these steps:
+
 1. Fork the repository.
 2. Create a new branch.
 3. Make your changes.
