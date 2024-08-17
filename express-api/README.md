@@ -118,7 +118,12 @@ http://localhost:3000/api-docs
 
 - `DATABASE_URL`: The URL of your PostgreSQL database.
 - `JWT_SECRET`: The secret key used to sign JWT tokens.
+- `JWT_REFRESH_SECRET`: The secret key used to sign the refresh tokens.
 - `NODE_ENV`: The environment in which the application is running (`development`, `production`, etc.).
+- `DB_NAME`: Your database name.
+- `DB_USER`: Your user name.
+- `DB_PWD`: Your password.
+
 
 ## Contributing
 
