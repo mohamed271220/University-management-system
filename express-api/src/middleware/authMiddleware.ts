@@ -11,7 +11,7 @@ export function authenticateToken(
   //   const token = authHeader && authHeader.split(" ")[1];
   try {
     const token = req.cookies.auth_token;
-
+    
     if (!token) return res.status(401).json({ message: "Unauthorized" });
 
     const user = verifyToken(token);

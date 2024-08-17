@@ -41,14 +41,6 @@ Course.init({
         },
         onDelete: 'SET NULL'
     },
-    professorId: {
-        type: sequelize_1.DataTypes.UUID,
-        references: {
-            model: 'users',
-            key: 'id'
-        },
-        onDelete: 'SET NULL'
-    },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
         defaultValue: sequelize_1.DataTypes.NOW

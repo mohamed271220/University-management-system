@@ -7,18 +7,30 @@ const router = express.Router();
 
 // api/v1/professorCourses
 
+// Add Professor to Course
 router.post(
-  "/",
+  "/courses/:courseId/professors/:professorId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   professorCourseController.createProfessorCourse
 );
+
+// Remove Professor from Course
+router.delete(
+  "/courses/:courseId/professors/:professorId",
+  authenticateToken,
+  authorizeRoles("admin", "staff"),
+  professorCourseController.deleteProfessorCourse
+);
+
+// Retrieve all courses associated with a specific professor. ✅
 router.get(
   "/allProfessorCourses",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   professorCourseController.getAllCourses
 );
+
 // Retrieve a specific professor course by its ID.
 router.get(
   "/:id",
@@ -27,33 +39,18 @@ router.get(
   professorCourseController.getProfessorCourseById
 );
 
-// Retrieve all courses associated with a specific professor.
+// Retrieve all courses associated with a specific professor. ✅
 router.get(
-  "/professor/:professorId",
+  "/professors/:professorId/courses",
   authenticateToken,
-  authorizeRoles("professor", "admin", "staff"),
   professorCourseController.getAllProfessorCourses
 );
 
-// Retrieve all professors associated with a specific course.
+// Retrieve all professors associated with a specific course. ✅
 router.get(
-  "/course/:courseId",
+  "/courses/:courseId/professors",
   authenticateToken,
-  authorizeRoles("admin", "staff"),
   professorCourseController.getAllProfessorsByCourse
 );
 
-router.put(
-  "/:id",
-  authenticateToken,
-  authorizeRoles("admin", "staff"),
-  professorCourseController.updateProfessorCourse
-);
-
-router.delete(
-  "/:id",
-  authenticateToken,
-  authorizeRoles("admin", "staff"),
-  professorCourseController.deleteProfessorCourse
-);
 export default router;

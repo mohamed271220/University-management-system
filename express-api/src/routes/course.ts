@@ -27,18 +27,11 @@ router.delete(
   authorizeRoles("admin", "staff"),
   courseController.deleteCourse
 );
+
 router.get(
-  "/:id/professors",
+  "/:id/lectures",
   authenticateToken,
-  authorizeRoles("student", "admin", "staff"),
-  courseController.getProfessorsByCourse
+  courseController.getLecturesByCourseId
 );
-router.get(
-  "/:id/students",
-  authenticateToken,
-  authorizeRoles("professor", "admin", "staff"),
-  courseController.getStudentsByCourse
-);
-router.get("/:id/lectures", courseController.getLecturesByCourse);
 
 export default router;

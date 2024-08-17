@@ -45,7 +45,7 @@ Profile_1.default.belongsTo(User_1.default, { foreignKey: "userId" });
 Department_1.default.hasMany(Course_1.default, { foreignKey: "departmentId" });
 Course_1.default.belongsTo(Department_1.default, { foreignKey: "departmentId" });
 User_1.default.hasMany(Course_1.default, { foreignKey: "professorId" });
-Course_1.default.belongsTo(User_1.default, { foreignKey: "professorId" });
+Course_1.default.belongsTo(User_1.default, { as: "professor", foreignKey: "professorId" });
 Course_1.default.hasMany(Lecture_1.default, { foreignKey: "courseId" });
 Lecture_1.default.belongsTo(Course_1.default, { foreignKey: "courseId" });
 User_1.default.hasMany(Lecture_1.default, { foreignKey: "professorId" });
@@ -65,19 +65,32 @@ Grade_1.default.belongsTo(Semester_1.default, { foreignKey: "semesterId" });
 Course_1.default.belongsToMany(User_1.default, {
     through: ProfessorCourses_1.default,
     foreignKey: "courseId",
+    as: "professors",
 });
 User_1.default.belongsToMany(Course_1.default, {
     through: ProfessorCourses_1.default,
     foreignKey: "professorId",
+    as: "teachingCourses",
 });
 Course_1.default.belongsToMany(User_1.default, {
     through: StudentCourses_1.default,
     foreignKey: "courseId",
+    as: "students",
 });
 User_1.default.belongsToMany(Course_1.default, {
     through: StudentCourses_1.default,
     foreignKey: "studentId",
+    as: "enrolledCourses",
 });
+// Many to Many associations
+ProfessorCourses_1.default.belongsTo(User_1.default, { foreignKey: "professorId" });
+User_1.default.hasMany(ProfessorCourses_1.default, { foreignKey: "professorId" });
+ProfessorCourses_1.default.belongsTo(Course_1.default, { foreignKey: "courseId" });
+Course_1.default.hasMany(ProfessorCourses_1.default, { foreignKey: "courseId" });
+StudentCourses_1.default.belongsTo(User_1.default, { foreignKey: "studentId" });
+User_1.default.hasMany(StudentCourses_1.default, { foreignKey: "studentId" });
+StudentCourses_1.default.belongsTo(Course_1.default, { foreignKey: "courseId" });
+Course_1.default.hasMany(StudentCourses_1.default, { foreignKey: "courseId" });
 Semester_1.default.hasMany(StudentCourses_1.default, { foreignKey: "semesterId" });
 StudentCourses_1.default.belongsTo(Semester_1.default, { foreignKey: "semesterId" });
 User_1.default.hasMany(StudentYears_1.default, { foreignKey: "studentId" });

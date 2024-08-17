@@ -110,6 +110,8 @@
   },
   "include": [
     "src/**/*",
-    "src/index.ts"
+    "src/index.ts",
+    "src/__tests__/**/*.ts"
   ],
+  "exclude": ["node_modules"]
 }

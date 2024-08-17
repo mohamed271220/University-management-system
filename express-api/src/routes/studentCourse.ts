@@ -14,9 +14,10 @@ router.post(
   authorizeRoles("student"),
   studentCourseController.enrollCourses
 );
+
 // Retrieve all courses a student is enrolled in.
 router.get(
-  "/student/:studentId/courses",
+  "/students/:studentId/courses",
   authenticateToken,
   authorizeRoles("student", "admin", "staff"),
   studentCourseController.getAllCoursesByStudentId
@@ -24,7 +25,7 @@ router.get(
 
 // Retrieve all students enrolled in a course.
 router.get(
-  "/course/:courseId/students",
+  "/courses/:courseId/students",
   authenticateToken,
   authorizeRoles("student", "admin", "staff"),
   studentCourseController.getAllStudentsByCourse
@@ -32,21 +33,21 @@ router.get(
 
 // Retrieve a specific student course by its ID.
 router.get(
-  "/students/:id/courses/:courseId",
+  "/students/:studentId/courses/:courseId",
   authenticateToken,
   authorizeRoles("student", "admin", "staff"),
   studentCourseController.getStudentCourseById
 );
 
-// Update a student course by its ID.
+// Update a student course by its ID (change it's semester).
 router.put(
-  "/students/:id/courses/:courseId",
+  "/students/:studentId/courses/:courseId",
   authenticateToken,
   authorizeRoles("student", "admin", "staff"),
   studentCourseController.updateStudentCourse
 );
 router.delete(
-  "/students/:id/courses/:courseId",
+  "/students/:studentId/courses/:courseId",
   authenticateToken,
   authorizeRoles("student", "admin", "staff"),
   studentCourseController.deleteStudentCourse
