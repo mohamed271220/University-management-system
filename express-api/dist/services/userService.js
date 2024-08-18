@@ -14,25 +14,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = __importDefault(require("../models/User"));
 class UserService {
-    static getAllUsers() {
+    constructor(userRepository = User_1.default) {
+        this.userRepository = userRepository;
+    }
+    getAllUsers() {
         return __awaiter(this, arguments, void 0, function* (limit = 10, offset = 0) {
             try {
-                const users = yield User_1.default.findAll({
+                const { count, rows: users } = yield this.userRepository.findAndCountAll({
                     attributes: { exclude: ["passwordHash"] },
                     limit,
                     offset,
                 });
-                return users;
+                const totalPages = Math.ceil(count / limit);
+                const currentPage = Math.ceil(offset / limit) + 1;
+                const hasNextPage = currentPage < totalPages;
+                const hasPreviousPage = currentPage > 1;
+                const pagination = {
+                    totalItems: count,
+                    itemsPerPage: limit,
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                    hasNextPage: hasNextPage,
+                    hasPreviousPage: hasPreviousPage,
+                    nextPage: hasNextPage ? currentPage + 1 : null,
+                    previousPage: hasPreviousPage ? currentPage - 1 : null,
+                };
+                return { users, pagination };
             }
             catch (error) {
                 throw new Error("Internal server error");
             }
         });
     }
-    static getUserById(id) {
+    getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.default.findByPk(id, {
+                const user = yield this.userRepository.findByPk(id, {
                     attributes: { exclude: ["passwordHash"] },
                 });
                 if (!user)
@@ -44,10 +61,10 @@ class UserService {
             }
         });
     }
-    static updateUser(id, updates, reqUser) {
+    updateUser(id, updates, reqUser) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.default.findByPk(id);
+                const user = yield this.userRepository.findByPk(id);
                 if (!user)
                     throw new Error("User not found");
                 if (!reqUser.user)
@@ -70,10 +87,10 @@ class UserService {
             }
         });
     }
-    static deleteUser(id) {
+    deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.default.findByPk(id);
+                const user = yield this.userRepository.findByPk(id);
                 if (!user)
                     throw new Error("User not found");
                 yield user.destroy();

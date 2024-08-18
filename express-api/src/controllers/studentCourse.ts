@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { StudentCourseService } from "../services/studentCourse";
+import { StudentCourseService } from "../services/studentCourseService";
 import StudentCourse from "../models/StudentCourses";
 import { userRequest } from "../interfaces";
 

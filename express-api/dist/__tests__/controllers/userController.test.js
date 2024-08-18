@@ -16,21 +16,22 @@ const supertest_1 = __importDefault(require("supertest"));
 const express_1 = __importDefault(require("express"));
 const user_1 = require("../../controllers/user");
 const userService_1 = __importDefault(require("../../services/userService"));
-// Mock the UserService
-jest.mock("../../services/userService", () => {
-    return {
-        getAllUsers: jest.fn(),
-    };
-});
 const app = (0, express_1.default)();
 app.get("/api/v1/users", user_1.getAllUsers);
 describe("GET /api/v1/users", () => {
+    let mockGetAllUsers;
+    beforeEach(() => {
+        mockGetAllUsers = jest.spyOn(userService_1.default.prototype, 'getAllUsers');
+    });
+    afterEach(() => {
+        mockGetAllUsers.mockRestore();
+    });
     it("should return 200 and a list of users", () => __awaiter(void 0, void 0, void 0, function* () {
         const mockUsers = [
             { id: "1", name: "User One" },
             { id: "2", name: "User Two" },
         ];
-        userService_1.default.getAllUsers.mockResolvedValue(mockUsers);
+        mockGetAllUsers.mockResolvedValue(mockUsers);
         const res = yield (0, supertest_1.default)(app).get("/api/v1/users?limit=2&offset=0");
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Users retrieved successfully");
@@ -41,15 +42,15 @@ describe("GET /api/v1/users", () => {
             { id: "1", name: "User One" },
             { id: "2", name: "User Two" },
         ];
-        userService_1.default.getAllUsers.mockResolvedValue(mockUsers);
+        mockGetAllUsers.mockResolvedValue(mockUsers);
         const res = yield (0, supertest_1.default)(app).get("/api/v1/users");
         expect(res.status).toBe(200);
         expect(res.body.message).toBe("Users retrieved successfully");
         expect(res.body.users).toEqual(mockUsers);
-        expect(userService_1.default.getAllUsers).toHaveBeenCalledWith(10, 0);
+        expect(mockGetAllUsers).toHaveBeenCalledWith(10, 0);
     }));
     it("should return 500 if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
-        userService_1.default.getAllUsers.mockRejectedValue(new Error("Internal server error"));
+        mockGetAllUsers.mockRejectedValue(new Error("Internal server error"));
         const res = yield (0, supertest_1.default)(app).get("/api/v1/users");
         expect(res.status).toBe(500);
         expect(res.body.message).toBe("Internal server error");

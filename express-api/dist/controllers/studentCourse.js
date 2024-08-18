@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteStudentCourse = exports.updateStudentCourse = exports.getStudentCourseById = exports.getAllStudentsByCourse = exports.getAllCoursesByStudentId = exports.enrollCourses = void 0;
-const studentCourse_1 = require("../services/studentCourse");
+const studentCourseService_1 = require("../services/studentCourseService");
 const StudentCourses_1 = __importDefault(require("../models/StudentCourses"));
-const studentCourseService = new studentCourse_1.StudentCourseService(StudentCourses_1.default);
+const studentCourseService = new studentCourseService_1.StudentCourseService(StudentCourses_1.default);
 const enrollCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {

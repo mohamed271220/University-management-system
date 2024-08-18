@@ -67,10 +67,13 @@ exports.getCourseById = getCourseById;
 const updateCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const updatedCourse = yield courseService.updateCourse(req.params.id, req.body);
+        if (!updatedCourse) {
+            return res.status(400).json({ message: "Course not updated" });
+        }
         res.status(200).json({ message: "Course updated", updatedCourse });
     }
     catch (error) {
-        if (error.message === "Course not found") {
+        if (error.message === "Course not found" || error.message === "A course with this code already exists") {
             return res.status(404).json({ message: error.message });
         }
         console.error(error);

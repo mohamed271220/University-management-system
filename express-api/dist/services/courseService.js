@@ -20,6 +20,7 @@ const User_1 = __importDefault(require("../models/User"));
 const Profile_1 = __importDefault(require("../models/Profile"));
 const Lecture_1 = __importDefault(require("../models/Lecture"));
 const Hall_1 = __importDefault(require("../models/Hall"));
+const sequelize_1 = require("sequelize");
 class CourseService {
     constructor(courseModel) {
         this.courseModel = courseModel;
@@ -78,10 +79,33 @@ class CourseService {
     updateCourse(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
             const course = yield this.courseModel.findByPk(id);
-            if (!course)
+            if (!course) {
                 throw new Error("Course not found");
-            const updatedCourse = yield course.update(data);
-            return updatedCourse;
+            }
+            const existingCourse = yield this.courseModel.findOne({
+                where: {
+                    code: data.code,
+                    id: { [sequelize_1.Op.ne]: id }, // Ensure the course found is not the same as the current course
+                },
+            });
+            if (existingCourse) {
+                throw new Error("A course with this code already exists");
+            }
+            const { code, name, description, credits, departmentId, professorId } = data;
+            if (code)
+                course.code = code;
+            if (name)
+                course.name = name;
+            if (description)
+                course.description = description;
+            if (credits)
+                course.credits = credits;
+            if (departmentId)
+                course.departmentId = departmentId;
+            if (professorId)
+                course.professorId = professorId;
+            yield course.save();
+            return course;
         });
     }
     deleteCourse(id) {

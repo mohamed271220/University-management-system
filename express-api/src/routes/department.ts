@@ -2,6 +2,10 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as departmentController from "../controllers/department";
+import {
+  validateDepartment,
+  validateUpdateDepartment,
+} from "../middleware/validators/departmentValidators";
 
 const router = express.Router();
 
@@ -11,6 +15,7 @@ router.post(
   "/",
   authenticateToken,
   authorizeRoles("admin"),
+  validateDepartment,
   departmentController.createDepartment
 );
 router.get(
@@ -23,6 +28,7 @@ router.put(
   "/:id",
   authenticateToken,
   authorizeRoles("admin"),
+  validateUpdateDepartment,
   departmentController.updateDepartment
 );
 router.delete(
@@ -32,7 +38,7 @@ router.delete(
   departmentController.deleteDepartment
 );
 router.get(
-  "/:id/course",
+  "/:id/courses",
   authenticateToken,
   departmentController.getCoursesByDepartment
 );

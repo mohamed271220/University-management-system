@@ -10,6 +10,7 @@ import User from "../models/User";
 import Profile from "../models/Profile";
 import Lecture from "../models/Lecture";
 import Hall from "../models/Hall";
+import { Op } from "sequelize";
 
 export class CourseService {
   constructor(private courseModel: typeof Course) {}
@@ -66,10 +67,31 @@ export class CourseService {
 
   async updateCourse(id: string, data: courseData) {
     const course = await this.courseModel.findByPk(id);
-    if (!course) throw new Error("Course not found");
+    if (!course) {
+      throw new Error("Course not found");
+    }
 
-    const updatedCourse = await course.update(data);
-    return updatedCourse;
+    const existingCourse = await this.courseModel.findOne({
+      where: {
+        code: data.code,
+        id: { [Op.ne]: id }, // Ensure the course found is not the same as the current course
+      },
+    });
+    if (existingCourse) {
+      throw new Error("A course with this code already exists");
+    }
+
+    const { code, name, description, credits, departmentId, professorId } =
+      data;
+    if (code) course.code = code;
+    if (name) course.name = name;
+    if (description) course.description = description;
+    if (credits) course.credits = credits;
+    if (departmentId) course.departmentId = departmentId;
+    if (professorId) course.professorId = professorId;
+
+    await course.save();
+    return course;
   }
 
   async deleteCourse(id: string) {

@@ -1,7 +1,15 @@
-import { DataTypes, Model, InferAttributes, InferCreationAttributes } from 'sequelize';
-import sequelize from '../config/database';
+import {
+  DataTypes,
+  Model,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
+import sequelize from "../config/database";
 
-class Department extends Model<InferAttributes<Department>, InferCreationAttributes<Department>> {
+class Department extends Model<
+  InferAttributes<Department>,
+  InferCreationAttributes<Department>
+> {
   declare id: string;
   declare name: string;
   declare code: string;
@@ -9,34 +17,38 @@ class Department extends Model<InferAttributes<Department>, InferCreationAttribu
   declare updatedAt?: Date;
 }
 
-Department.init({
-  id: {
-    type: DataTypes.UUID,
-    primaryKey: true,
-    allowNull: false
+Department.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    code: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  code: {
-    type: DataTypes.STRING,
-    unique: true,
-    allowNull: false
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+  {
+    sequelize,
+    modelName: "Department",
+    tableName: "departments",
+    timestamps: true,
   }
-}, {
-  sequelize,
-  modelName: 'Department',
-  tableName: 'departments',
-  timestamps: true
-});
+);
 
 export default Department;

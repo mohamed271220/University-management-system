@@ -50,9 +50,12 @@ export const updateCourse = async (req: Request, res: Response) => {
       req.params.id,
       req.body
     );
+    if (!updatedCourse) {
+      return res.status(400).json({ message: "Course not updated" });
+    }
     res.status(200).json({ message: "Course updated", updatedCourse });
   } catch (error: any) {
-    if (error.message === "Course not found") {
+    if (error.message === "Course not found" || error.message === "A course with this code already exists") {
       return res.status(404).json({ message: error.message });
     }
     console.error(error);
@@ -80,9 +83,6 @@ export const getLecturesByCourseId = async (req: Request, res: Response) => {
     if (!courseId) {
       return res.status(400).json({ message: "Course ID is required" });
     }
-
-
-
     const courseLectures = await courseService.getLecturesByCourseId(courseId);
 
     res
