@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
+import { handleValidationErrors } from "./reportErrors";
 
 export const validateProfile = [
   body("firstName").isString().notEmpty().withMessage("First name is required"),
@@ -10,13 +11,7 @@ export const validateProfile = [
     .isLength({ min: 10 })
     .withMessage("Contact number must be at least 10 characters long"),
   body("address").isString().notEmpty().withMessage("Address is required"),
-  (req: Request, res: Response, next: any) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  handleValidationErrors,
 ];
 
 export const updateProfileValidation = [
@@ -44,11 +39,5 @@ export const updateProfileValidation = [
     .isString()
     .notEmpty()
     .withMessage("Address must be a non-empty string"),
-  (req: Request, res: Response, next: any) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  handleValidationErrors,
 ];

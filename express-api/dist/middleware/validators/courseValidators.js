@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateUpdateCourse = exports.validateCourse = void 0;
 const express_validator_1 = require("express-validator");
+const reportErrors_1 = require("./reportErrors");
 exports.validateCourse = [
     (0, express_validator_1.body)("code")
         .isString()
@@ -24,16 +25,10 @@ exports.validateCourse = [
         .isUUID()
         .withMessage("Department ID must be a valid UUID"),
     (0, express_validator_1.body)("professorId").isUUID().withMessage("Professor ID must be a valid UUID"),
-    (req, res, next) => {
-        const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        next();
-    },
+    reportErrors_1.handleValidationErrors,
 ];
 exports.validateUpdateCourse = [
-    (0, express_validator_1.param)("id").isUUID().withMessage("Course ID must be a valid UUID"),
+    (0, express_validator_1.param)("semesterId").isUUID().withMessage("Course ID must be a valid UUID"),
     (0, express_validator_1.body)("code")
         .optional()
         .isString()
@@ -59,11 +54,5 @@ exports.validateUpdateCourse = [
         .optional()
         .isUUID()
         .withMessage("Professor ID must be a valid UUID"),
-    (req, res, next) => {
-        const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        next();
-    },
+    reportErrors_1.handleValidationErrors,
 ];

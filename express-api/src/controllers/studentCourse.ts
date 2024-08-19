@@ -10,7 +10,7 @@ export const enrollCourses = async (req: userRequest, res: Response) => {
     const { studentId } = req.params;
     const { courses, semesterId } = req.body;
 
-    if (studentId !== req.user?.id) {
+    if (studentId !== req.user?.id && req.user?.role !== "student") {
       return res.status(403).json({ message: "Forbidden" });
     }
 
@@ -27,7 +27,7 @@ export const enrollCourses = async (req: userRequest, res: Response) => {
     );
     res.status(201).json({ message: "Courses enrolled", studentCourses });
   } catch (error: any) {
-    if (error.message === "Student not found") {
+    if (error.message) {
       return res.status(404).json({ message: error.message });
     }
     console.error(error);

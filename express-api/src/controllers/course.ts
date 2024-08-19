@@ -20,11 +20,15 @@ export const createCourse = async (req: Request, res: Response) => {
     const course = await courseService.createCourse(data);
     if (!course) return res.status(400).json({ message: "Course not created" });
     res.status(201).json({ message: "Course created successfully", course });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message) {
+      return res.status(404).json({ message: error.message });
+    }
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const getAllCourses = async (req: Request, res: Response) => {
   try {
     const courses = await courseService.getAllCourses();
@@ -44,6 +48,7 @@ export const getCourseById = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const updateCourse = async (req: Request, res: Response) => {
   try {
     const updatedCourse = await courseService.updateCourse(
@@ -55,13 +60,14 @@ export const updateCourse = async (req: Request, res: Response) => {
     }
     res.status(200).json({ message: "Course updated", updatedCourse });
   } catch (error: any) {
-    if (error.message === "Course not found" || error.message === "A course with this code already exists") {
+    if (error.message) {
       return res.status(404).json({ message: error.message });
     }
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const deleteCourse = async (req: Request, res: Response) => {
   try {
     const deletedCourse = await courseService.deleteCourse(req.params.id);
@@ -74,7 +80,6 @@ export const deleteCourse = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 export const getLecturesByCourseId = async (req: Request, res: Response) => {
   try {

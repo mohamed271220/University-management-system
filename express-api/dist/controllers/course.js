@@ -35,6 +35,9 @@ const createCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(201).json({ message: "Course created successfully", course });
     }
     catch (error) {
+        if (error.message) {
+            return res.status(404).json({ message: error.message });
+        }
         console.log(error);
         res.status(500).json({ message: "Internal server error" });
     }
@@ -73,7 +76,7 @@ const updateCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(200).json({ message: "Course updated", updatedCourse });
     }
     catch (error) {
-        if (error.message === "Course not found" || error.message === "A course with this code already exists") {
+        if (error.message) {
             return res.status(404).json({ message: error.message });
         }
         console.error(error);

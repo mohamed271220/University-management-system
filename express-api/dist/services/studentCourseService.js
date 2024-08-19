@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentCourseService = void 0;
 const Course_1 = __importDefault(require("../models/Course"));
+const Semester_1 = __importDefault(require("../models/Semester"));
 const User_1 = __importDefault(require("../models/User"));
 class StudentCourseService {
     constructor(studentCourseModel) {
@@ -25,10 +26,21 @@ class StudentCourseService {
             if (!student || student.role !== "Student") {
                 throw new Error("Student not found");
             }
+            // Check if the student is already enrolled in any of the courses for the same semester
+            const existingEnrollments = yield this.studentCourseModel.findAll({
+                where: {
+                    studentId,
+                    semesterId,
+                    courseId: courses, // Correctly handles array with 'Op.in'
+                },
+            });
+            if (existingEnrollments.length > 0) {
+                throw new Error("Student already enrolled in one or more of these courses for this semester. Please update your courses or delete existing enrollments.");
+            }
             const studentCourses = yield Promise.all(courses.map((courseId) => __awaiter(this, void 0, void 0, function* () {
                 const course = yield Course_1.default.findByPk(courseId);
                 if (!course) {
-                    throw new Error("Course not found");
+                    throw new Error(`Course with ID ${courseId} not found`);
                 }
                 return this.studentCourseModel.create({
                     courseId,
@@ -51,6 +63,12 @@ class StudentCourseService {
                     {
                         model: Course_1.default,
                     },
+                    {
+                        model: Semester_1.default,
+                    },
+                    {
+                        model: Course_1.default,
+                    },
                 ],
             });
             return studentCourses;
@@ -65,6 +83,12 @@ class StudentCourseService {
                         model: User_1.default,
                         attributes: ["username"],
                     },
+                    {
+                        model: Semester_1.default,
+                    },
+                    {
+                        model: Course_1.default,
+                    },
                 ],
             });
             return courseStudents;
@@ -75,6 +99,12 @@ class StudentCourseService {
             const studentCourse = yield this.studentCourseModel.findOne({
                 where: { studentId, courseId },
                 include: [
+                    {
+                        model: Course_1.default,
+                    },
+                    {
+                        model: Semester_1.default,
+                    },
                     {
                         model: Course_1.default,
                     },
@@ -105,6 +135,7 @@ class StudentCourseService {
                 throw new Error("Student course not found");
             }
             yield studentCourse.destroy();
+            return studentCourse;
         });
     }
 }

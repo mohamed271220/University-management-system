@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { body, param, validationResult } from "express-validator";
+import { handleValidationErrors } from "./reportErrors";
 
 export const validateDepartment = [
   body("name")
@@ -13,13 +14,7 @@ export const validateDepartment = [
     .withMessage("Department code must be a string")
     .notEmpty()
     .withMessage("Department code is required"),
-  (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  handleValidationErrors,
 ];
 
 export const validateUpdateDepartment = [
@@ -34,11 +29,5 @@ export const validateUpdateDepartment = [
     .optional()
     .isString()
     .withMessage("Department code must be a string"),
-  (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  handleValidationErrors,
 ];

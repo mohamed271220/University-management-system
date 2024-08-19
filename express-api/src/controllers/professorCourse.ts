@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ProfessorCourseService } from "../services/professorCourse";
+import { ProfessorCourseService } from "../services/professorCourseService";
 import ProfessorCourse from "../models/ProfessorCourses";
 
 const professorCourseService = new ProfessorCourseService(ProfessorCourse);

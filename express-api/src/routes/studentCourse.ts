@@ -2,6 +2,7 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as studentCourseController from "../controllers/studentCourse";
+import { enrollCoursesValidation, updateStudentCourseValidation } from "../middleware/validators/studentCourseValidators";
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.post(
   "/enroll/:studentId/courses",
   authenticateToken,
   authorizeRoles("student"),
+  enrollCoursesValidation,
   studentCourseController.enrollCourses
 );
 
@@ -44,6 +46,7 @@ router.put(
   "/students/:studentId/courses/:courseId",
   authenticateToken,
   authorizeRoles("student", "admin", "staff"),
+  updateStudentCourseValidation,
   studentCourseController.updateStudentCourse
 );
 router.delete(

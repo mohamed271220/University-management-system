@@ -30,14 +30,15 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const semesterController = __importStar(require("../controllers/semester"));
+const semesterValidators_1 = require("../middleware/validators/semesterValidators");
 const router = express_1.default.Router();
-router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.createSemester);
-router.get("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.getAllSemesters);
-router.get("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.getSemesterById);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.updateSemester);
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.deleteSemester);
+router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterValidators_1.validateCreateSemester, semesterController.createSemester);
+router.get("/allSemesters", authMiddleware_1.authenticateToken, semesterController.getAllSemesters);
+router.get("/:semesterId", authMiddleware_1.authenticateToken, semesterController.getSemesterById);
+router.put("/:semesterId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterValidators_1.validateUpdateSemester, semesterController.updateSemester);
+router.delete("/:semesterId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.deleteSemester);
 //Retrieve all grades associated with a specific
-router.get("/:id/grades", authMiddleware_1.authenticateToken, semesterController.getSemesterGrades);
+router.get("/:semesterId/grades", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.getSemesterGrades);
 // Retrieve all student enrollments associated with a specific semester.
-router.get("/:id/student-courses", authMiddleware_1.authenticateToken, semesterController.getStudentEnrolledCourses);
+router.get("/:semesterId/student-courses", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.getStudentEnrolledCourses);
 exports.default = router;

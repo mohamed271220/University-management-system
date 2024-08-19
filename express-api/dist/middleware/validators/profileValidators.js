@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProfileValidation = exports.validateProfile = void 0;
 const express_validator_1 = require("express-validator");
+const reportErrors_1 = require("./reportErrors");
 exports.validateProfile = [
     (0, express_validator_1.body)("firstName").isString().notEmpty().withMessage("First name is required"),
     (0, express_validator_1.body)("lastName").isString().notEmpty().withMessage("Last name is required"),
@@ -11,13 +12,7 @@ exports.validateProfile = [
         .isLength({ min: 10 })
         .withMessage("Contact number must be at least 10 characters long"),
     (0, express_validator_1.body)("address").isString().notEmpty().withMessage("Address is required"),
-    (req, res, next) => {
-        const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        next();
-    },
+    reportErrors_1.handleValidationErrors,
 ];
 exports.updateProfileValidation = [
     (0, express_validator_1.body)("firstName")
@@ -44,11 +39,5 @@ exports.updateProfileValidation = [
         .isString()
         .notEmpty()
         .withMessage("Address must be a non-empty string"),
-    (req, res, next) => {
-        const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        next();
-    },
+    reportErrors_1.handleValidationErrors,
 ];

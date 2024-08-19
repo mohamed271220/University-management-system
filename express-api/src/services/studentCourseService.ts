@@ -1,4 +1,5 @@
 import Course from "../models/Course";
+import Semester from "../models/Semester";
 import StudentCourse from "../models/StudentCourses";
 import User from "../models/User";
 
@@ -15,11 +16,26 @@ export class StudentCourseService {
       throw new Error("Student not found");
     }
 
+    // Check if the student is already enrolled in any of the courses for the same semester
+    const existingEnrollments = await this.studentCourseModel.findAll({
+      where: {
+        studentId,
+        semesterId,
+        courseId: courses, // Correctly handles array with 'Op.in'
+      },
+    });
+
+    if (existingEnrollments.length > 0) {
+      throw new Error(
+        "Student already enrolled in one or more of these courses for this semester. Please update your courses or delete existing enrollments."
+      );
+    }
+
     const studentCourses = await Promise.all(
       courses.map(async (courseId) => {
         const course = await Course.findByPk(courseId);
         if (!course) {
-          throw new Error("Course not found");
+          throw new Error(`Course with ID ${courseId} not found`);
         }
         return this.studentCourseModel.create({
           courseId,
@@ -28,6 +44,7 @@ export class StudentCourseService {
         });
       })
     );
+
     return studentCourses;
   }
 
@@ -39,6 +56,12 @@ export class StudentCourseService {
     const studentCourses = await this.studentCourseModel.findAll({
       where: { studentId },
       include: [
+        {
+          model: Course,
+        },
+        {
+          model: Semester,
+        },
         {
           model: Course,
         },
@@ -55,6 +78,12 @@ export class StudentCourseService {
           model: User,
           attributes: ["username"],
         },
+        {
+          model: Semester,
+        },
+        {
+          model: Course,
+        },
       ],
     });
     return courseStudents;
@@ -64,6 +93,12 @@ export class StudentCourseService {
     const studentCourse = await this.studentCourseModel.findOne({
       where: { studentId, courseId },
       include: [
+        {
+          model: Course,
+        },
+        {
+          model: Semester,
+        },
         {
           model: Course,
         },
@@ -96,5 +131,6 @@ export class StudentCourseService {
       throw new Error("Student course not found");
     }
     await studentCourse.destroy();
+    return studentCourse;
   }
 }

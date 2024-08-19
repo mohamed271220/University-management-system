@@ -19,6 +19,13 @@ export class CourseService {
     const { code, name, description, credits, departmentId, professorId } =
       data;
 
+    const existingCourse = await this.courseModel.findOne({
+      where: { code },
+    });
+    if (existingCourse) {
+      throw new Error("A course with this code already exists");
+    }
+
     const course = await this.courseModel.create({
       id: uuid(),
       code,

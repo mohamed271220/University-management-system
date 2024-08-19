@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { body, param, validationResult } from "express-validator";
+import { handleValidationErrors } from "./reportErrors";
 export const validateCourse = [
   body("code")
     .isString()
@@ -28,17 +29,11 @@ export const validateCourse = [
 
   body("professorId").isUUID().withMessage("Professor ID must be a valid UUID"),
 
-  (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  handleValidationErrors,
 ];
 
 export const validateUpdateCourse = [
-  param("id").isUUID().withMessage("Course ID must be a valid UUID"),
+  param("semesterId").isUUID().withMessage("Course ID must be a valid UUID"),
 
   body("code")
     .optional()
@@ -71,11 +66,5 @@ export const validateUpdateCourse = [
     .isUUID()
     .withMessage("Professor ID must be a valid UUID"),
 
-  (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  handleValidationErrors,
 ];

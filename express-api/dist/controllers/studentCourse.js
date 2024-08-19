@@ -17,11 +17,11 @@ const studentCourseService_1 = require("../services/studentCourseService");
 const StudentCourses_1 = __importDefault(require("../models/StudentCourses"));
 const studentCourseService = new studentCourseService_1.StudentCourseService(StudentCourses_1.default);
 const enrollCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
         const { studentId } = req.params;
         const { courses, semesterId } = req.body;
-        if (studentId !== ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id)) {
+        if (studentId !== ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) && ((_b = req.user) === null || _b === void 0 ? void 0 : _b.role) !== "student") {
             return res.status(403).json({ message: "Forbidden" });
         }
         if (!studentId || !courses || !semesterId) {
@@ -33,7 +33,7 @@ const enrollCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(201).json({ message: "Courses enrolled", studentCourses });
     }
     catch (error) {
-        if (error.message === "Student not found") {
+        if (error.message) {
             return res.status(404).json({ message: error.message });
         }
         console.error(error);

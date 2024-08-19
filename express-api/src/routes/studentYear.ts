@@ -5,6 +5,8 @@ import * as studentYearController from "../controllers/studentYear";
 
 const router = express.Router();
 
+// /api/v1/studentYears
+
 router.post(
   "/",
   authenticateToken,
@@ -12,8 +14,14 @@ router.post(
   studentYearController.createStudentYear
 );
 
-router.get("/", authenticateToken, studentYearController.getAllStudentYears);
+router.get(
+  "/allStudentYears",
+  authenticateToken,
+  authorizeRoles("admin", "staff"),
+  studentYearController.getAllStudentYears
+);
 
+//get all student years records by student id
 router.get(
   "/student/:studentId",
   authenticateToken,
@@ -22,13 +30,14 @@ router.get(
 );
 
 router.put(
-  "/:id",
+  "/:studentYearId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   studentYearController.updateStudentYear
 );
+
 router.delete(
-  "/:id",
+  "/:studentYearId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   studentYearController.deleteStudentYear

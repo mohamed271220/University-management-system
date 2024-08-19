@@ -28,6 +28,12 @@ class CourseService {
     createCourse(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const { code, name, description, credits, departmentId, professorId } = data;
+            const existingCourse = yield this.courseModel.findOne({
+                where: { code },
+            });
+            if (existingCourse) {
+                throw new Error("A course with this code already exists");
+            }
             const course = yield this.courseModel.create({
                 id: (0, uuid_1.v4)(),
                 code,

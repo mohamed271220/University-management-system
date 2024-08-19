@@ -36,3 +36,16 @@ export interface CourseWithProfessors extends Course {
 export interface CourseWithLectures extends Course {
   Lectures?: Lecture[];
 }
+
+export enum Year {
+  "1st Year" = "1st Year",
+  "2nd Year" = "2nd Year",
+  "3rd Year" = "3rd Year",
+  "4th Year" = "4th Year",
+}
+
+export interface studentYearData {
+  year: Year;
+  studentId: string;
+  effectiveDate: Date;
+}

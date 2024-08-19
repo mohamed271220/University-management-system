@@ -21,6 +21,7 @@ import departmentRouter from "./routes/department";
 import professorCourseRouter from "./routes/professorCourse";
 import studentCourseRouter from "./routes/studentCourse";
 import semesterRouter from "./routes/semester";
+import studentYearRouter from "./routes/studentYear";
 
 import swaggerRouter from "./config/swagger";
 
@@ -58,6 +59,7 @@ app.use("/api/v1/departments", departmentRouter);
 app.use("/api/v1/professorCourses", professorCourseRouter);
 app.use("/api/v1/studentCourses", studentCourseRouter);
 app.use("/api/v1/semesters", semesterRouter);
+app.use("/api/v1/studentYears", studentYearRouter);
 
 
 app.get(

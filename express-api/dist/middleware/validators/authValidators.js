@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateLogin = exports.validateSignup = void 0;
 const express_validator_1 = require("express-validator");
+const reportErrors_1 = require("./reportErrors");
 exports.validateSignup = [
     (0, express_validator_1.body)("username").notEmpty().withMessage("Username is required"),
     (0, express_validator_1.body)("email").isEmail().withMessage("Invalid email format"),
@@ -18,13 +19,7 @@ exports.validateSignup = [
         .withMessage("Password must contain at least one number")
         .matches(/[@$!%*?&#]/)
         .withMessage("Password must contain at least one special character (@$!%*?&#)"),
-    (req, res, next) => {
-        const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        next();
-    },
+    reportErrors_1.handleValidationErrors,
 ];
 exports.validateLogin = [
     (0, express_validator_1.body)("email")
@@ -38,11 +33,5 @@ exports.validateLogin = [
         .notEmpty()
         .withMessage("Username is required if email is not provided"),
     (0, express_validator_1.body)("password").notEmpty().withMessage("Password is required"),
-    (req, res, next) => {
-        const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        next();
-    },
+    reportErrors_1.handleValidationErrors,
 ];

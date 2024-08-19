@@ -2,6 +2,7 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as professorCourseController from "../controllers/professorCourse";
+import { createProfessorCourseValidation } from "../middleware/validators/professorCourseValidators";
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.post(
   "/courses/:courseId/professors/:professorId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
+  createProfessorCourseValidation,
   professorCourseController.createProfessorCourse
 );
 

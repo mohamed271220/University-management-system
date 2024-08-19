@@ -19,11 +19,6 @@ const semesterService = new semesterService_1.SemesterService(Semester_1.default
 const createSemester = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, startDate, endDate } = req.body;
-        if (!name || !startDate || !endDate) {
-            return res.status(400).json({
-                message: "Semester name, start date, and end date are required",
-            });
-        }
         const semester = yield semesterService.createSemester(name, startDate, endDate);
         if (!semester) {
             return res.status(500).json({ message: "Failed to create semester" });
@@ -39,15 +34,107 @@ const createSemester = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.createSemester = createSemester;
-const getAllSemesters = () => { };
+const getAllSemesters = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const semesters = yield semesterService.getAllSemesters();
+        res.status(200).json({ semesters });
+    }
+    catch (error) {
+        if (error.message) {
+            return res.status(404).json({ message: "No semesters found" });
+        }
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.getAllSemesters = getAllSemesters;
-const getSemesterById = () => { };
+const getSemesterById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { semesterId } = req.params;
+        if (!semesterId) {
+            return res.status(400).json({ message: "Semester ID is required" });
+        }
+        const semester = yield semesterService.getSemesterById(semesterId);
+        res.status(200).json({ semester });
+    }
+    catch (error) {
+        if (error.message) {
+            return res.status(404).json({ message: "Semester not found" });
+        }
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.getSemesterById = getSemesterById;
-const updateSemester = () => { };
+const updateSemester = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { semesterId } = req.params;
+        const { name, startDate, endDate } = req.body;
+        const semester = yield semesterService.updateSemester(semesterId, name, startDate, endDate);
+        res
+            .status(200)
+            .json({ message: "Semester updated successfully", semester });
+    }
+    catch (error) {
+        if (error.message) {
+            return res.status(404).json({ message: error.message });
+        }
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.updateSemester = updateSemester;
-const deleteSemester = () => { };
+const deleteSemester = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { semesterId } = req.params;
+        if (!semesterId) {
+            return res.status(400).json({ message: "Semester ID is required" });
+        }
+        const semester = yield semesterService.deleteSemester(semesterId);
+        if (!semester) {
+            return res.status(404).json({ message: "Semester not found" });
+        }
+        res.status(200).json({ message: "Semester deleted successfully" });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.deleteSemester = deleteSemester;
-const getSemesterGrades = () => { };
+const getSemesterGrades = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { semesterId } = req.params;
+        if (!semesterId) {
+            return res.status(400).json({ message: "Semester ID is required" });
+        }
+        const grades = yield semesterService.getSemesterGrades(semesterId);
+        res.status(200).json({ grades });
+    }
+    catch (error) {
+        if (error.message) {
+            return res.status(404).json({ message: error.message });
+        }
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.getSemesterGrades = getSemesterGrades;
-const getStudentEnrolledCourses = () => { };
+const getStudentEnrolledCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { semesterId } = req.params;
+        if (!semesterId) {
+            return res.status(400).json({ message: "Semester ID is required" });
+        }
+        const studentCourses = yield semesterService.getStudentEnrolledCourses(semesterId);
+        res.status(200).json({ studentCourses });
+    }
+    catch (error) {
+        if (error.message) {
+            return res.status(404).json({ message: error.message });
+        }
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.getStudentEnrolledCourses = getStudentEnrolledCourses;
