@@ -49,3 +49,24 @@ export interface studentYearData {
   studentId: string;
   effectiveDate: Date;
 }
+
+export enum DayOfWeek {
+  Sunday = "Sunday",
+  Monday = "Monday",
+  Tuesday = "Tuesday",
+  Wednesday = "Wednesday",
+  Thursday = "Thursday",
+  Friday = "Friday",
+  Saturday = "Saturday",
+}
+
+export interface lectureType {
+  professorId: string;
+  hallId: string;
+  courseId: string;
+  dayOfWeek: DayOfWeek;
+  startTime: string;
+  endTime: string;
+  recurrencePattern?: string;
+  recurrenceEndDate?: Date;
+}

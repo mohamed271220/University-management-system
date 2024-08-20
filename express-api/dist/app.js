@@ -24,6 +24,8 @@ const professorCourse_1 = __importDefault(require("./routes/professorCourse"));
 const studentCourse_1 = __importDefault(require("./routes/studentCourse"));
 const semester_1 = __importDefault(require("./routes/semester"));
 const studentYear_1 = __importDefault(require("./routes/studentYear"));
+const hall_1 = __importDefault(require("./routes/hall"));
+const lecture_1 = __importDefault(require("./routes/lecture"));
 const swagger_1 = __importDefault(require("./config/swagger"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -56,6 +58,8 @@ app.use("/api/v1/professorCourses", professorCourse_1.default);
 app.use("/api/v1/studentCourses", studentCourse_1.default);
 app.use("/api/v1/semesters", semester_1.default);
 app.use("/api/v1/studentYears", studentYear_1.default);
+app.use("/api/v1/halls", hall_1.default);
+app.use("/api/v1/lectures", lecture_1.default);
 app.get("/protected", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), (req, res) => {
     res.send("This is a protected route for admin users.");
 });

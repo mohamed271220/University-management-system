@@ -42,6 +42,7 @@ router.get("/courses/:courseId/students", authMiddleware_1.authenticateToken, (0
 // Retrieve a specific student course by its ID.
 router.get("/students/:studentId/courses/:courseId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "admin", "staff"), studentCourseController.getStudentCourseById);
 // Update a student course by its ID (change it's semester).
-router.put("/students/:studentId/courses/:courseId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "admin", "staff"), studentCourseValidators_1.updateStudentCourseValidation, studentCourseController.updateStudentCourse);
+router.put("/students/:studentId/courses/:courseId/semester", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "admin", "staff"), studentCourseValidators_1.updateStudentCourseValidation, studentCourseController.updateStudentCourse);
+// unenroll a student from a course.
 router.delete("/students/:studentId/courses/:courseId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "admin", "staff"), studentCourseController.deleteStudentCourse);
 exports.default = router;

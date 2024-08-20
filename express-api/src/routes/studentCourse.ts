@@ -43,12 +43,14 @@ router.get(
 
 // Update a student course by its ID (change it's semester).
 router.put(
-  "/students/:studentId/courses/:courseId",
+  "/students/:studentId/courses/:courseId/semester",
   authenticateToken,
   authorizeRoles("student", "admin", "staff"),
   updateStudentCourseValidation,
   studentCourseController.updateStudentCourse
 );
+
+// unenroll a student from a course.
 router.delete(
   "/students/:studentId/courses/:courseId",
   authenticateToken,

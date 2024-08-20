@@ -1,15 +1,104 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLecturesByHall = exports.deleteHall = exports.updateHall = exports.getHallById = exports.getAllHalls = exports.createHall = void 0;
-const createHall = () => { };
+const hallService_1 = require("../services/hallService");
+const hallService = new hallService_1.HallService();
+const createHall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { name, isLab, departmentId } = req.body;
+        if (!name || isLab === undefined || !departmentId) {
+            return res
+                .status(400)
+                .json({ message: "Name and capacity are required" });
+        }
+        const hall = yield hallService.createHall(name, isLab, departmentId);
+        res.status(201).json({ message: "Hall created", hall });
+    }
+    catch (error) {
+        if (error.message) {
+            console.log(error);
+            return res.status(404).json({ message: error.message });
+        }
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.createHall = createHall;
-const getAllHalls = () => { };
+const getAllHalls = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const halls = yield hallService.getAllHalls();
+        res.status(200).json({ message: "All halls", halls });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.getAllHalls = getAllHalls;
-const getHallById = () => { };
+const getHallById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const hall = yield hallService.getHallById(req.params.hallId);
+        if (!hall) {
+            return res.status(404).json({ message: "Hall not found" });
+        }
+        res.status(200).json({ message: "Hall found", hall });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.getHallById = getHallById;
-const updateHall = () => { };
+const updateHall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { name, isLab, departmentId } = req.body;
+        const hall = yield hallService.updateHall(req.params.hallId, name, isLab, departmentId);
+        if (!hall) {
+            return res.status(404).json({ message: "Hall not found" });
+        }
+        res.status(200).json({ message: "Hall updated", hall });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.updateHall = updateHall;
-const deleteHall = () => { };
+const deleteHall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const hall = yield hallService.deleteHall(req.params.hallId);
+        if (!hall) {
+            return res.status(404).json({ message: "Hall not found" });
+        }
+        res.status(200).json({ message: "Hall deleted", hall });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.deleteHall = deleteHall;
-const getLecturesByHall = () => { };
+const getLecturesByHall = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const lectures = yield hallService.getLecturesByHall(req.params.hallId);
+        res.status(200).json({ message: "All lectures", lectures });
+    }
+    catch (error) {
+        if (error.message) {
+            console.log(error);
+            return res.status(404).json({ message: error.message });
+        }
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 exports.getLecturesByHall = getLecturesByHall;

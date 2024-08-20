@@ -22,6 +22,8 @@ import professorCourseRouter from "./routes/professorCourse";
 import studentCourseRouter from "./routes/studentCourse";
 import semesterRouter from "./routes/semester";
 import studentYearRouter from "./routes/studentYear";
+import hallRouter from "./routes/hall";
+import lectureRouter from "./routes/lecture";
 
 import swaggerRouter from "./config/swagger";
 
@@ -60,7 +62,8 @@ app.use("/api/v1/professorCourses", professorCourseRouter);
 app.use("/api/v1/studentCourses", studentCourseRouter);
 app.use("/api/v1/semesters", semesterRouter);
 app.use("/api/v1/studentYears", studentYearRouter);
-
+app.use("/api/v1/halls", hallRouter);
+app.use("/api/v1/lectures", lectureRouter);
 
 app.get(
   "/protected",

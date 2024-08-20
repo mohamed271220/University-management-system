@@ -62,6 +62,7 @@ User_1.default.hasMany(Grade_1.default, { foreignKey: "studentId" });
 Grade_1.default.belongsTo(User_1.default, { foreignKey: "studentId" });
 Semester_1.default.hasMany(Grade_1.default, { foreignKey: "semesterId" });
 Grade_1.default.belongsTo(Semester_1.default, { foreignKey: "semesterId" });
+// Professors can teach many courses and courses can have many professors
 Course_1.default.belongsToMany(User_1.default, {
     through: ProfessorCourses_1.default,
     foreignKey: "courseId",
@@ -72,6 +73,7 @@ User_1.default.belongsToMany(Course_1.default, {
     foreignKey: "professorId",
     as: "teachingCourses",
 });
+// Students can enroll in many courses and courses can have many students
 Course_1.default.belongsToMany(User_1.default, {
     through: StudentCourses_1.default,
     foreignKey: "courseId",
@@ -91,8 +93,13 @@ StudentCourses_1.default.belongsTo(User_1.default, { foreignKey: "studentId" });
 User_1.default.hasMany(StudentCourses_1.default, { foreignKey: "studentId" });
 StudentCourses_1.default.belongsTo(Course_1.default, { foreignKey: "courseId" });
 Course_1.default.hasMany(StudentCourses_1.default, { foreignKey: "courseId" });
+// a semester has many student courses
 Semester_1.default.hasMany(StudentCourses_1.default, { foreignKey: "semesterId" });
 StudentCourses_1.default.belongsTo(Semester_1.default, { foreignKey: "semesterId" });
+// a student has many student years records and a student year record belongs to a student
 User_1.default.hasMany(StudentYears_1.default, { foreignKey: "studentId" });
 StudentYears_1.default.belongsTo(User_1.default, { foreignKey: "studentId" });
+Lecture_1.default.belongsTo(Course_1.default, { as: "course" });
+Lecture_1.default.belongsTo(User_1.default, { as: "professor" });
+Lecture_1.default.belongsTo(Hall_1.default, { as: "hall" });
 exports.default = exports.models;

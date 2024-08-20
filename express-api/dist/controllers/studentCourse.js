@@ -109,7 +109,9 @@ const updateStudentCourse = (req, res) => __awaiter(void 0, void 0, void 0, func
             });
         }
         const studentCourse = yield studentCourseService.updateStudentCourse(studentId, courseId, semesterId);
-        res.status(200).json({ message: "Student course updated", studentCourse });
+        res
+            .status(200)
+            .json({ message: "Student enrollment updated", studentCourse });
     }
     catch (error) {
         console.error(error);
