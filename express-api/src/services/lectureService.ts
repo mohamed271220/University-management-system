@@ -30,6 +30,7 @@ export class LectureService {
 
     const isTimeValid = await this.lectureModel.findOne({
       where: {
+        hallId: database.hallId, // Ensuring we are checking within the same hall
         dayOfWeek: database.dayOfWeek,
         [Op.or]: [
           // Check if the lecture starts or ends between the existing lecture's start and end time
@@ -38,15 +39,13 @@ export class LectureService {
               [Op.between]: [database.startTime, database.endTime],
             },
           },
-          // or if the existing lecture ends between
-          //the new lecture's start and end time
           {
             endTime: {
               [Op.between]: [database.startTime, database.endTime],
             },
           },
           // or if the new lecture's start and end time is between the
-          //existing lecture's start and end time
+          // existing lecture's start and end time
           {
             [Op.and]: [
               {
@@ -66,7 +65,7 @@ export class LectureService {
     });
 
     if (isTimeValid) {
-      throw new Error("Lecture already exists at this time");
+      throw new Error("Lecture already exists at this time in the same hall");
     }
 
     const lecture = await this.lectureModel.create({
@@ -79,44 +78,45 @@ export class LectureService {
 
   async getAllLectures(offset: number, limit: number, search: string = "") {
     const includeModels: any[] = [
-        {
-          model: Course,
-          as: "course",
-          required: false,
-          where: search
-            ? {
-                name: {
-                  [Op.like]: `%${search}%`,
-                },
-              }
-            : undefined,
-        },
-        {
-          model: Hall,
-          as: "hall",
-          required: false,
-          where: search
-            ? {
-                name: {
-                  [Op.like]: `%${search}%`,
-                },
-              }
-            : undefined,
-        },
-        {
-          model: User,
-          as: "professor",
-          required: false,
-          where: search
-            ? {
-                username: {
-                  [Op.like]: `%${search}%`,
-                },
-              }
-            : undefined,
-        },
-      ];
-      
+      {
+        model: Course,
+        as: "course",
+        required: false,
+        where: search
+          ? {
+              name: {
+                [Op.like]: `%${search}%`,
+              },
+            }
+          : undefined,
+      },
+      {
+        model: Hall,
+        as: "hall",
+        required: false,
+        where: search
+          ? {
+              name: {
+                [Op.like]: `%${search}%`,
+              },
+            }
+          : undefined,
+      },
+      {
+        model: User,
+        as: "professor",
+        required: false,
+        attributes: { exclude: ["passwordHash"] },
+        where: search
+          ? {
+              username: {
+                [Op.like]: `%${search}%`,
+              },
+            }
+          : undefined,
+      },
+    ];
+
     const { count, rows: lectures } = await this.lectureModel.findAndCountAll({
       offset,
       limit,
@@ -124,13 +124,12 @@ export class LectureService {
     });
 
     console.log(lectures);
-    
-  
+
     const totalPages = Math.ceil(count / limit);
     const currentPage = Math.ceil(offset / limit) + 1;
     const hasNextPage = currentPage < totalPages;
     const hasPreviousPage = currentPage > 1;
-  
+
     const pagination = {
       totalItems: count,
       itemsPerPage: limit,
@@ -141,10 +140,9 @@ export class LectureService {
       nextPage: hasNextPage ? currentPage + 1 : null,
       previousPage: hasPreviousPage ? currentPage - 1 : null,
     };
-  
+
     return { lectures, pagination };
   }
-  
 
   async getLectureById(id: string) {
     const lecture = await this.lectureModel.findByPk(id, {
@@ -156,6 +154,7 @@ export class LectureService {
         {
           model: User,
           as: "professor",
+          attributes: { exclude: ["passwordHash"] },
         },
         {
           model: Hall,

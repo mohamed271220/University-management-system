@@ -66,9 +66,6 @@ class StudentCourseService {
                     {
                         model: Semester_1.default,
                     },
-                    {
-                        model: Course_1.default,
-                    },
                 ],
             });
             return studentCourses;
@@ -81,14 +78,11 @@ class StudentCourseService {
                 include: [
                     {
                         model: User_1.default,
-                        attributes: ["username"],
+                        attributes: { exclude: ["passwordHash"] },
                     },
                     {
                         model: Semester_1.default,
-                    },
-                    {
-                        model: Course_1.default,
-                    },
+                    }
                 ],
             });
             return courseStudents;
@@ -100,14 +94,11 @@ class StudentCourseService {
                 where: { studentId, courseId },
                 include: [
                     {
-                        model: Course_1.default,
+                        attributes: { exclude: ["passwordHash"] },
                     },
                     {
                         model: Semester_1.default,
-                    },
-                    {
-                        model: Course_1.default,
-                    },
+                    }
                 ],
             });
             return studentCourse;

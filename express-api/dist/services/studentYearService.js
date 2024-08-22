@@ -22,7 +22,7 @@ class StudentYearService {
     }
     createStudentYear(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { year, studentId, effectiveDate } = data;
+            const { year, studentId, effectiveDate, departmentId } = data;
             const existingStudentYear = yield this.studentYearModel.findOne({
                 where: { studentId, effectiveDate },
             });
@@ -37,6 +37,7 @@ class StudentYearService {
                 id: (0, uuid_1.v4)(),
                 year,
                 studentId,
+                departmentId,
                 effectiveDate,
             });
             return newStudentYear;
@@ -61,7 +62,7 @@ class StudentYearService {
     }
     updateStudentYear(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { year, studentId, effectiveDate } = data;
+            const { year, studentId, effectiveDate, departmentId } = data;
             const studentYear = yield this.studentYearModel.findOne({ where: { id } });
             if (!studentYear) {
                 throw new Error("Student year not found");
@@ -72,6 +73,8 @@ class StudentYearService {
                 studentYear.studentId = studentId;
             if (effectiveDate !== undefined)
                 studentYear.effectiveDate = effectiveDate;
+            if (departmentId !== undefined)
+                studentYear.departmentId = departmentId;
             yield studentYear.save();
             return studentYear;
         });

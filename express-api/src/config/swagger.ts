@@ -25,6 +25,6 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 const swaggerRouter = Router();
-swaggerRouter.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+swaggerRouter.use('/express-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default swaggerRouter;

@@ -26,6 +26,7 @@ const semester_1 = __importDefault(require("./routes/semester"));
 const studentYear_1 = __importDefault(require("./routes/studentYear"));
 const hall_1 = __importDefault(require("./routes/hall"));
 const lecture_1 = __importDefault(require("./routes/lecture"));
+const timetable_1 = __importDefault(require("./routes/timetable"));
 const swagger_1 = __importDefault(require("./config/swagger"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -60,10 +61,11 @@ app.use("/api/v1/semesters", semester_1.default);
 app.use("/api/v1/studentYears", studentYear_1.default);
 app.use("/api/v1/halls", hall_1.default);
 app.use("/api/v1/lectures", lecture_1.default);
+app.use("/api/v1/timetables", timetable_1.default);
 app.get("/protected", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), (req, res) => {
     res.send("This is a protected route for admin users.");
 });
-app.use("/api-doc", swagger_1.default);
+app.use("/api/v1/official-docs", swagger_1.default);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

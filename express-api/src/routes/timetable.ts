@@ -7,57 +7,38 @@ const router = express.Router();
 
 // /api/v1/timetables
 
-// Create a new timetable entry.
-router.post(
-  "/",
-  authenticateToken,
-  authorizeRoles("admin", "staff"),
-  timetableController.createTimetable
-);
+// get student timetable
 router.get(
-  "/allTimetables",
+  "/students/:studentId/:semesterId",
   authenticateToken,
-  authorizeRoles("admin", "staff"),
-  timetableController.getAllTimetables
+  timetableController.getStudentTimetable
 );
 
-router.get(
-  "/departments/:departmentId",
-  authenticateToken,
-  timetableController.getTimetableByDepartment
-);
-// student or staff gets the timetable by student id (but the id should match the logged user if it's a student)
-router.get(
-  "/student/:studentId",
-  authenticateToken,
-  timetableController.getTimetableByStudent
-);
+// get professor timetable
 router.get(
   "/professors/:professorId",
   authenticateToken,
-  timetableController.getTimetableByProfessor
-);
-router.get(
-  "halls/:hallId",
-  authenticateToken,
-  timetableController.getTimetableByHall
-);
-router.get(
-  "/lectures/:lectureId",
-  authenticateToken,
-  timetableController.getTimetableByLecture
-);
-router.put(
-  "/:id",
-  authenticateToken,
-  authorizeRoles("admin", "staff"),
-  timetableController.updateTimetable
-);
-router.delete(
-  "/:id",
-  authenticateToken,
-  authorizeRoles("admin", "staff"),
-  timetableController.deleteTimetable
+  timetableController.getProfessorTimetable
 );
 
+// get the timetable for a department
+router.get(
+  "/departments/:departmentId",
+  authenticateToken,
+  timetableController.getDepartmentTimetable
+);
+
+// get the timetable for a hall
+router.get(
+  "/halls/:hallId",
+  authenticateToken,
+  timetableController.getHallTimetable
+);
+
+// get the timetable for a certain class (student year) in a department
+router.get(
+  "/departments/:departmentId/years",
+  authenticateToken,
+  timetableController.getDepartmentYearTimetable
+);
 export default router;

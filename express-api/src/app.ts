@@ -24,6 +24,7 @@ import semesterRouter from "./routes/semester";
 import studentYearRouter from "./routes/studentYear";
 import hallRouter from "./routes/hall";
 import lectureRouter from "./routes/lecture";
+import timetableRouter from "./routes/timetable";
 
 import swaggerRouter from "./config/swagger";
 
@@ -64,6 +65,7 @@ app.use("/api/v1/semesters", semesterRouter);
 app.use("/api/v1/studentYears", studentYearRouter);
 app.use("/api/v1/halls", hallRouter);
 app.use("/api/v1/lectures", lectureRouter);
+app.use("/api/v1/timetables", timetableRouter);
 
 app.get(
   "/protected",
@@ -74,7 +76,7 @@ app.get(
   }
 );
 
-app.use("/api-doc", swaggerRouter);
+app.use("/api/v1/official-docs", swaggerRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

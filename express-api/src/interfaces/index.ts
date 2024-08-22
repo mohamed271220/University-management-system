@@ -2,6 +2,9 @@ import { Request } from "express";
 import Course from "../models/Course";
 import User from "../models/User";
 import Lecture from "../models/Lecture";
+import Hall from "../models/Hall";
+
+
 
 export interface JwtPayload {
   id: string;
@@ -48,6 +51,7 @@ export interface studentYearData {
   year: Year;
   studentId: string;
   effectiveDate: Date;
+  departmentId: string;
 }
 
 export enum DayOfWeek {
@@ -69,4 +73,10 @@ export interface lectureType {
   endTime: string;
   recurrencePattern?: string;
   recurrenceEndDate?: Date;
+}
+
+export interface LectureWithRelations extends Lecture {
+  course: Course;
+  professor: User;
+  hall: Hall;
 }

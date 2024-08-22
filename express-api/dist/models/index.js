@@ -12,7 +12,6 @@ const Hall_1 = __importDefault(require("./Hall"));
 const Lecture_1 = __importDefault(require("./Lecture"));
 const Attendance_1 = __importDefault(require("./Attendance"));
 const Grade_1 = __importDefault(require("./Grade"));
-const Timetable_1 = __importDefault(require("./Timetable"));
 const LectureHistory_1 = __importDefault(require("./LectureHistory"));
 const AuditLog_1 = __importDefault(require("./AuditLog"));
 const CourseCache_1 = __importDefault(require("./CourseCache"));
@@ -20,6 +19,7 @@ const ProfessorCourses_1 = __importDefault(require("./ProfessorCourses"));
 const StudentCourses_1 = __importDefault(require("./StudentCourses"));
 const Semester_1 = __importDefault(require("./Semester"));
 const StudentYears_1 = __importDefault(require("./StudentYears"));
+const DepartmentYearCourses_1 = __importDefault(require("./DepartmentYearCourses"));
 // Define the models
 exports.models = {
     User: User_1.default,
@@ -30,7 +30,6 @@ exports.models = {
     Lecture: Lecture_1.default,
     Attendance: Attendance_1.default,
     Grade: Grade_1.default,
-    Timetable: Timetable_1.default,
     LectureHistory: LectureHistory_1.default,
     AuditLog: AuditLog_1.default,
     CourseCache: CourseCache_1.default,
@@ -38,6 +37,7 @@ exports.models = {
     StudentCourse: StudentCourses_1.default,
     Semester: Semester_1.default,
     StudentYear: StudentYears_1.default,
+    DepartmentYearCourses: DepartmentYearCourses_1.default,
 };
 // Define associations
 User_1.default.hasOne(Profile_1.default, { foreignKey: "userId" });
@@ -99,6 +99,14 @@ StudentCourses_1.default.belongsTo(Semester_1.default, { foreignKey: "semesterId
 // a student has many student years records and a student year record belongs to a student
 User_1.default.hasMany(StudentYears_1.default, { foreignKey: "studentId" });
 StudentYears_1.default.belongsTo(User_1.default, { foreignKey: "studentId" });
+DepartmentYearCourses_1.default.belongsTo(Department_1.default, { foreignKey: "departmentId" });
+Department_1.default.hasMany(DepartmentYearCourses_1.default, { foreignKey: "departmentId" });
+DepartmentYearCourses_1.default.belongsTo(Course_1.default, { foreignKey: "courseId" });
+Course_1.default.hasMany(DepartmentYearCourses_1.default, { foreignKey: "courseId" });
+StudentYears_1.default.belongsTo(Department_1.default, { foreignKey: "departmentId" });
+Department_1.default.hasMany(StudentYears_1.default, { foreignKey: "departmentId" });
+StudentYears_1.default.belongsTo(User_1.default, { foreignKey: "studentId" });
+User_1.default.hasMany(StudentYears_1.default, { foreignKey: "studentId" });
 Lecture_1.default.belongsTo(Course_1.default, { as: "course" });
 Lecture_1.default.belongsTo(User_1.default, { as: "professor" });
 Lecture_1.default.belongsTo(Hall_1.default, { as: "hall" });

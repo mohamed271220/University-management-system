@@ -62,9 +62,6 @@ export class StudentCourseService {
         {
           model: Semester,
         },
-        {
-          model: Course,
-        },
       ],
     });
     return studentCourses;
@@ -76,14 +73,11 @@ export class StudentCourseService {
       include: [
         {
           model: User,
-          attributes: ["username"],
+          attributes: { exclude: ["passwordHash"] },
         },
         {
           model: Semester,
-        },
-        {
-          model: Course,
-        },
+        }
       ],
     });
     return courseStudents;
@@ -94,14 +88,11 @@ export class StudentCourseService {
       where: { studentId, courseId },
       include: [
         {
-          model: Course,
+          attributes: { exclude: ["passwordHash"] },
         },
         {
           model: Semester,
-        },
-        {
-          model: Course,
-        },
+        }
       ],
     });
     return studentCourse;

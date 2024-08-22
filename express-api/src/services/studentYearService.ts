@@ -7,7 +7,7 @@ export class StudentYearService {
   constructor(private studentYearModel: typeof StudentYear = StudentYear) {}
 
   async createStudentYear(data: studentYearData) {
-    const { year, studentId, effectiveDate } = data;
+    const { year, studentId, effectiveDate, departmentId } = data;
     const existingStudentYear = await this.studentYearModel.findOne({
       where: { studentId, effectiveDate },
     });
@@ -22,6 +22,7 @@ export class StudentYearService {
       id: uuid(),
       year,
       studentId,
+      departmentId,
       effectiveDate,
     });
     return newStudentYear;
@@ -43,7 +44,7 @@ export class StudentYearService {
   }
 
   async updateStudentYear(id: string, data: studentYearData) {
-    const { year, studentId, effectiveDate } = data;
+    const { year, studentId, effectiveDate, departmentId } = data;
     const studentYear = await this.studentYearModel.findOne({ where: { id } });
     if (!studentYear) {
       throw new Error("Student year not found");
@@ -51,7 +52,7 @@ export class StudentYearService {
     if (year !== undefined) studentYear.year = year;
     if (studentId !== undefined) studentYear.studentId = studentId;
     if (effectiveDate !== undefined) studentYear.effectiveDate = effectiveDate;
-
+    if (departmentId !== undefined) studentYear.departmentId = departmentId;
     await studentYear.save();
     return studentYear;
   }

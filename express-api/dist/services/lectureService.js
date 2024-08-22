@@ -43,6 +43,7 @@ class LectureService {
             }
             const isTimeValid = yield this.lectureModel.findOne({
                 where: {
+                    hallId: database.hallId, // Ensuring we are checking within the same hall
                     dayOfWeek: database.dayOfWeek,
                     [sequelize_1.Op.or]: [
                         // Check if the lecture starts or ends between the existing lecture's start and end time
@@ -51,15 +52,13 @@ class LectureService {
                                 [sequelize_1.Op.between]: [database.startTime, database.endTime],
                             },
                         },
-                        // or if the existing lecture ends between
-                        //the new lecture's start and end time
                         {
                             endTime: {
                                 [sequelize_1.Op.between]: [database.startTime, database.endTime],
                             },
                         },
                         // or if the new lecture's start and end time is between the
-                        //existing lecture's start and end time
+                        // existing lecture's start and end time
                         {
                             [sequelize_1.Op.and]: [
                                 {
@@ -78,7 +77,7 @@ class LectureService {
                 },
             });
             if (isTimeValid) {
-                throw new Error("Lecture already exists at this time");
+                throw new Error("Lecture already exists at this time in the same hall");
             }
             const lecture = yield this.lectureModel.create(Object.assign({ id: (0, uuid_1.v4)() }, database));
             return lecture;
@@ -115,6 +114,7 @@ class LectureService {
                     model: User_1.default,
                     as: "professor",
                     required: false,
+                    attributes: { exclude: ["passwordHash"] },
                     where: search
                         ? {
                             username: {
@@ -158,6 +158,7 @@ class LectureService {
                     {
                         model: User_1.default,
                         as: "professor",
+                        attributes: { exclude: ["passwordHash"] },
                     },
                     {
                         model: Hall_1.default,
