@@ -32,7 +32,6 @@ const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const courseController = __importStar(require("../controllers/course"));
 const courseValidators_1 = require("../middleware/validators/courseValidators");
 const router = express_1.default.Router();
-// /api/v1/courses
 router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseValidators_1.validateCourse, courseController.createCourse);
 router.get("/allCourses", authMiddleware_1.authenticateToken, courseController.getAllCourses);
 router.get("/:id", authMiddleware_1.authenticateToken, courseController.getCourseById);

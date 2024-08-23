@@ -5,6 +5,7 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express";
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ import hallRouter from "./routes/hall";
 import lectureRouter from "./routes/lecture";
 import timetableRouter from "./routes/timetable";
 
-import swaggerRouter from "./config/swagger";
+import swaggerRouter, { swaggerSpec } from "./config/swagger";
 
 const app = express();
 app.use(express.json());
@@ -67,16 +68,8 @@ app.use("/api/v1/halls", hallRouter);
 app.use("/api/v1/lectures", lectureRouter);
 app.use("/api/v1/timetables", timetableRouter);
 
-app.get(
-  "/protected",
-  authenticateToken,
-  authorizeRoles("admin"),
-  (req, res) => {
-    res.send("This is a protected route for admin users.");
-  }
-);
-
-app.use("/api/v1/official-docs", swaggerRouter);
+// Swagger docs route
+app.use("/api/v1/official-docs/express-api-docs", swaggerRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -12,8 +12,6 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 require("./models"); // Import the models and relationships
-const authMiddleware_1 = require("./middleware/authMiddleware");
-const roleMiddleware_1 = require("./middleware/roleMiddleware");
 // routes
 const auth_1 = __importDefault(require("./routes/auth"));
 const profile_1 = __importDefault(require("./routes/profile"));
@@ -62,10 +60,8 @@ app.use("/api/v1/studentYears", studentYear_1.default);
 app.use("/api/v1/halls", hall_1.default);
 app.use("/api/v1/lectures", lecture_1.default);
 app.use("/api/v1/timetables", timetable_1.default);
-app.get("/protected", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), (req, res) => {
-    res.send("This is a protected route for admin users.");
-});
-app.use("/api/v1/official-docs", swagger_1.default);
+// Swagger docs route
+app.use("/api/v1/official-docs/express-api-docs", swagger_1.default);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

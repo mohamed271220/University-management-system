@@ -111,7 +111,8 @@
   "include": [
     "src/**/*",
     "src/index.ts",
-    "src/__tests__/**/*.ts"
+    "src/__tests__/**/*.ts",
+    "src/swagger-docs/**/*"  
   ],
   "exclude": ["node_modules"]
 }

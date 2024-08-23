@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  title: University System API
+  description: API endpoints for authentication.
+  version: 1.0.0
+tags:
+  - name: Auth
+    description: API endpoints for authentication
+
+components:
+  schemas:
+    Signup:
+      type: object
+      required:
+        - email
+        - password
+        - username
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        username:
+          type: string
+
+    Login:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+paths:
+  /api/v1/auth/signup:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signup'
+            examples:
+              sample:
+                value:
+                  email: "user@example.com"
+                  password: "Password_123"
+                  username: "user"
+      responses:
+        200:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: User created successfully
+                  userId:
+                    type: string
+                    format: uuid
+                    description: ID of the created user
+                  auth_token:
+                    type: string
+                    description: JWT access token
+                  refresh_token:
+                    type: string
+                    description: JWT refresh token
+        400:
+          description: Bad request, possibly due to invalid data
+        500:
+          description: Internal server error
+
+  /api/v1/auth/login:
+    post:
+      summary: Login a user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+            examples:
+              sample:
+                value:
+                  email: "user@example.com"
+                  password: "password123"
+      responses:
+        200:
+          description: Login successful, returns access and refresh tokens
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: User logged in successfully
+                  userId:
+                    type: string
+                    format: uuid
+                    description: ID of the logged-in user
+                  auth_token:
+                    type: string
+                    description: JWT access token
+                  refresh_token:
+                    type: string
+                    description: JWT refresh token
+        400:
+          description: Invalid credentials, Email or username is required, or credentials are invalid
+        500:
+          description: Internal server error
+
+  /api/v1/auth/logout:
+    get:
+      summary: Logout a user
+      tags: [Auth]
+      responses:
+        200:
+          description: Logout successful
+        401:
+          description: Unauthorized, user not logged in
+        500:
+          description: Internal server error
+
+  /api/v1/auth/validate-token:
+    get:
+      summary: Validate user token
+      tags: [Auth]
+      responses:
+        200:
+          description: Token is valid
+        401:
+          description: Unauthorized, token is invalid or expired
+        500:
+          description: Internal server error
+
+  /api/v1/auth/refresh-token:
+    get:
+      summary: Refresh user token
+      tags: [Auth]
+      responses:
+        200:
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auth_token:
+                    type: string
+                    description: New JWT access token
+                  refresh_token:
+                    type: string
+                    description: New JWT refresh token
+        401:
+          description: Unauthorized, refresh token is invalid
+        500:
+          description: Internal server error
