@@ -44,7 +44,7 @@ router.delete(
   semesterController.deleteSemester
 );
 
-//Retrieve all grades associated with a specific
+//Retrieve all grades associated with a specific semester.
 router.get(
   "/:semesterId/grades",
   authenticateToken,

@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-// ✅
+// User gets their profile
 router.get("/", authenticateToken, profileController.getProfile);
 
-// ✅
+// User creates their profile
 router.post(
   "/create",
   authenticateToken,
@@ -20,7 +20,7 @@ router.post(
   profileController.createProfile
 );
 
-// ✅
+// User updates their profile
 router.put(
   "/update",
   authenticateToken,
@@ -28,7 +28,7 @@ router.put(
   profileController.updateProfile
 );
 
-// ✅
+// User deletes their profile
 router.delete("/delete", authenticateToken, profileController.deleteProfile);
 
 export default router;

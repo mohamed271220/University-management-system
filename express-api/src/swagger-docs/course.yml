@@ -7,6 +7,7 @@ paths:
   /api/v1/courses:
     post:
       summary: Create a new course
+      description: Only accessible by users with the 'admin' or 'staff' role.
       tags:
         - Courses
       security:
@@ -217,6 +218,7 @@ paths:
 
     put:
       summary: Update a course
+      description: Only accessible by users with the 'admin' or 'staff' role.
       tags:
         - Courses
       security:
@@ -305,6 +307,7 @@ paths:
 
     delete:
       summary: Delete a course
+      description: Only accessible by users with the 'admin' or 'staff' role.
       tags:
         - Courses
       security:

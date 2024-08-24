@@ -8,7 +8,7 @@ const router = express.Router();
 
 // /api/v1/users
 
-// ✅
+// Get all users
 router.get(
   "/",
   authenticateToken,
@@ -16,7 +16,7 @@ router.get(
   userController.getAllUsers
 );
 
-// ✅
+// Get user by id
 router.get(
   "/:id",
   authenticateToken,
@@ -24,7 +24,7 @@ router.get(
   userController.getUserById
 );
 
-// ✅
+// Update user
 router.put(
   "/:id",
   authenticateToken,
@@ -33,6 +33,7 @@ router.put(
   userController.updateUser
 );
 
+// Delete user
 router.delete(
   "/:id",
   authenticateToken,

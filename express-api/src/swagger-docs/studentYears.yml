@@ -1,0 +1,294 @@
+openapi: 3.0.0
+info:
+  title: Student Year API
+  version: 1.0.0
+servers:
+  - url: /api/v1
+
+paths:
+  /studentYears:
+    post:
+      tags:
+        - Student Years
+      summary: Create a new student year record
+      description: Admin or staff only. Create a new student year record for a student.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                year:
+                  type: integer
+                  example: 2024
+                studentId:
+                  type: string
+                  example: 123e4567-e89b-12d3-a456-426614174001
+                effectiveDate:
+                  type: string
+                  format: date
+                  example: 2024-08-01
+                departmentId:
+                  type: string
+                  example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '201':
+          description: Student year created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Student year created
+                  studentYear:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174002
+                      year:
+                        type: integer
+                        example: 2024
+                      studentId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174001
+                      effectiveDate:
+                        type: string
+                        format: date
+                        example: 2024-08-01
+                      departmentId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - missing data or validation error
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+  
+  /studentYears/allStudentYears:
+    get:
+      tags:
+        - Student Years
+      summary: Retrieve all student year records
+      description: |
+        Admin or staff only. Retrieve a list of all student year records.
+      responses:
+        '200':
+          description: List of all student years
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  studentYears:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174003
+                        year:
+                          type: integer
+                          example: 2024
+                        studentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        effectiveDate:
+                          type: string
+                          format: date
+                          example: 2024-08-01
+                        departmentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+  /studentYears/student/{studentId}:
+    get:
+      tags:
+        - Student Years
+      summary: Retrieve student year records by student ID
+      description: Admin or staff only. Retrieve student year records by a specific student ID.
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174001
+      responses:
+        '200':
+          description: Student year records for the student
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  studentYears:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174004
+                        year:
+                          type: integer
+                          example: 2024
+                        studentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        effectiveDate:
+                          type: string
+                          format: date
+                          example: 2024-08-01
+                        departmentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - invalid student ID
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - student year records not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+  /studentYears/{studentYearId}:
+    put:
+      tags:
+        - Student Years
+      summary: Update a student year record
+      description: Admin or staff only. Update details of an existing student year record.
+      parameters:
+        - in: path
+          name: studentYearId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174005
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                year:
+                  type: integer
+                  example: 2024
+                studentId:
+                  type: string
+                  example: 123e4567-e89b-12d3-a456-426614174001
+                effectiveDate:
+                  type: string
+                  format: date
+                  example: 2024-08-01
+                departmentId:
+                  type: string
+                  example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Student year updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Student year updated
+                  studentYear:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174005
+                      year:
+                        type: integer
+                        example: 2024
+                      studentId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174001
+                      effectiveDate:
+                        type: string
+                        format: date
+                        example: 2024-08-01
+                      departmentId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - missing or invalid data
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - student year record not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+    delete:
+      tags:
+        - Student Years
+      summary: Delete a student year record
+      description: Admin or staff only. Delete a student year record by ID.
+      parameters:
+        - in: path
+          name: studentYearId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174006
+      responses:
+        '200':
+          description: Student year deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Student year deleted
+        '400':
+          description: Bad request - invalid ID
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - student year record not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+components:
+  responses:
+    ForbiddenError:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Access denied
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

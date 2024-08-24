@@ -1,0 +1,363 @@
+openapi: 3.0.0
+info:
+  title: Student Courses API
+  version: 1.0.0
+  description: API for managing student course enrollments, retrieving student courses, and updating or deleting enrollments. **Authorization required**.
+
+servers:
+  - url: /api/v1
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Token missing or invalid
+    ForbiddenError:
+      description: Forbidden - Insufficient permissions
+    NotFoundError:
+      description: Not found - Resource not found
+
+security:
+  - bearerAuth: []
+
+paths:
+  /Student courses/enroll/{studentId}/courses:
+    post:
+      summary: Enroll a student in courses
+      description: Enroll a student in one or more courses for a specific semester. Only the student or an admin can perform this action.
+      tags:
+        - Student courses
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174001
+      requestBody:
+        description: List of course IDs and the semester ID to enroll the student in.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courses:
+                  type: array
+                  items:
+                    type: string
+                    example: 123e4567-e89b-12d3-a456-426614174002
+                semesterId:
+                  type: string
+                  example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '201':
+          description: Courses successfully enrolled for the student
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Courses enrolled
+                  Student courses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174003
+                        studentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        courseId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174002
+                        semesterId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - missing student ID or courses
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - course or student not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+  /students/{studentId}/courses:
+    get:
+      summary: Retrieve all courses a student is enrolled in
+      description: Get a list of all courses a student is enrolled in. **Authenticated users only**.
+      tags:
+        - Student courses
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174001
+      responses:
+        '200':
+          description: List of courses the student is enrolled in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Courses found
+                  courses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174003
+                        studentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        courseId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174002
+                        semesterId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - missing student ID
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - student not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+  /courses/{courseId}/students:
+    get:
+      summary: Retrieve all students enrolled in a course
+      description: Get a list of all students enrolled in a specific course. **Authenticated users only**.
+      tags:
+        - Student courses
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174002
+      responses:
+        '200':
+          description: List of students enrolled in the course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Students found
+                  students:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        studentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        courseId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174002
+                        semesterId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - missing course ID
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - course not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+  /students/{studentId}/courses/{courseId}:
+    get:
+      summary: Retrieve a specific student course by its ID
+      description: Get details of a specific course enrollment for a student. **Authenticated users only**.
+      tags:
+        - Student courses
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174001
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174002
+      responses:
+        '200':
+          description: Details of the specific student course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Student course found
+                  studentCourse:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174003
+                      studentId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174001
+                      courseId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174002
+                      semesterId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - missing student ID or course ID
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - student course not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+  /students/{studentId}/courses/{courseId}/semester:
+    put:
+      summary: Update a student course by its ID
+      description: Update the semester for a specific student course enrollment. **Admin or student with appropriate permissions only**.
+      tags:
+        - Student courses
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174001
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174002
+      requestBody:
+        description: The new semester ID for the student course.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                semesterId:
+                  type: string
+                  example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Student course updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Student enrollment updated
+                  studentCourse:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174003
+                      studentId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174001
+                      courseId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174002
+                      semesterId:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request - missing semester ID
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - student course not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []
+
+  /students/{studentId}/courses/{courseId}/:
+    delete:
+      summary: Unenroll a student from a course
+      description: Remove a student from a specific course enrollment. **Admin or student with appropriate permissions only**.
+      tags:
+        - Student courses
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174001
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174002
+      responses:
+        '200':
+          description: Student successfully unenrolled from the course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Student unenrolled from course
+        '400':
+          description: Bad request - missing student ID or course ID
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: Not found - student or course not found
+        '500':
+          description: Internal server error
+      security:
+        - bearerAuth: []

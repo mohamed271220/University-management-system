@@ -37,7 +37,7 @@ router.get("/allSemesters", authMiddleware_1.authenticateToken, semesterControll
 router.get("/:semesterId", authMiddleware_1.authenticateToken, semesterController.getSemesterById);
 router.put("/:semesterId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterValidators_1.validateUpdateSemester, semesterController.updateSemester);
 router.delete("/:semesterId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.deleteSemester);
-//Retrieve all grades associated with a specific
+//Retrieve all grades associated with a specific semester.
 router.get("/:semesterId/grades", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.getSemesterGrades);
 // Retrieve all student enrollments associated with a specific semester.
 router.get("/:semesterId/student-courses", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), semesterController.getStudentEnrolledCourses);

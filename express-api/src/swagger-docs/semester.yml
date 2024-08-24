@@ -1,0 +1,413 @@
+# Semester API Documentation
+
+openapi: 3.0.0
+info:
+  title: Semester Management API
+  description: API for managing semesters, including CRUD operations and associated data retrieval. Role-based access control is enforced.
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+
+paths:
+  /semesters:
+    post:
+      summary: Create a new semester
+      description: Creates a new semester. Accessible only to users with `admin` or `staff` roles.
+      security:
+        - bearerAuth: []
+      tags:
+        - Semester
+      requestBody:
+        description: Semester details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Fall 2024
+                startDate:
+                  type: string
+                  format: date
+                  example: 2024-09-01
+                endDate:
+                  type: string
+                  format: date
+                  example: 2024-12-15
+        required: true
+      responses:
+        '201':
+          description: Semester created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Semester created successfully
+                  semester:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174000
+                      name:
+                        type: string
+                        example: Fall 2024
+                      startDate:
+                        type: string
+                        format: date
+                        example: 2024-09-01
+                      endDate:
+                        type: string
+                        format: date
+                        example: 2024-12-15
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /semesters/allSemesters:
+    get:
+      summary: Retrieve all semesters
+      description: Retrieves a list of all semesters. Accessible to all authenticated users.
+      security:
+        - bearerAuth: []
+      tags:
+        - Semester
+      responses:
+        '200':
+          description: List of all semesters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  semesters:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+                        name:
+                          type: string
+                          example: Fall 2024
+                        startDate:
+                          type: string
+                          format: date
+                          example: 2024-09-01
+                        endDate:
+                          type: string
+                          format: date
+                          example: 2024-12-15
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /semesters/{semesterId}:
+    get:
+      summary: Retrieve a specific semester by ID
+      description: Retrieves details of a semester by its ID. Accessible to all authenticated users.
+      security:
+        - bearerAuth: []
+      tags:
+        - Semester
+      parameters:
+        - name: semesterId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Semester details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  semester:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174000
+                      name:
+                        type: string
+                        example: Fall 2024
+                      startDate:
+                        type: string
+                        format: date
+                        example: 2024-09-01
+                      endDate:
+                        type: string
+                        format: date
+                        example: 2024-12-15
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Semester not found
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update a specific semester by ID
+      description: Updates a semester's details by its ID. Accessible only to users with `admin` or `staff` roles.
+      security:
+        - bearerAuth: []
+      tags:
+        - Semester
+      parameters:
+        - name: semesterId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174000
+      requestBody:
+        description: Updated semester details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Fall 2024
+                startDate:
+                  type: string
+                  format: date
+                  example: 2024-09-01
+                endDate:
+                  type: string
+                  format: date
+                  example: 2024-12-15
+        required: true
+      responses:
+        '200':
+          description: Semester updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Semester updated successfully
+                  semester:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 123e4567-e89b-12d3-a456-426614174000
+                      name:
+                        type: string
+                        example: Fall 2024
+                      startDate:
+                        type: string
+                        format: date
+                        example: 2024-09-01
+                      endDate:
+                        type: string
+                        format: date
+                        example: 2024-12-15
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Semester not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a specific semester by ID
+      description: Deletes a semester by its ID. Accessible only to users with `admin` or `staff` roles.
+      security:
+        - bearerAuth: []
+      tags:
+        - Semester
+      parameters:
+        - name: semesterId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Semester deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Semester deleted successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Semester not found
+        '500':
+          description: Internal server error
+
+  /semesters/{semesterId}/grades:
+    get:
+      summary: Retrieve all grades associated with a specific semester
+      description: Retrieves all grades associated with a specific semester. Accessible only to users with `admin` or `staff` roles.
+      security:
+        - bearerAuth: []
+      tags:
+        - Semester
+      parameters:
+        - name: semesterId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: List of grades
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  grades:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+                        grade:
+                          type: string
+                          example: A
+                        studentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        courseId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174002
+                        semesterId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: No grades found for this semester
+        '500':
+          description: Internal server error
+
+  /semesters/{semesterId}/student-courses:
+    get:
+      summary: Retrieve all student enrollments associated with a specific semester
+      description: Retrieves all student enrollments for a specific semester. Accessible only to users with `admin` or `staff` roles.
+      security:
+        - bearerAuth: []
+      tags:
+        - Semester
+      parameters:
+        - name: semesterId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: List of student enrollments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  studentCourses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+                        studentId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174001
+                        courseId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174002
+                        semesterId:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: No enrollments found for this semester
+        '500':
+          description: Internal server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Semester:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    Grade:
+      type: object
+      properties:
+        id:
+          type: string
+        grade:
+          type: string
+        studentId:
+          type: string
+        courseId:
+          type: string
+        semesterId:
+          type: string
+
+    StudentCourse:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        courseId:
+          type: string
+        semesterId:
+          type: string
