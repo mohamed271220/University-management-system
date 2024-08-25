@@ -35,7 +35,7 @@ const createCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(201).json({ message: "Course created successfully", course });
     }
     catch (error) {
-        if (error.message) {
+        if (error.message === "A course with this code already exists") {
             return res.status(404).json({ message: error.message });
         }
         console.log(error);

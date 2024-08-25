@@ -11,6 +11,9 @@ export const getProfile = async (req: userRequest, res: Response) => {
     const profile = await profileService.getProfile(req.user.id);
     res.status(200).json({ message: "Profile found successfully", profile });
   } catch (error: any) {
+    if (error.message === "Profile not found") {
+      return res.status(404).json({ message: error.message });
+    }
     res.status(500).json({ message: error.message });
   }
 };
@@ -25,6 +28,12 @@ export const createProfile = async (req: userRequest, res: Response) => {
       profile,
     });
   } catch (error: any) {
+    if (error.message === "Profile already exists") {
+      return res.status(400).json({ message: error.message });
+    }
+    if (error.message === "Missing required profile data") {
+      return res.status(400).json({ message: error.message });
+    }
     res.status(500).json({ message: error.message });
   }
 };

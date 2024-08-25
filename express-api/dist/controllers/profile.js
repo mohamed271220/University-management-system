@@ -20,6 +20,9 @@ const getProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(200).json({ message: "Profile found successfully", profile });
     }
     catch (error) {
+        if (error.message === "Profile not found") {
+            return res.status(404).json({ message: error.message });
+        }
         res.status(500).json({ message: error.message });
     }
 });
@@ -35,6 +38,12 @@ const createProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
+        if (error.message === "Profile already exists") {
+            return res.status(400).json({ message: error.message });
+        }
+        if (error.message === "Missing required profile data") {
+            return res.status(400).json({ message: error.message });
+        }
         res.status(500).json({ message: error.message });
     }
 });

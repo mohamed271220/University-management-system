@@ -21,7 +21,7 @@ export const createCourse = async (req: Request, res: Response) => {
     if (!course) return res.status(400).json({ message: "Course not created" });
     res.status(201).json({ message: "Course created successfully", course });
   } catch (error: any) {
-    if (error.message) {
+    if (error.message === "A course with this code already exists") {
       return res.status(404).json({ message: error.message });
     }
     console.log(error);
@@ -38,6 +38,7 @@ export const getAllCourses = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const getCourseById = async (req: Request, res: Response) => {
   try {
     const course = await courseService.getCourseById(req.params.id);
