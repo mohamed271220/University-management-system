@@ -26,6 +26,16 @@ export class CourseService {
       throw new Error("A course with this code already exists");
     }
 
+    const professor = await User.findByPk(professorId);
+    if (!professor || professor.role !== "Professor") {
+      throw new Error("Invalid professor ID");
+    }
+
+    const department = await Department.findByPk(departmentId);
+    if (!department) {
+      throw new Error("Invalid department ID");
+    }
+
     const course = await this.courseModel.create({
       id: uuid(),
       code,

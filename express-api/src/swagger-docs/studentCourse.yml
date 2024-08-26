@@ -26,7 +26,7 @@ security:
   - bearerAuth: []
 
 paths:
-  /Student courses/enroll/{studentId}/courses:
+  /api/v1/studentCourses/enroll/{studentId}/courses:
     post:
       summary: Enroll a student in courses
       description: Enroll a student in one or more courses for a specific semester. Only the student or an admin can perform this action.
@@ -94,7 +94,7 @@ paths:
       security:
         - bearerAuth: []
 
-  /students/{studentId}/courses:
+  /api/v1/studentCourses/students/{studentId}/courses:
     get:
       summary: Retrieve all courses a student is enrolled in
       description: Get a list of all courses a student is enrolled in. **Authenticated users only**.
@@ -146,7 +146,7 @@ paths:
       security:
         - bearerAuth: []
 
-  /courses/{courseId}/students:
+  /api/v1/studentCourses/courses/{courseId}/students:
     get:
       summary: Retrieve all students enrolled in a course
       description: Get a list of all students enrolled in a specific course. **Authenticated users only**.
@@ -198,7 +198,7 @@ paths:
       security:
         - bearerAuth: []
 
-  /students/{studentId}/courses/{courseId}:
+  /api/v1/studentCourses/students/{studentId}/courses/{courseId}:
     get:
       summary: Retrieve a specific student course by its ID
       description: Get details of a specific course enrollment for a student. **Authenticated users only**.
@@ -254,7 +254,7 @@ paths:
       security:
         - bearerAuth: []
 
-  /students/{studentId}/courses/{courseId}/semester:
+  /api/v1/studentCourses/students/{studentId}/courses/{courseId}/semester:
     put:
       summary: Update a student course by its ID
       description: Update the semester for a specific student course enrollment. **Admin or student with appropriate permissions only**.
@@ -321,7 +321,7 @@ paths:
       security:
         - bearerAuth: []
 
-  /students/{studentId}/courses/{courseId}/:
+  /api/v1/studentCourses/students/{studentId}/courses/{courseId}/:
     delete:
       summary: Unenroll a student from a course
       description: Remove a student from a specific course enrollment. **Admin or student with appropriate permissions only**.

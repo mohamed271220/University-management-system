@@ -34,6 +34,14 @@ class CourseService {
             if (existingCourse) {
                 throw new Error("A course with this code already exists");
             }
+            const professor = yield User_1.default.findByPk(professorId);
+            if (!professor || professor.role !== "Professor") {
+                throw new Error("Invalid professor ID");
+            }
+            const department = yield Department_1.default.findByPk(departmentId);
+            if (!department) {
+                throw new Error("Invalid department ID");
+            }
             const course = yield this.courseModel.create({
                 id: (0, uuid_1.v4)(),
                 code,

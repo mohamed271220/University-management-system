@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DayOfWeek = exports.Year = void 0;
+exports.attendanceStatus = exports.DayOfWeek = exports.Year = void 0;
 var Year;
 (function (Year) {
     Year["1st Year"] = "1st Year";
@@ -18,3 +18,9 @@ var DayOfWeek;
     DayOfWeek["Friday"] = "Friday";
     DayOfWeek["Saturday"] = "Saturday";
 })(DayOfWeek || (exports.DayOfWeek = DayOfWeek = {}));
+var attendanceStatus;
+(function (attendanceStatus) {
+    attendanceStatus["Present"] = "Present";
+    attendanceStatus["Absent"] = "Absent";
+    attendanceStatus["Excused"] = "Excused";
+})(attendanceStatus || (exports.attendanceStatus = attendanceStatus = {}));

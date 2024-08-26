@@ -6,7 +6,7 @@ servers:
   - url: /api/v1
 
 paths:
-  /studentYears:
+  /api/v1/studentYears:
     post:
       tags:
         - Student Years
@@ -71,7 +71,7 @@ paths:
       security:
         - bearerAuth: []
   
-  /studentYears/allStudentYears:
+  /api/v1/studentYears/allStudentYears:
     get:
       tags:
         - Student Years
@@ -114,7 +114,7 @@ paths:
       security:
         - bearerAuth: []
 
-  /studentYears/student/{studentId}:
+  /api/v1/studentYears/student/{studentId}:
     get:
       tags:
         - Student Years
@@ -167,7 +167,7 @@ paths:
       security:
         - bearerAuth: []
 
-  /studentYears/{studentYearId}:
+  /api/v1/studentYears/{studentYearId}:
     put:
       tags:
         - Student Years

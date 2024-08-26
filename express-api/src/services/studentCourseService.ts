@@ -15,6 +15,10 @@ export class StudentCourseService {
     if (!student || student.role !== "Student") {
       throw new Error("Student not found");
     }
+    const semester = await Semester.findByPk(semesterId);
+    if (!semester) {
+      throw new Error("Semester not found");
+    }
 
     // Check if the student is already enrolled in any of the courses for the same semester
     const existingEnrollments = await this.studentCourseModel.findAll({
@@ -77,7 +81,7 @@ export class StudentCourseService {
         },
         {
           model: Semester,
-        }
+        },
       ],
     });
     return courseStudents;
@@ -92,7 +96,7 @@ export class StudentCourseService {
         },
         {
           model: Semester,
-        }
+        },
       ],
     });
     return studentCourse;

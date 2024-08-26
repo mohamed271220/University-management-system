@@ -8,131 +8,147 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const supertest_1 = __importDefault(require("supertest"));
-const express_1 = __importDefault(require("express"));
-const profile_1 = __importDefault(require("../../routes/profile"));
+const profile_1 = require("../../controllers/profile");
 const profileService_1 = require("../../services/profileService");
-const authMiddleware_1 = require("../../middleware/authMiddleware");
-jest.mock('../../middleware/authMiddleware');
-jest.mock('../../services/profileService');
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
-app.use('/profile', profile_1.default);
-describe('Profile API', () => {
-    const mockProfileService = profileService_1.ProfileService;
+jest.mock("../../services/profileService");
+describe("getProfile", () => {
+    let req, res, next;
     beforeEach(() => {
-        jest.clearAllMocks();
+        req = { user: { id: "1" } };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+        next = jest.fn();
     });
-    describe('GET /profile/', () => {
-        it('should return a profile when authenticated', () => __awaiter(void 0, void 0, void 0, function* () {
-            const profileData = {
-                id: '1',
-                firstName: 'John',
-                lastName: 'Doe',
-                dob: '1990-01-01',
-                contactNumber: '1234567890',
-                address: '123 Main St',
-                userId: '1',
-            };
-            mockProfileService.prototype.getProfile.mockResolvedValue(profileData);
-            authMiddleware_1.authenticateToken.mockImplementation((req, res, next) => {
-                req.user = { id: '1' };
-                next();
-            });
-            const response = yield (0, supertest_1.default)(app).get('/profile/');
-            expect(response.status).toBe(200);
-            expect(response.body.profile).toEqual(profileData);
-        }));
-        it('should return 401 if not authenticated', () => __awaiter(void 0, void 0, void 0, function* () {
-            authMiddleware_1.authenticateToken.mockImplementation((req, res, next) => {
-                return res.status(401).json({ message: 'Unauthorized' });
-            });
-            const response = yield (0, supertest_1.default)(app).get('/profile/');
-            expect(response.status).toBe(401);
-            expect(response.body.message).toBe('Unauthorized');
-        }));
+    it("should return the profile if found", () => __awaiter(void 0, void 0, void 0, function* () {
+        const profile = { id: "1", firstName: "First", lastName: "Last" };
+        profileService_1.ProfileService.prototype.getProfile.mockResolvedValue(profile);
+        yield (0, profile_1.getProfile)(req, res);
+        expect(profileService_1.ProfileService.prototype.getProfile).toHaveBeenCalledWith("1");
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({
+            message: "Profile found successfully",
+            profile,
+        });
+    }));
+    it("should return a 404 status if profile not found", () => __awaiter(void 0, void 0, void 0, function* () {
+        const errorMessage = "Profile not found";
+        profileService_1.ProfileService.prototype.getProfile.mockRejectedValue(new Error(errorMessage));
+        yield (0, profile_1.getProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
+    }));
+    it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
+        const errorMessage = "Internal server error";
+        profileService_1.ProfileService.prototype.getProfile.mockRejectedValue(new Error(errorMessage));
+        yield (0, profile_1.getProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
+    }));
+});
+describe("createProfile", () => {
+    let req, res, next;
+    beforeEach(() => {
+        req = { user: { id: "1" } };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+        next = jest.fn();
     });
-    describe('POST /profile/create', () => {
-        it('should create a new profile when authenticated', () => __awaiter(void 0, void 0, void 0, function* () {
-            const profileData = {
-                id: '1',
-                firstName: 'John',
-                lastName: 'Doe',
-                dob: '1990-01-01',
-                contactNumber: '1234567890',
-                address: '123 Main St',
-                userId: '1',
-            };
-            mockProfileService.prototype.createProfile.mockResolvedValue(profileData);
-            authMiddleware_1.authenticateToken.mockImplementation((req, res, next) => {
-                req.user = { id: '1' };
-                next();
-            });
-            const response = yield (0, supertest_1.default)(app)
-                .post('/profile/create')
-                .send(profileData);
-            expect(response.status).toBe(201);
-            expect(response.body.profile).toEqual(profileData);
-        }));
-        it('should return 400 if profile data is missing', () => __awaiter(void 0, void 0, void 0, function* () {
-            const errorMessage = 'Missing required profile data';
-            mockProfileService.prototype.createProfile.mockRejectedValue(new Error(errorMessage));
-            authMiddleware_1.authenticateToken.mockImplementation((req, res, next) => {
-                req.user = { id: '1' };
-                next();
-            });
-            const response = yield (0, supertest_1.default)(app)
-                .post('/profile/create')
-                .send({});
-            expect(response.status).toBe(400);
-            expect(response.body.message).toBe(errorMessage);
-        }));
+    it("should create and return the profile", () => __awaiter(void 0, void 0, void 0, function* () {
+        const profile = { id: "1", firstName: "First", lastName: "Last" };
+        profileService_1.ProfileService.prototype.createProfile.mockResolvedValue(profile);
+        yield (0, profile_1.createProfile)(req, res);
+        expect(profileService_1.ProfileService.prototype.createProfile).toHaveBeenCalledWith("1", req.body);
+        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.json).toHaveBeenCalledWith({
+            message: "Profile created successfully",
+            profile,
+        });
+    }));
+    it("should return a 400 status if profile already exists", () => __awaiter(void 0, void 0, void 0, function* () {
+        const errorMessage = "Profile already exists";
+        profileService_1.ProfileService.prototype.createProfile.mockRejectedValue(new Error(errorMessage));
+        yield (0, profile_1.createProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
+    }));
+    it("should return a 400 status if missing required profile data", () => __awaiter(void 0, void 0, void 0, function* () {
+        const errorMessage = "Missing required profile data";
+        profileService_1.ProfileService.prototype.createProfile.mockRejectedValue(new Error(errorMessage));
+        yield (0, profile_1.createProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
+    }));
+    it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
+        const errorMessage = "Internal server error";
+        profileService_1.ProfileService.prototype.createProfile.mockRejectedValue(new Error(errorMessage));
+        yield (0, profile_1.createProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
+    }));
+});
+describe("updateProfile", () => {
+    let req, res, next;
+    beforeEach(() => {
+        req = { user: { id: "1" } };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+        next = jest.fn();
     });
-    describe('PUT /profile/update', () => {
-        it('should update an existing profile when authenticated', () => __awaiter(void 0, void 0, void 0, function* () {
-            const profileData = {
-                id: '1',
-                firstName: 'Jane',
-                lastName: 'Doe',
-                dob: '1990-01-01',
-                contactNumber: '1234567890',
-                address: '123 Main St',
-                userId: '1',
-            };
-            mockProfileService.prototype.updateProfile.mockResolvedValue(profileData);
-            authMiddleware_1.authenticateToken.mockImplementation((req, res, next) => {
-                req.user = { id: '1' };
-                next();
-            });
-            const response = yield (0, supertest_1.default)(app)
-                .put('/profile/update')
-                .send(profileData);
-            expect(response.status).toBe(200);
-            expect(response.body.profile).toEqual(profileData);
-        }));
+    it("should update and return the profile", () => __awaiter(void 0, void 0, void 0, function* () {
+        const profile = { id: "1", firstName: "First", lastName: "Last" };
+        profileService_1.ProfileService.prototype.updateProfile.mockResolvedValue(profile);
+        yield (0, profile_1.updateProfile)(req, res);
+        expect(profileService_1.ProfileService.prototype.updateProfile).toHaveBeenCalledWith("1", req.body);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({
+            message: "Profile updated successfully",
+            profile,
+        });
+    }));
+    it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
+        const errorMessage = "Internal server error";
+        profileService_1.ProfileService.prototype.updateProfile.mockRejectedValue(new Error(errorMessage));
+        yield (0, profile_1.updateProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
+    }));
+});
+describe("deleteProfile", () => {
+    let req, res, next;
+    beforeEach(() => {
+        req = { user: { id: "1" } };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+        next = jest.fn();
     });
-    describe('DELETE /profile/delete', () => {
-        it('should delete the profile when authenticated', () => __awaiter(void 0, void 0, void 0, function* () {
-            mockProfileService.prototype.deleteProfile.mockResolvedValue();
-            authMiddleware_1.authenticateToken.mockImplementation((req, res, next) => {
-                req.user = { id: '1' };
-                next();
-            });
-            const response = yield (0, supertest_1.default)(app).delete('/profile/delete');
-            expect(response.status).toBe(200);
-            expect(response.body.message).toBe('Profile deleted successfully');
-        }));
-        it('should return 401 if not authenticated', () => __awaiter(void 0, void 0, void 0, function* () {
-            authMiddleware_1.authenticateToken.mockImplementation((req, res, next) => {
-                return res.status(401).json({ message: 'Unauthorized' });
-            });
-            const response = yield (0, supertest_1.default)(app).delete('/profile/delete');
-            expect(response.status).toBe(401);
-            expect(response.body.message).toBe('Unauthorized');
-        }));
-    });
+    it("should delete the profile", () => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, profile_1.deleteProfile)(req, res);
+        expect(profileService_1.ProfileService.prototype.deleteProfile).toHaveBeenCalledWith("1");
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({
+            message: "Profile deleted successfully",
+        });
+    }));
+    it("should return a 401 status if unauthorized", () => __awaiter(void 0, void 0, void 0, function* () {
+        req = { user: undefined };
+        yield (0, profile_1.deleteProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({ message: "Unauthorized" });
+    }));
+    it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
+        const errorMessage = "Internal server error";
+        profileService_1.ProfileService.prototype.deleteProfile.mockRejectedValue(new Error(errorMessage));
+        yield (0, profile_1.deleteProfile)(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
+    }));
 });

@@ -10,7 +10,7 @@ servers:
   - url: /api/v1
 
 paths:
-  /semesters:
+  /api/v1/semesters:
     post:
       summary: Create a new semester
       description: Creates a new semester. Accessible only to users with `admin` or `staff` roles.
@@ -70,7 +70,7 @@ paths:
         '500':
           description: Internal server error
 
-  /semesters/allSemesters:
+  /api/v1/semesters/allSemesters:
     get:
       summary: Retrieve all semesters
       description: Retrieves a list of all semesters. Accessible to all authenticated users.
@@ -110,7 +110,7 @@ paths:
         '500':
           description: Internal server error
 
-  /semesters/{semesterId}:
+  /api/v1/semesters/{semesterId}:
     get:
       summary: Retrieve a specific semester by ID
       description: Retrieves details of a semester by its ID. Accessible to all authenticated users.
@@ -263,7 +263,7 @@ paths:
         '500':
           description: Internal server error
 
-  /semesters/{semesterId}/grades:
+  /api/v1/semesters/{semesterId}/grades:
     get:
       summary: Retrieve all grades associated with a specific semester
       description: Retrieves all grades associated with a specific semester. Accessible only to users with `admin` or `staff` roles.
@@ -315,7 +315,7 @@ paths:
         '500':
           description: Internal server error
 
-  /semesters/{semesterId}/student-courses:
+  /api/v1/semesters/{semesterId}/student-courses:
     get:
       summary: Retrieve all student enrollments associated with a specific semester
       description: Retrieves all student enrollments for a specific semester. Accessible only to users with `admin` or `staff` roles.

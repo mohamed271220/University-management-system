@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import dbConnection from "./config/database";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -26,6 +26,7 @@ import studentYearRouter from "./routes/studentYear";
 import hallRouter from "./routes/hall";
 import lectureRouter from "./routes/lecture";
 import timetableRouter from "./routes/timetable";
+import attendanceRouter from "./routes/attendance";
 
 import swaggerRouter, { swaggerSpec } from "./config/swagger";
 
@@ -67,6 +68,8 @@ app.use("/api/v1/studentYears", studentYearRouter);
 app.use("/api/v1/halls", hallRouter);
 app.use("/api/v1/lectures", lectureRouter);
 app.use("/api/v1/timetables", timetableRouter);
+app.use("/api/v1/attendances", attendanceRouter);
+
 
 // Swagger docs route
 app.use("/api/v1/official-docs/express-api-docs", swaggerRouter);

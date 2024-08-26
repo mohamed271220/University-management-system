@@ -11,7 +11,7 @@ servers:
   - url: /api/v1
 
 paths:
-  /halls:
+  /api/v1/halls:
     post:
       summary: Create a new hall
       description: Create a new hall. Only accessible by users with the 'admin' or 'staff' role.
@@ -64,7 +64,7 @@ paths:
         - admin
         - staff
 
-  /halls/allHalls:
+  /api/v1/halls/allHalls:
     get:
       summary: Retrieve all halls
       description: Retrieve a list of all halls. Accessible by all authenticated users.
@@ -91,7 +91,7 @@ paths:
         - professor
         - student
 
-  /halls/{hallId}:
+  /api/v1/halls/{hallId}:
     get:
       summary: Retrieve a hall by its ID
       description: Retrieve details of a specific hall by its ID. Accessible by all authenticated users.
@@ -208,7 +208,7 @@ paths:
         - admin
         - staff
 
-  /halls/{hallId}/lectures:
+  /api/v1/halls/{hallId}/lectures:
     get:
       summary: Retrieve all lectures scheduled in a specific hall
       description: Retrieve a list of all lectures scheduled in a specific hall. Accessible by all authenticated users.

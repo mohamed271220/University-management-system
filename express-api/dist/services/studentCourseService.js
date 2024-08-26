@@ -26,6 +26,10 @@ class StudentCourseService {
             if (!student || student.role !== "Student") {
                 throw new Error("Student not found");
             }
+            const semester = yield Semester_1.default.findByPk(semesterId);
+            if (!semester) {
+                throw new Error("Semester not found");
+            }
             // Check if the student is already enrolled in any of the courses for the same semester
             const existingEnrollments = yield this.studentCourseModel.findAll({
                 where: {
@@ -82,7 +86,7 @@ class StudentCourseService {
                     },
                     {
                         model: Semester_1.default,
-                    }
+                    },
                 ],
             });
             return courseStudents;
@@ -98,7 +102,7 @@ class StudentCourseService {
                     },
                     {
                         model: Semester_1.default,
-                    }
+                    },
                 ],
             });
             return studentCourse;

@@ -4,8 +4,6 @@ import User from "../models/User";
 import Lecture from "../models/Lecture";
 import Hall from "../models/Hall";
 
-
-
 export interface JwtPayload {
   id: string;
   role: string;
@@ -79,4 +77,10 @@ export interface LectureWithRelations extends Lecture {
   course: Course;
   professor: User;
   hall: Hall;
+}
+
+export enum attendanceStatus {
+  Present = "Present",
+  Absent = "Absent",
+  Excused = "Excused",
 }

@@ -11,48 +11,52 @@ Attendance.init({
     id: {
         type: sequelize_1.DataTypes.UUID,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
     },
     studentId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'users',
-            key: 'id'
+            model: "users",
+            key: "id",
         },
-        onDelete: 'CASCADE'
+        onDelete: "CASCADE",
     },
     lectureId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'lectures',
-            key: 'id'
+            model: "lectures",
+            key: "id",
         },
-        onDelete: 'CASCADE'
+        onDelete: "CASCADE",
+    },
+    lectureDate: {
+        type: sequelize_1.DataTypes.DATE,
+        defaultValue: sequelize_1.DataTypes.NOW,
     },
     status: {
-        type: sequelize_1.DataTypes.ENUM('Present', 'Absent', 'Excused'),
-        allowNull: false
+        type: sequelize_1.DataTypes.ENUM("Present", "Absent", "Excused"),
+        allowNull: false,
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
+        defaultValue: sequelize_1.DataTypes.NOW,
     },
     updatedAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
-    }
+        defaultValue: sequelize_1.DataTypes.NOW,
+    },
 }, {
     sequelize: database_1.default,
-    modelName: 'Attendance',
-    tableName: 'attendance',
+    modelName: "Attendance",
+    tableName: "attendance",
     timestamps: true,
     indexes: [
         {
             unique: true,
-            fields: ['studentId', 'lectureId']
-        }
-    ]
+            fields: ["studentId", "lectureId"],
+        },
+    ],
 });
 exports.default = Attendance;
