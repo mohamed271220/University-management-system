@@ -120,7 +120,7 @@ npm start
 API documentation is provided via Swagger. Once the server is running, you can access the documentation at:
 
 ```
-http://localhost:3000/api-docs
+http://localhost:3000/api/v1/official-docs/express-api-docs
 ```
 
 ## Environment Variables
