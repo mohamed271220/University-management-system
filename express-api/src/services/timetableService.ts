@@ -7,6 +7,7 @@ import Lecture from "../models/Lecture";
 import ProfessorCourse from "../models/ProfessorCourses";
 import StudentCourse from "../models/StudentCourses";
 import User from "../models/User";
+import { CustomError } from "../utils/CustomError";
 
 export class TimetableService {
   async getStudentTimetable(
@@ -16,7 +17,7 @@ export class TimetableService {
     const student = await User.findByPk(studentId);
 
     if (!student || student.role !== "Student") {
-      throw new Error("Student not found");
+      throw new CustomError("Student not found", 404);
     }
 
     const courses = await StudentCourse.findAll({
@@ -48,14 +49,14 @@ export class TimetableService {
   async getProfessorTimetable(professorId: string): Promise<any> {
     const professor = await User.findByPk(professorId);
     if (!professor || professor.role !== "Professor") {
-      throw new Error("Professor not found");
+      throw new CustomError("Professor not found", 404);
     }
     const courses = await ProfessorCourse.findAll({
       where: { professorId },
     });
 
     if (!courses.length) {
-      throw new Error("Professor has no courses assigned");
+      throw new CustomError("Professor has no courses assigned", 404);
     }
 
     const lectures = await Lecture.findAll({
@@ -78,7 +79,7 @@ export class TimetableService {
     });
 
     if (!lectures.length) {
-      throw new Error("Professor has no lectures assigned");
+      throw new CustomError("Professor has no lectures assigned", 404);
     }
 
     return this.buildTimetable(lectures as LectureWithRelations[]);
@@ -87,7 +88,7 @@ export class TimetableService {
   async getDepartmentTimetable(departmentId: string) {
     const department = await Department.findByPk(departmentId);
     if (!department) {
-      throw new Error("Department not found");
+      throw new CustomError("Department not found", 404);
     }
     const courses = await Course.findAll({
       where: { departmentId },
@@ -120,7 +121,7 @@ export class TimetableService {
   async getHallTimetable(hallId: string): Promise<any> {
     const hall = await Hall.findByPk(hallId);
     if (!hall) {
-      throw new Error("Hall not found");
+      throw new CustomError("Hall not found", 404);
     }
     const lectures = await Lecture.findAll({
       where: { hallId },
@@ -147,7 +148,7 @@ export class TimetableService {
   async getDepartmentYearTimetable(departmentId: string, year: Year) {
     const department = await Department.findByPk(departmentId);
     if (!department) {
-      throw new Error("Department not found");
+      throw new CustomError("Department not found", 404);
     }
 
     // Get all courses for the department and year

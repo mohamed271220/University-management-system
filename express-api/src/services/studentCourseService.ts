@@ -2,6 +2,7 @@ import Course from "../models/Course";
 import Semester from "../models/Semester";
 import StudentCourse from "../models/StudentCourses";
 import User from "../models/User";
+import { CustomError } from "../utils/CustomError";
 
 export class StudentCourseService {
   constructor(private studentCourseModel: typeof StudentCourse) {}
@@ -11,13 +12,18 @@ export class StudentCourseService {
     courses: string[],
     semesterId: string
   ) {
-    const student = await User.findByPk(studentId);
+    // const student = await User.findByPk(studentId);
+    // const semester = await Semester.findByPk(semesterId);
+    const [student, semester] = await Promise.all([
+      User.findByPk(studentId),
+      Semester.findByPk(semesterId),
+    ]);
+
     if (!student || student.role !== "Student") {
-      throw new Error("Student not found");
+      throw new CustomError("Student not found", 404);
     }
-    const semester = await Semester.findByPk(semesterId);
     if (!semester) {
-      throw new Error("Semester not found");
+      throw new CustomError("Semester not found", 404);
     }
 
     // Check if the student is already enrolled in any of the courses for the same semester
@@ -30,8 +36,9 @@ export class StudentCourseService {
     });
 
     if (existingEnrollments.length > 0) {
-      throw new Error(
-        "Student already enrolled in one or more of these courses for this semester. Please update your courses or delete existing enrollments."
+      throw new CustomError(
+        "Student already enrolled in one or more of these courses for this semester. Please update your courses or delete existing enrollments.",
+        400
       );
     }
 
@@ -39,7 +46,7 @@ export class StudentCourseService {
       courses.map(async (courseId) => {
         const course = await Course.findByPk(courseId);
         if (!course) {
-          throw new Error(`Course with ID ${courseId} not found`);
+          throw new CustomError(`Course with ID ${courseId} not found`, 404);
         }
         return this.studentCourseModel.create({
           courseId,
@@ -55,7 +62,7 @@ export class StudentCourseService {
   async getStudentCoursesByStudentId(studentId: string) {
     const student = await User.findByPk(studentId);
     if (!student || student.role !== "Student") {
-      throw new Error("Student not found");
+      throw new CustomError("Student not found", 404);
     }
     const studentCourses = await this.studentCourseModel.findAll({
       where: { studentId },
@@ -72,6 +79,10 @@ export class StudentCourseService {
   }
 
   async getStudentsByCourseId(courseId: string) {
+    const course = await Course.findByPk(courseId);
+    if (!course) {
+      throw new CustomError("Course not found", 404);
+    }
     const courseStudents = await this.studentCourseModel.findAll({
       where: { courseId },
       include: [
@@ -88,6 +99,19 @@ export class StudentCourseService {
   }
 
   async getStudentCourseById(studentId: string, courseId: string) {
+    const [student, course] = await Promise.all([
+      User.findByPk(studentId),
+      Course.findByPk(courseId),
+    ]);
+
+    if (!student || student.role !== "Student") {
+      throw new CustomError("Student not found", 404);
+    }
+
+    if (!course) {
+      throw new CustomError("Course not found", 404);
+    }
+
     const studentCourse = await this.studentCourseModel.findOne({
       where: { studentId, courseId },
       include: [
@@ -107,11 +131,29 @@ export class StudentCourseService {
     courseId: string,
     semesterId: string
   ) {
+    const [student, course, semester] = await Promise.all([
+      User.findByPk(studentId),
+      Course.findByPk(courseId),
+      Semester.findByPk(semesterId),
+    ]);
+
+    if (!student || student.role !== "Student") {
+      throw new CustomError("Student not found", 404);
+    }
+
+    if (!course) {
+      throw new CustomError("Course not found", 404);
+    }
+
+    if (!semester) {
+      throw new CustomError("Semester not found", 404);
+    }
+
     const studentCourse = await this.studentCourseModel.findOne({
       where: { studentId, courseId },
     });
     if (!studentCourse) {
-      throw new Error("Student course not found");
+      throw new CustomError("Student course not found");
     }
     studentCourse.semesterId = semesterId;
     await studentCourse.save();
@@ -119,11 +161,24 @@ export class StudentCourseService {
   }
 
   async deleteStudentCourse(studentId: string, courseId: string) {
+    const [student, course] = await Promise.all([
+      User.findByPk(studentId),
+      Course.findByPk(courseId),
+    ]);
+
+    if (!student || student.role !== "Student") {
+      throw new CustomError("Student not found", 404);
+    }
+
+    if (!course) {
+      throw new CustomError("Course not found", 404);
+    }
+
     const studentCourse = await this.studentCourseModel.findOne({
       where: { studentId, courseId },
     });
     if (!studentCourse) {
-      throw new Error("Student course not found");
+      throw new CustomError("Student course not found");
     }
     await studentCourse.destroy();
     return studentCourse;

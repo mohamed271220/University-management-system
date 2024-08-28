@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteStudentYear = exports.updateStudentYear = exports.getYearRecordsByStudent = exports.getAllStudentYears = exports.createStudentYear = void 0;
 const studentYearService_1 = require("../services/studentYearService");
 const studentYearService = new studentYearService_1.StudentYearService();
-const createStudentYear = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createStudentYear = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const studentYear = req.body;
         const newStudentYear = yield studentYearService.createStudentYear(studentYear);
@@ -21,73 +21,59 @@ const createStudentYear = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .json({ message: "Student year created", studentYear: newStudentYear });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(400).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.createStudentYear = createStudentYear;
-const getAllStudentYears = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllStudentYears = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const studentYears = yield studentYearService.getAllStudentYears();
         res.status(200).json({ studentYears });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAllStudentYears = getAllStudentYears;
-const getYearRecordsByStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getYearRecordsByStudent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { studentId } = req.params;
         const studentYears = yield studentYearService.getYearRecordsByStudent(studentId);
         res.status(200).json({ studentYears });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(400).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getYearRecordsByStudent = getYearRecordsByStudent;
-const updateStudentYear = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateStudentYear = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const studentYear = req.body;
         const { studentYearId } = req.params;
         const updatedStudentYear = yield studentYearService.updateStudentYear(studentYearId, studentYear);
-        res
-            .status(200)
-            .json({
+        res.status(200).json({
             message: "Student year updated",
             studentYear: updatedStudentYear,
         });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(400).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.updateStudentYear = updateStudentYear;
-const deleteStudentYear = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteStudentYear = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { studentYearId } = req.params;
         yield studentYearService.deleteStudentYear(studentYearId);
         res.status(200).json({ message: "Student year deleted" });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(400).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.deleteStudentYear = deleteStudentYear;

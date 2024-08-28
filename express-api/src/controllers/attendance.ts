@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AttendanceService } from "../services/attendanceService";
 import { userRequest } from "../interfaces";
 
 const attendanceService = new AttendanceService();
 
-export const createAttendance = async (req: userRequest, res: Response) => {
+export const createAttendance = async (req: userRequest, res: Response, next: NextFunction) => {
   try {
     const user = req.user!;
     const { studentId, lectureId, status, lectureDate } = req.body;
@@ -25,13 +25,11 @@ export const createAttendance = async (req: userRequest, res: Response) => {
       .json({ message: "Signed student successfully", attendanceRecord });
   } catch (error: any) {
     console.log(error.message);
-    res
-      .status(500)
-      .json({ message: "Internal server error: " + error.message });
+    next(error);
   }
 };
 
-export const getAllAttendances = async (req: Request, res: Response) => {
+export const getAllAttendances = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
     const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
@@ -45,11 +43,11 @@ export const getAllAttendances = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log(error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getAttendanceByStudent = async (req: Request, res: Response) => {
+export const getAttendanceByStudent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { studentId } = req.params;
     if (!studentId) {
@@ -62,15 +60,12 @@ export const getAttendanceByStudent = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Attendance records found", attendanceRecords });
   } catch (error: any) {
-    if (error.message === "Attendance records not found") {
-      return res.status(404).json({ message: error.message });
-    }
     console.log(error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getAttendanceByLecture = async (req: Request, res: Response) => {
+export const getAttendanceByLecture = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { lectureId } = req.params;
     if (!lectureId) {
@@ -83,17 +78,15 @@ export const getAttendanceByLecture = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Attendance records found", attendanceRecords });
   } catch (error: any) {
-    if (error.message === "Attendance records not found") {
-      return res.status(404).json({ message: error.message });
-    }
     console.log(error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
 export const getAttendanceByStudentAndLecture = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const { studentId, lectureId } = req.params;
@@ -109,15 +102,12 @@ export const getAttendanceByStudentAndLecture = async (
       .status(200)
       .json({ message: "Attendance record found", attendanceRecord });
   } catch (error: any) {
-    if (error.message === "Attendance record not found") {
-      return res.status(404).json({ message: error.message });
-    }
     console.log(error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const updateAttendanceStatus = async (req: Request, res: Response) => {
+export const updateAttendanceStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { attendanceRecordId } = req.params;
     const { status } = req.body;
@@ -133,11 +123,11 @@ export const updateAttendanceStatus = async (req: Request, res: Response) => {
       .json({ message: "Attendance record updated", attendanceRecord });
   } catch (error: any) {
     console.log(error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const deleteAttendance = async (req: Request, res: Response) => {
+export const deleteAttendance = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { attendanceRecordId } = req.params;
     if (!attendanceRecordId) {
@@ -147,6 +137,6 @@ export const deleteAttendance = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Attendance record deleted" });
   } catch (error: any) {
     console.log(error.message);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };

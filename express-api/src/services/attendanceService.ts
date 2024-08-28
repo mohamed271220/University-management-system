@@ -5,6 +5,7 @@ import Lecture from "../models/Lecture";
 import Hall from "../models/Hall";
 import User from "../models/User";
 import StudentCourse from "../models/StudentCourses";
+import { CustomError } from "../utils/CustomError";
 
 export class AttendanceService {
   constructor(private attendanceRepository: typeof Attendance = Attendance) {}
@@ -21,7 +22,7 @@ export class AttendanceService {
       user.role !== "admin" &&
       user.role !== "staff"
     ) {
-      throw new Error("You are not authorized to sign students");
+      throw new CustomError("You are not authorized to sign students", 401);
     }
 
     const [student, lecture] = await Promise.all([
@@ -30,16 +31,17 @@ export class AttendanceService {
     ]);
 
     if (!student || student.role !== "Student") {
-      throw new Error("Invalid student ID");
+      throw new CustomError("Invalid student ID", 404);
     }
 
     if (!lecture) {
-      throw new Error("Invalid lecture ID");
+      throw new CustomError("Invalid lecture ID", 404);
     }
 
     if (user.role === "professor" && user.id !== lecture?.professorId) {
-      throw new Error(
-        "You are not authorized to sign students for this lecture"
+      throw new CustomError(
+        "You are not authorized to sign students for this lecture",
+        401
       );
     }
 
@@ -48,7 +50,7 @@ export class AttendanceService {
     });
 
     if (!isStudentSignedForCourse) {
-      throw new Error("Student is not signed for this course");
+      throw new CustomError("Student is not signed for this course", 404);
     }
 
     const attendanceRecord = await this.attendanceRepository.create({
@@ -97,7 +99,7 @@ export class AttendanceService {
   async getAttendanceByStudent(studentId: string) {
     const student = await User.findByPk(studentId);
     if (!student || student.role !== "Student") {
-      throw new Error("Student not found");
+      throw new CustomError("Student not found", 404);
     }
     const attendanceRecords = await this.attendanceRepository.findAll({
       where: { studentId },
@@ -108,13 +110,14 @@ export class AttendanceService {
         },
       ],
     });
-    if (!attendanceRecords) throw new Error("Attendance records not found");
+    if (!attendanceRecords)
+      throw new CustomError("Attendance records not found", 404);
     return attendanceRecords;
   }
 
   async getAttendanceByLecture(lectureId: string) {
     const lecture = await Lecture.findByPk(lectureId);
-    if (!lecture) throw new Error("Lecture not found");
+    if (!lecture) throw new CustomError("Lecture not found");
     const attendanceRecords = await this.attendanceRepository.findAll({
       where: { lectureId },
       include: [
@@ -124,7 +127,8 @@ export class AttendanceService {
         },
       ],
     });
-    if (!attendanceRecords) throw new Error("Attendance records not found");
+    if (!attendanceRecords)
+      throw new CustomError("Attendance records not found", 404);
     return attendanceRecords;
   }
 
@@ -138,7 +142,8 @@ export class AttendanceService {
         },
       ],
     });
-    if (!attendanceRecord) throw new Error("Attendance record not found");
+    if (!attendanceRecord)
+      throw new CustomError("Attendance record not found", 404);
     return attendanceRecord;
   }
 
@@ -149,7 +154,8 @@ export class AttendanceService {
     const attendanceRecord = await this.attendanceRepository.findByPk(
       attendanceRecordId
     );
-    if (!attendanceRecord) throw new Error("Attendance record not found");
+    if (!attendanceRecord)
+      throw new CustomError("Attendance record not found", 404);
     attendanceRecord.status = status;
     await attendanceRecord.save();
     return attendanceRecord;
@@ -159,7 +165,8 @@ export class AttendanceService {
     const attendanceRecord = await this.attendanceRepository.findByPk(
       attendanceRecordId
     );
-    if (!attendanceRecord) throw new Error("Attendance record not found");
+    if (!attendanceRecord)
+      throw new CustomError("Attendance record not found", 404);
     await attendanceRecord.destroy();
     return { message: "Attendance record deleted" };
   }

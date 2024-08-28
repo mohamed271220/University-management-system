@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import {
   generateRefreshToken,
   generateToken,
@@ -11,16 +11,21 @@ import { v4 as uuid } from "uuid";
 import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import { userRequest } from "../interfaces";
+import { CustomError } from "../utils/CustomError";
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { username, password, email } = req.body;
     const user = await User.findOne({ where: { email } });
     if (user) {
-      return res.status(400).json({ message: "User already exists" });
+      throw new CustomError("User already exists", 400);
     }
     const passwordHash = await bcrypt.hash(password, 12);
-    const id = uuid(); // Assuming you have imported the uuid library
+    const id = uuid();
     const savedUser = await User.create({
       id,
       username,
@@ -48,16 +53,20 @@ export const signup = async (req: Request, res: Response) => {
       .status(201)
       .json({ message: "User created successfully", userId: savedUser.id });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    next(error);
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, username } = req.body;
     if (!email && !username) {
-      return res.status(400).json({ message: "Email or username is required" });
+      throw new CustomError("Invalid credentials", 400);
     }
 
     const whereClause: any = {};
@@ -73,13 +82,12 @@ export const login = async (req: Request, res: Response) => {
     const user = await User.findOne({
       where: whereClause,
     });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) throw new CustomError("Invalid credentials", 400);
     const isPasswordValid = await bcrypt.compare(
       req.body.password,
       user.passwordHash
     );
-    if (!isPasswordValid)
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (!isPasswordValid) throw new CustomError("Invalid credentials", 400);
 
     const token = generateToken({ id: user.id, role: user.role });
     const refreshToken = generateRefreshToken({ id: user.id });
@@ -99,36 +107,50 @@ export const login = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Login successful", userId: user.id });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const validateSession = async (req: userRequest, res: Response) => {
+export const validateSession = async (
+  req: userRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = req.user;
     res.status(200).json({ userId: user!.id });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    next(error);
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     res.clearCookie("refresh_token");
     res.clearCookie("auth_token");
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    next(error);
   }
 };
 
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const refreshToken = req.cookies.refresh_token;
-    if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+    if (!refreshToken) throw new CustomError("Invalid token", 400);
 
     const user = verifyRefreshToken(refreshToken);
-    if (!user) return res.status(401).json({ message: "Unauthorized" });
+    if (!user) throw new CustomError("Invalid token", 400);
 
     const newAccessToken = generateToken({ id: user.id, role: user.role });
     const newRefreshToken = generateRefreshToken({
@@ -150,7 +172,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     return res.json({ message: "Token refreshed successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log(error);
+    next(error);
   }
 };

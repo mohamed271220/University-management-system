@@ -21,12 +21,13 @@ const Lecture_1 = __importDefault(require("../models/Lecture"));
 const ProfessorCourses_1 = __importDefault(require("../models/ProfessorCourses"));
 const StudentCourses_1 = __importDefault(require("../models/StudentCourses"));
 const User_1 = __importDefault(require("../models/User"));
+const CustomError_1 = require("../utils/CustomError");
 class TimetableService {
     getStudentTimetable(studentId, semesterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const student = yield User_1.default.findByPk(studentId);
             if (!student || student.role !== "Student") {
-                throw new Error("Student not found");
+                throw new CustomError_1.CustomError("Student not found", 404);
             }
             const courses = yield StudentCourses_1.default.findAll({
                 where: { studentId, semesterId },
@@ -56,13 +57,13 @@ class TimetableService {
         return __awaiter(this, void 0, void 0, function* () {
             const professor = yield User_1.default.findByPk(professorId);
             if (!professor || professor.role !== "Professor") {
-                throw new Error("Professor not found");
+                throw new CustomError_1.CustomError("Professor not found", 404);
             }
             const courses = yield ProfessorCourses_1.default.findAll({
                 where: { professorId },
             });
             if (!courses.length) {
-                throw new Error("Professor has no courses assigned");
+                throw new CustomError_1.CustomError("Professor has no courses assigned", 404);
             }
             const lectures = yield Lecture_1.default.findAll({
                 where: { courseId: courses.map((c) => c.courseId) },
@@ -83,7 +84,7 @@ class TimetableService {
                 ],
             });
             if (!lectures.length) {
-                throw new Error("Professor has no lectures assigned");
+                throw new CustomError_1.CustomError("Professor has no lectures assigned", 404);
             }
             return this.buildTimetable(lectures);
         });
@@ -92,7 +93,7 @@ class TimetableService {
         return __awaiter(this, void 0, void 0, function* () {
             const department = yield Department_1.default.findByPk(departmentId);
             if (!department) {
-                throw new Error("Department not found");
+                throw new CustomError_1.CustomError("Department not found", 404);
             }
             const courses = yield Course_1.default.findAll({
                 where: { departmentId },
@@ -124,7 +125,7 @@ class TimetableService {
         return __awaiter(this, void 0, void 0, function* () {
             const hall = yield Hall_1.default.findByPk(hallId);
             if (!hall) {
-                throw new Error("Hall not found");
+                throw new CustomError_1.CustomError("Hall not found", 404);
             }
             const lectures = yield Lecture_1.default.findAll({
                 where: { hallId },
@@ -151,7 +152,7 @@ class TimetableService {
         return __awaiter(this, void 0, void 0, function* () {
             const department = yield Department_1.default.findByPk(departmentId);
             if (!department) {
-                throw new Error("Department not found");
+                throw new CustomError_1.CustomError("Department not found", 404);
             }
             // Get all courses for the department and year
             const departmentCourses = yield DepartmentYearCourses_1.default.findAll({

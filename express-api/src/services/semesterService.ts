@@ -2,9 +2,10 @@ import Grade from "../models/Grade";
 import Semester from "../models/Semester";
 import { v4 as uuid } from "uuid";
 import StudentCourse from "../models/StudentCourses";
+import { CustomError } from "../utils/CustomError";
 
 export class SemesterService {
-  constructor(private semesterModel: typeof Semester) {}
+  constructor(private semesterModel: typeof Semester = Semester) {}
 
   async createSemester(semesterName: string, startDate: Date, endDate: Date) {
     const semester = await this.semesterModel.create({
@@ -19,7 +20,7 @@ export class SemesterService {
   async getAllSemesters() {
     const semesters = await this.semesterModel.findAll();
     if (!semesters) {
-      throw new Error("No semesters found");
+      throw new CustomError("No semesters found", 404);
     }
     return semesters;
   }
@@ -27,7 +28,7 @@ export class SemesterService {
   async getSemesterById(id: string) {
     const semester = await this.semesterModel.findByPk(id);
     if (!semester) {
-      throw new Error("Semester not found");
+      throw new CustomError("Semester not found", 404);
     }
     return semester;
   }
@@ -40,7 +41,7 @@ export class SemesterService {
   ) {
     const semester = await this.semesterModel.findByPk(id);
     if (!semester) {
-      throw new Error("Semester not found");
+      throw new CustomError("Semester not found", 404);
     }
     // console.log(semesterName, startDate, endDate);
 
@@ -61,32 +62,43 @@ export class SemesterService {
   async deleteSemester(id: string) {
     const semester = await this.semesterModel.findByPk(id);
     if (!semester) {
-      throw new Error("Semester not found");
+      throw new CustomError("Semester not found", 404);
     }
     await semester.destroy();
     return semester;
   }
 
   async getSemesterGrades(semesterId: string) {
+    const semester = await Semester.findByPk(semesterId);
+    if (!semester) {
+      throw new CustomError("Semester not found", 404);
+    }
     const grades = await Grade.findAll({
       where: {
         semesterId,
       },
     });
     if (!grades) {
-      throw new Error("No grades found for this semester");
+      throw new CustomError("No grades found for this semester", 404);
     }
     return grades;
   }
 
   async getStudentEnrolledCourses(semesterId: string) {
+    const semester = await Semester.findByPk(semesterId);
+    if (!semester) {
+      throw new CustomError("Semester not found", 404);
+    }
     const enrollments = await StudentCourse.findAll({
       where: {
         semesterId,
       },
     });
     if (!enrollments) {
-      throw new Error("No student enrollments found for this semester");
+      throw new CustomError(
+        "No student enrollments found for this semester",
+        404
+      );
     }
     return enrollments;
   }

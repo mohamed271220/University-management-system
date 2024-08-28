@@ -1,15 +1,20 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TimetableService } from "../services/timetableService";
 import { Year } from "../interfaces";
+import { CustomError } from "../utils/CustomError";
 
 const timetableService = new TimetableService();
 
-export const getStudentTimetable = async (req: Request, res: Response) => {
+export const getStudentTimetable = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { studentId, semesterId } = req.params;
 
     if (!studentId) {
-      return res.status(400).json({ message: "Student ID is required" });
+      throw new CustomError("Student ID is required", 400);
     }
 
     const timetable = await timetableService.getStudentTimetable(
@@ -18,43 +23,51 @@ export const getStudentTimetable = async (req: Request, res: Response) => {
     );
 
     if (!timetable) {
-      return res.status(404).json({ message: "Student timetable not found" });
+      throw new CustomError("Student timetable not found", 404);
     }
 
     res.status(200).json({ message: "Student timetable found", timetable });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getProfessorTimetable = async (req: Request, res: Response) => {
+export const getProfessorTimetable = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { professorId } = req.params;
 
     if (!professorId) {
-      return res.status(400).json({ message: "Professor ID is required" });
+      throw new CustomError("Professor ID is required", 400);
     }
 
     const timetable = await timetableService.getProfessorTimetable(professorId);
 
     if (!timetable) {
-      return res.status(404).json({ message: "Professor timetable not found" });
+      throw new CustomError("Professor timetable not found", 404);
     }
 
     res.status(200).json({ message: "Professor timetable found", timetable });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getDepartmentTimetable = async (req: Request, res: Response) => {
+export const getDepartmentTimetable = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { departmentId } = req.params;
 
     if (!departmentId) {
-      return res.status(400).json({ message: "Department ID is required" });
+      throw new CustomError("Department ID is required", 400);
     }
 
     const timetable = await timetableService.getDepartmentTimetable(
@@ -62,51 +75,52 @@ export const getDepartmentTimetable = async (req: Request, res: Response) => {
     );
 
     if (!timetable) {
-      return res
-        .status(404)
-        .json({ message: "Department timetable not found" });
+      throw new CustomError("Department timetable not found", 404);
     }
 
     res.status(200).json({ message: "Department timetable found", timetable });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getHallTimetable = async (req: Request, res: Response) => {
+export const getHallTimetable = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { hallId } = req.params;
 
     if (!hallId) {
-      return res.status(400).json({ message: "Hall ID is required" });
+      throw new CustomError("Hall ID is required", 400);
     }
 
     const timetable = await timetableService.getHallTimetable(hallId);
 
     if (!timetable) {
-      return res.status(404).json({ message: "Hall timetable not found" });
+      throw new CustomError("Hall timetable not found", 404);
     }
 
     res.status(200).json({ message: "Hall timetable found", timetable });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
 export const getDepartmentYearTimetable = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const departmentId = req.params.departmentId;
     const year = req.query.year as Year;
 
     if (!departmentId || !year) {
-      return res
-        .status(400)
-        .json({ message: "Department ID and year are required" });
+      throw new CustomError("Department ID and year are required", 400);
     }
 
     const timetable = await timetableService.getDepartmentYearTimetable(
@@ -115,9 +129,7 @@ export const getDepartmentYearTimetable = async (
     );
 
     if (!timetable) {
-      return res
-        .status(404)
-        .json({ message: "Student year timetable not found" });
+      throw new CustomError("Department year timetable not found", 404);
     }
 
     res
@@ -125,6 +137,6 @@ export const getDepartmentYearTimetable = async (
       .json({ message: "Student year timetable found", timetable });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };

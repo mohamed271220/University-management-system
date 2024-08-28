@@ -21,7 +21,7 @@ describe("getUserById", () => {
     const user = { id: "1", username: "User1" };
     (UserService.prototype.getUserById as jest.Mock).mockResolvedValue(user);
 
-    await getUserById(req, res);
+    await getUserById(req, res, next);
 
     expect(UserService.prototype.getUserById).toHaveBeenCalledWith("1");
     expect(res.status).toHaveBeenCalledWith(200);
@@ -37,7 +37,7 @@ describe("getUserById", () => {
       new Error(errorMessage)
     );
 
-    await getUserById(req, res);
+    await getUserById(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -62,7 +62,7 @@ describe("getUserById", () => {
     const user = { id: "1", username: "User1" };
     (UserService.prototype.getUserById as jest.Mock).mockResolvedValue(user);
 
-    await getUserById(req, res);
+    await getUserById(req, res, next);
 
     expect(UserService.prototype.getUserById).toHaveBeenCalledWith("1");
     expect(res.status).toHaveBeenCalledWith(200);
@@ -78,7 +78,7 @@ describe("getUserById", () => {
       new Error(errorMessage)
     );
 
-    await getUserById(req, res);
+    await getUserById(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -109,7 +109,7 @@ describe("updateUser", () => {
       updatedUser
     );
 
-    await updateUser(req, res);
+    await updateUser(req, res, next);
 
     expect(UserService.prototype.updateUser).toHaveBeenCalledWith(
       "1",
@@ -129,7 +129,7 @@ describe("updateUser", () => {
       new Error(errorMessage)
     );
 
-    await updateUser(req, res);
+    await updateUser(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -155,7 +155,7 @@ describe("deleteUser", () => {
       undefined
     );
 
-    await deleteUser(req, res);
+    await deleteUser(req, res, next);
 
     expect(UserService.prototype.deleteUser).toHaveBeenCalledWith("1");
     expect(res.status).toHaveBeenCalledWith(200);
@@ -170,7 +170,7 @@ describe("deleteUser", () => {
       new Error(errorMessage)
     );
 
-    await deleteUser(req, res);
+    await deleteUser(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });

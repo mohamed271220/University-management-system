@@ -15,14 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProfessorCourse = exports.getAllProfessorsByCourse = exports.getAllProfessorCourses = exports.getProfessorCourseById = exports.getAllCourses = exports.createProfessorCourse = void 0;
 const professorCourseService_1 = require("../services/professorCourseService");
 const ProfessorCourses_1 = __importDefault(require("../models/ProfessorCourses"));
+const CustomError_1 = require("../utils/CustomError");
 const professorCourseService = new professorCourseService_1.ProfessorCourseService(ProfessorCourses_1.default);
-const createProfessorCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createProfessorCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { courseId, professorId } = req.params;
         if (!courseId || !professorId) {
-            return res
-                .status(400)
-                .json({ message: "Course ID and Professor ID are required" });
+            throw new CustomError_1.CustomError("Please provide all required fields", 400);
         }
         const professorCourse = yield professorCourseService.createProfessorCourse(courseId, professorId);
         res
@@ -30,31 +29,27 @@ const createProfessorCourse = (req, res) => __awaiter(void 0, void 0, void 0, fu
             .json({ message: "Professor course created", professorCourse });
     }
     catch (error) {
-        if (error.message === "Course not found") {
-            console.log(error);
-            return res.status(404).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.createProfessorCourse = createProfessorCourse;
-const getAllCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllCourses = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const courses = yield professorCourseService.getAllCourses();
         res.status(200).json({ message: "All courses", courses });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAllCourses = getAllCourses;
-const getProfessorCourseById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProfessorCourseById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const professorCourse = yield professorCourseService.getProfessorCourseById(req.params.id);
         if (!professorCourse) {
-            return res.status(404).json({ message: "Professor course not found" });
+            throw new CustomError_1.CustomError("Professor course not found", 404);
         }
         res
             .status(200)
@@ -62,15 +57,15 @@ const getProfessorCourseById = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getProfessorCourseById = getProfessorCourseById;
-const getAllProfessorCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllProfessorCourses = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const professorId = req.params.professorId;
         if (!professorId) {
-            return res.status(400).json({ message: "Professor ID is required" });
+            throw new CustomError_1.CustomError("Professor ID is required", 400);
         }
         const professorCourses = yield professorCourseService.getAllProfessorCourses(professorId);
         res
@@ -78,20 +73,16 @@ const getAllProfessorCourses = (req, res) => __awaiter(void 0, void 0, void 0, f
             .json({ message: "All professor courses", professorCourses });
     }
     catch (error) {
-        if (error.message === "Professor not found") {
-            console.log(error);
-            return res.status(404).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAllProfessorCourses = getAllProfessorCourses;
-const getAllProfessorsByCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllProfessorsByCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const courseId = req.params.courseId;
         if (!courseId) {
-            return res.status(400).json({ message: "Course ID is required" });
+            throw new CustomError_1.CustomError("Course ID is required", 400);
         }
         const courseProf = yield professorCourseService.getProfessorsByCourseId(courseId);
         res
@@ -99,28 +90,20 @@ const getAllProfessorsByCourse = (req, res) => __awaiter(void 0, void 0, void 0,
             .json({ message: "Professors found", professors: courseProf });
     }
     catch (error) {
-        if (error.message === "Course not found") {
-            console.log(error);
-            return res.status(404).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAllProfessorsByCourse = getAllProfessorsByCourse;
-const deleteProfessorCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteProfessorCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { courseId, professorId } = req.params;
         yield professorCourseService.deleteProfessorCourse(courseId, professorId);
         res.status(200).json({ message: "Professor course deleted successfully" });
     }
     catch (error) {
-        if (error.message === "Professor course not found") {
-            console.log(error);
-            return res.status(404).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.deleteProfessorCourse = deleteProfessorCourse;

@@ -17,15 +17,16 @@ const jwt_1 = require("../utils/jwt");
 const User_1 = __importDefault(require("../models/User"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
-const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const CustomError_1 = require("../utils/CustomError");
+const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, password, email } = req.body;
         const user = yield User_1.default.findOne({ where: { email } });
         if (user) {
-            return res.status(400).json({ message: "User already exists" });
+            throw new CustomError_1.CustomError("User already exists", 400);
         }
         const passwordHash = yield bcrypt_1.default.hash(password, 12);
-        const id = (0, uuid_1.v4)(); // Assuming you have imported the uuid library
+        const id = (0, uuid_1.v4)();
         const savedUser = yield User_1.default.create({
             id,
             username,
@@ -50,16 +51,16 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .json({ message: "User created successfully", userId: savedUser.id });
     }
     catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        console.log(error);
+        next(error);
     }
 });
 exports.signup = signup;
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, username } = req.body;
         if (!email && !username) {
-            return res.status(400).json({ message: "Email or username is required" });
+            throw new CustomError_1.CustomError("Invalid credentials", 400);
         }
         const whereClause = {};
         if (email) {
@@ -72,10 +73,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             where: whereClause,
         });
         if (!user)
-            return res.status(400).json({ message: "Invalid credentials" });
+            throw new CustomError_1.CustomError("Invalid credentials", 400);
         const isPasswordValid = yield bcrypt_1.default.compare(req.body.password, user.passwordHash);
         if (!isPasswordValid)
-            return res.status(400).json({ message: "Invalid credentials" });
+            throw new CustomError_1.CustomError("Invalid credentials", 400);
         const token = (0, jwt_1.generateToken)({ id: user.id, role: user.role });
         const refreshToken = (0, jwt_1.generateRefreshToken)({ id: user.id });
         res.cookie("auth_token", token, {
@@ -92,39 +93,41 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.login = login;
-const validateSession = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const validateSession = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         res.status(200).json({ userId: user.id });
     }
     catch (error) {
-        res.status(500).json({ message: "Internal server error" });
+        console.log(error);
+        next(error);
     }
 });
 exports.validateSession = validateSession;
-const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.clearCookie("refresh_token");
         res.clearCookie("auth_token");
         res.status(200).json({ message: "Logout successful" });
     }
     catch (error) {
-        res.status(500).json({ message: "Internal server error" });
+        console.log(error);
+        next(error);
     }
 });
 exports.logout = logout;
-const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const refreshToken = req.cookies.refresh_token;
         if (!refreshToken)
-            return res.status(401).json({ message: "Unauthorized" });
+            throw new CustomError_1.CustomError("Invalid token", 400);
         const user = (0, jwt_1.verifyRefreshToken)(refreshToken);
         if (!user)
-            return res.status(401).json({ message: "Unauthorized" });
+            throw new CustomError_1.CustomError("Invalid token", 400);
         const newAccessToken = (0, jwt_1.generateToken)({ id: user.id, role: user.role });
         const newRefreshToken = (0, jwt_1.generateRefreshToken)({
             id: user.id,
@@ -143,8 +146,8 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.json({ message: "Token refreshed successfully" });
     }
     catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        console.log(error);
+        next(error);
     }
 });
 exports.refreshToken = refreshToken;

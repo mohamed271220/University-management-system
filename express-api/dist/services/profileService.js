@@ -16,85 +16,66 @@ exports.ProfileService = void 0;
 const Profile_1 = __importDefault(require("../models/Profile"));
 const User_1 = __importDefault(require("../models/User"));
 const uuid_1 = require("uuid");
+const CustomError_1 = require("../utils/CustomError");
 class ProfileService {
     getProfile(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const profile = yield Profile_1.default.findOne({
-                    where: { userId },
-                    include: [{ model: User_1.default, attributes: { exclude: ["passwordHash"] } }],
-                });
-                if (!profile)
-                    throw new Error("Profile not found");
-                return profile;
-            }
-            catch (error) {
-                throw new Error(error.message || "Internal server error");
-            }
+            const profile = yield Profile_1.default.findOne({
+                where: { userId },
+                include: [{ model: User_1.default, attributes: { exclude: ["passwordHash"] } }],
+            });
+            if (!profile)
+                throw new CustomError_1.CustomError("Profile not found", 404);
+            return profile;
         });
     }
     createProfile(userId, profileData) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const existingProfile = yield Profile_1.default.findOne({ where: { userId } });
-                if (existingProfile)
-                    throw new Error("Profile already exists");
-                const { firstName, lastName, dob, contactNumber, address } = profileData;
-                if (!firstName || !lastName || !dob || !contactNumber || !address) {
-                    throw new Error("Missing required profile data");
-                }
-                const profile = yield Profile_1.default.create({
-                    id: (0, uuid_1.v4)(),
-                    firstName,
-                    lastName,
-                    dob,
-                    contactNumber,
-                    address,
-                    userId,
-                });
-                return profile;
+            const existingProfile = yield Profile_1.default.findOne({ where: { userId } });
+            if (existingProfile)
+                throw new CustomError_1.CustomError("Profile already exists", 404);
+            const { firstName, lastName, dob, contactNumber, address } = profileData;
+            if (!firstName || !lastName || !dob || !contactNumber || !address) {
+                throw new CustomError_1.CustomError("Missing required profile data", 400);
             }
-            catch (error) {
-                throw new Error(error.message || "Internal server error");
-            }
+            const profile = yield Profile_1.default.create({
+                id: (0, uuid_1.v4)(),
+                firstName,
+                lastName,
+                dob,
+                contactNumber,
+                address,
+                userId,
+            });
+            return profile;
         });
     }
     updateProfile(userId, updates) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const existingProfile = yield Profile_1.default.findOne({ where: { userId } });
-                if (!existingProfile)
-                    throw new Error("Profile not found");
-                const { firstName, lastName, dob, contactNumber, address } = updates;
-                if (firstName)
-                    existingProfile.firstName = firstName;
-                if (lastName)
-                    existingProfile.lastName = lastName;
-                if (dob)
-                    existingProfile.dob = dob;
-                if (contactNumber)
-                    existingProfile.contactNumber = contactNumber;
-                if (address)
-                    existingProfile.address = address;
-                yield existingProfile.save();
-                return existingProfile;
-            }
-            catch (error) {
-                throw new Error(error.message || "Internal server error");
-            }
+            const existingProfile = yield Profile_1.default.findOne({ where: { userId } });
+            if (!existingProfile)
+                throw new CustomError_1.CustomError("Profile not found", 404);
+            const { firstName, lastName, dob, contactNumber, address } = updates;
+            if (firstName)
+                existingProfile.firstName = firstName;
+            if (lastName)
+                existingProfile.lastName = lastName;
+            if (dob)
+                existingProfile.dob = dob;
+            if (contactNumber)
+                existingProfile.contactNumber = contactNumber;
+            if (address)
+                existingProfile.address = address;
+            yield existingProfile.save();
+            return existingProfile;
         });
     }
     deleteProfile(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const existingProfile = yield Profile_1.default.findOne({ where: { userId } });
-                if (!existingProfile)
-                    throw new Error("Profile not found");
-                yield existingProfile.destroy();
-            }
-            catch (error) {
-                throw new Error(error.message || "Internal server error");
-            }
+            const existingProfile = yield Profile_1.default.findOne({ where: { userId } });
+            if (!existingProfile)
+                throw new CustomError_1.CustomError("Profile not found", 404);
+            yield existingProfile.destroy();
         });
     }
 }

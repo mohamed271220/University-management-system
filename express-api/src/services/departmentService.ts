@@ -4,6 +4,7 @@ import Department from "../models/Department";
 import { v4 as uuid } from "uuid";
 import Hall from "../models/Hall";
 import { Op } from "sequelize";
+import { CustomError } from "../utils/CustomError";
 
 export class DepartmentService {
   constructor(private departmentModel: typeof Department = Department) {}
@@ -14,12 +15,14 @@ export class DepartmentService {
       where: { [Op.or]: [{ code }, { name }] },
     });
 
-    if (exitingDepartment) throw new Error("Department already exists");
+    if (exitingDepartment)
+      throw new CustomError("Department already exists", 400);
     const department = await this.departmentModel.create({
       id: uuid(),
       name,
       code,
     } as departmentData & { id: string });
+
     return department;
   }
 
@@ -46,18 +49,21 @@ export class DepartmentService {
       previousPage: hasPreviousPage ? currentPage - 1 : null,
     };
 
+    if (!departments) throw new CustomError("Departments not found", 404);
+
     return { departments, pagination };
     // return departments;
   }
 
   async getDepartmentById(id: string) {
     const department = await this.departmentModel.findByPk(id);
+    if (!department) throw new CustomError("Department not found", 404);
     return department;
   }
 
   async updateDepartment(id: string, updates: Partial<departmentData>) {
     const department = await this.departmentModel.findByPk(id);
-    if (!department) throw new Error("Department not found");
+    if (!department) throw new CustomError("Department not found", 404);
 
     const existingDepartment = await this.departmentModel.findOne({
       where: {
@@ -68,10 +74,10 @@ export class DepartmentService {
 
     if (existingDepartment) {
       if (existingDepartment.code === updates.code) {
-        throw new Error("Department code already exists");
+        throw new CustomError("Department code already exists", 400);
       }
       if (existingDepartment.name === updates.name) {
-        throw new Error("Department name already exists");
+        throw new CustomError("Department name already exists", 400);
       }
     }
     if (updates.name) department.name = updates.name;
@@ -83,25 +89,31 @@ export class DepartmentService {
 
   async deleteDepartment(id: string) {
     const department = await this.departmentModel.findByPk(id);
-    if (!department) throw new Error("Department not found");
+    if (!department) throw new CustomError("Department not found", 404);
 
     await department.destroy();
   }
 
   async getCoursesByDepartment(id: string) {
+    const department = await this.departmentModel.findByPk(id);
+    if (!department) throw new CustomError("Department not found", 404);
     const courses = await Course.findAll({
       where: { departmentId: id },
     });
-    if (!courses) throw new Error("Department has no courses");
+    if (!courses.length)
+      throw new CustomError("Department has no courses", 404);
     return courses;
   }
 
   async getHallsByDepartment(id: string) {
+    const departmentId = await this.departmentModel.findByPk(id);
+    if (!departmentId) throw new CustomError("Department not found", 404);
     const department = await Hall.findAll({
       where: { departmentId: id },
     });
 
-    if (!department) throw new Error("Department has no halls");
+    if (!department.length)
+      throw new CustomError("Department has no halls", 404);
 
     return department;
   }

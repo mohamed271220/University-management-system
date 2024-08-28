@@ -11,6 +11,7 @@ import Profile from "../models/Profile";
 import Lecture from "../models/Lecture";
 import Hall from "../models/Hall";
 import { Op } from "sequelize";
+import { CustomError } from "../utils/CustomError";
 
 export class CourseService {
   constructor(private courseModel: typeof Course) {}
@@ -19,21 +20,24 @@ export class CourseService {
     const { code, name, description, credits, departmentId, professorId } =
       data;
 
-    const existingCourse = await this.courseModel.findOne({
-      where: { code },
-    });
+    const [existingCourse, professor, department] = await Promise.all([
+      this.courseModel.findOne({
+        where: { code },
+      }),
+      User.findByPk(professorId),
+      Department.findByPk(departmentId),
+    ]);
+
     if (existingCourse) {
-      throw new Error("A course with this code already exists");
+      throw new CustomError("A course with this code already exists", 400);
     }
 
-    const professor = await User.findByPk(professorId);
     if (!professor || professor.role !== "Professor") {
-      throw new Error("Invalid professor ID");
+      throw new CustomError("Invalid professor ID", 400);
     }
 
-    const department = await Department.findByPk(departmentId);
     if (!department) {
-      throw new Error("Invalid department ID");
+      throw new CustomError("Invalid department ID", 400);
     }
 
     const course = await this.courseModel.create({
@@ -62,6 +66,8 @@ export class CourseService {
         },
       ],
     });
+
+    if (!courses) throw new CustomError("No courses found", 404);
     return courses;
   }
 
@@ -79,13 +85,14 @@ export class CourseService {
         },
       ],
     });
+    if (!course) throw new CustomError("Course not found", 404);
     return course;
   }
 
   async updateCourse(id: string, data: courseData) {
     const course = await this.courseModel.findByPk(id);
     if (!course) {
-      throw new Error("Course not found");
+      throw new CustomError("Course not found", 404);
     }
 
     const existingCourse = await this.courseModel.findOne({
@@ -95,7 +102,7 @@ export class CourseService {
       },
     });
     if (existingCourse) {
-      throw new Error("A course with this code already exists");
+      throw new CustomError("A course with this code already exists", 400);
     }
 
     const { code, name, description, credits, departmentId, professorId } =
@@ -113,7 +120,7 @@ export class CourseService {
 
   async deleteCourse(id: string) {
     const course = await this.courseModel.findByPk(id);
-    if (!course) throw new Error("Course not found");
+    if (!course) throw new CustomError("Course not found", 404);
 
     await course.destroy();
   }
@@ -128,11 +135,13 @@ export class CourseService {
         },
       ],
     });
-    if (!course) throw new Error("Course not found");
+    if (!course) throw new CustomError("No courses found", 404);
     return course.professors;
   }
 
   async getStudentsByCourseId(id: string) {
+    const isCourse = await Course.findByPk(id);
+    if (!isCourse) throw new CustomError("Course not found", 404);
     const course = await Course.findByPk(id, {
       include: [
         {
@@ -149,12 +158,14 @@ export class CourseService {
       ],
     });
 
-    if (!course) throw new Error("Course not found");
+    if (!course) throw new CustomError("Students not found", 404);
 
     return course;
   }
 
   async getLecturesByCourseId(id: string) {
+    const isCourse = await Course.findByPk(id);
+    if (!isCourse) throw new CustomError("Course not found", 404);
     const course: CourseWithLectures | null = await Course.findByPk(id, {
       include: [
         {
@@ -170,7 +181,8 @@ export class CourseService {
       ],
     });
 
-    if (!course) throw new Error("Course not found");
+    if (!course?.Lectures?.length)
+      throw new CustomError("Lectures not found", 404);
 
     return course.Lectures;
   }

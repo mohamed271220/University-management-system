@@ -11,95 +11,90 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDepartmentYearTimetable = exports.getHallTimetable = exports.getDepartmentTimetable = exports.getProfessorTimetable = exports.getStudentTimetable = void 0;
 const timetableService_1 = require("../services/timetableService");
+const CustomError_1 = require("../utils/CustomError");
 const timetableService = new timetableService_1.TimetableService();
-const getStudentTimetable = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getStudentTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { studentId, semesterId } = req.params;
         if (!studentId) {
-            return res.status(400).json({ message: "Student ID is required" });
+            throw new CustomError_1.CustomError("Student ID is required", 400);
         }
         const timetable = yield timetableService.getStudentTimetable(studentId, semesterId);
         if (!timetable) {
-            return res.status(404).json({ message: "Student timetable not found" });
+            throw new CustomError_1.CustomError("Student timetable not found", 404);
         }
         res.status(200).json({ message: "Student timetable found", timetable });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getStudentTimetable = getStudentTimetable;
-const getProfessorTimetable = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProfessorTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { professorId } = req.params;
         if (!professorId) {
-            return res.status(400).json({ message: "Professor ID is required" });
+            throw new CustomError_1.CustomError("Professor ID is required", 400);
         }
         const timetable = yield timetableService.getProfessorTimetable(professorId);
         if (!timetable) {
-            return res.status(404).json({ message: "Professor timetable not found" });
+            throw new CustomError_1.CustomError("Professor timetable not found", 404);
         }
         res.status(200).json({ message: "Professor timetable found", timetable });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getProfessorTimetable = getProfessorTimetable;
-const getDepartmentTimetable = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getDepartmentTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { departmentId } = req.params;
         if (!departmentId) {
-            return res.status(400).json({ message: "Department ID is required" });
+            throw new CustomError_1.CustomError("Department ID is required", 400);
         }
         const timetable = yield timetableService.getDepartmentTimetable(departmentId);
         if (!timetable) {
-            return res
-                .status(404)
-                .json({ message: "Department timetable not found" });
+            throw new CustomError_1.CustomError("Department timetable not found", 404);
         }
         res.status(200).json({ message: "Department timetable found", timetable });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getDepartmentTimetable = getDepartmentTimetable;
-const getHallTimetable = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getHallTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { hallId } = req.params;
         if (!hallId) {
-            return res.status(400).json({ message: "Hall ID is required" });
+            throw new CustomError_1.CustomError("Hall ID is required", 400);
         }
         const timetable = yield timetableService.getHallTimetable(hallId);
         if (!timetable) {
-            return res.status(404).json({ message: "Hall timetable not found" });
+            throw new CustomError_1.CustomError("Hall timetable not found", 404);
         }
         res.status(200).json({ message: "Hall timetable found", timetable });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getHallTimetable = getHallTimetable;
-const getDepartmentYearTimetable = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getDepartmentYearTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const departmentId = req.params.departmentId;
         const year = req.query.year;
         if (!departmentId || !year) {
-            return res
-                .status(400)
-                .json({ message: "Department ID and year are required" });
+            throw new CustomError_1.CustomError("Department ID and year are required", 400);
         }
         const timetable = yield timetableService.getDepartmentYearTimetable(departmentId, year);
         if (!timetable) {
-            return res
-                .status(404)
-                .json({ message: "Student year timetable not found" });
+            throw new CustomError_1.CustomError("Department year timetable not found", 404);
         }
         res
             .status(200)
@@ -107,7 +102,7 @@ const getDepartmentYearTimetable = (req, res) => __awaiter(void 0, void 0, void 
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getDepartmentYearTimetable = getDepartmentYearTimetable;

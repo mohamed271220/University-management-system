@@ -1,16 +1,19 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ProfessorCourseService } from "../services/professorCourseService";
 import ProfessorCourse from "../models/ProfessorCourses";
+import { CustomError } from "../utils/CustomError";
 
 const professorCourseService = new ProfessorCourseService(ProfessorCourse);
 
-export const createProfessorCourse = async (req: Request, res: Response) => {
+export const createProfessorCourse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { courseId, professorId } = req.params;
     if (!courseId || !professorId) {
-      return res
-        .status(400)
-        .json({ message: "Course ID and Professor ID are required" });
+      throw new CustomError("Please provide all required fields", 400);
     }
     const professorCourse = await professorCourseService.createProfessorCourse(
       courseId,
@@ -20,46 +23,55 @@ export const createProfessorCourse = async (req: Request, res: Response) => {
       .status(201)
       .json({ message: "Professor course created", professorCourse });
   } catch (error: any) {
-    if (error.message === "Course not found") {
-      console.log(error);
-
-      return res.status(404).json({ message: error.message });
-    }
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getAllCourses = async (req: Request, res: Response) => {
+export const getAllCourses = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const courses = await professorCourseService.getAllCourses();
     res.status(200).json({ message: "All courses", courses });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
-export const getProfessorCourseById = async (req: Request, res: Response) => {
+
+export const getProfessorCourseById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const professorCourse = await professorCourseService.getProfessorCourseById(
       req.params.id
     );
     if (!professorCourse) {
-      return res.status(404).json({ message: "Professor course not found" });
+      throw new CustomError("Professor course not found", 404);
     }
     res
       .status(200)
       .json({ message: "Professor course found", professorCourse });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
-export const getAllProfessorCourses = async (req: Request, res: Response) => {
+
+export const getAllProfessorCourses = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const professorId = req.params.professorId;
     if (!professorId) {
-      return res.status(400).json({ message: "Professor ID is required" });
+      throw new CustomError("Professor ID is required", 400);
     }
     const professorCourses =
       await professorCourseService.getAllProfessorCourses(professorId);
@@ -68,22 +80,21 @@ export const getAllProfessorCourses = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "All professor courses", professorCourses });
   } catch (error: any) {
-    if (error.message === "Professor not found") {
-      console.log(error);
-
-      return res.status(404).json({ message: error.message });
-    }
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getAllProfessorsByCourse = async (req: Request, res: Response) => {
+export const getAllProfessorsByCourse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const courseId = req.params.courseId;
 
     if (!courseId) {
-      return res.status(400).json({ message: "Course ID is required" });
+      throw new CustomError("Course ID is required", 400);
     }
 
     const courseProf = await professorCourseService.getProfessorsByCourseId(
@@ -94,28 +105,22 @@ export const getAllProfessorsByCourse = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Professors found", professors: courseProf });
   } catch (error: any) {
-    if (error.message === "Course not found") {
-      console.log(error);
-
-      return res.status(404).json({ message: error.message });
-    }
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const deleteProfessorCourse = async (req: Request, res: Response) => {
+export const deleteProfessorCourse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { courseId, professorId } = req.params;
     await professorCourseService.deleteProfessorCourse(courseId, professorId);
     res.status(200).json({ message: "Professor course deleted successfully" });
   } catch (error: any) {
-    if (error.message === "Professor course not found") {
-      console.log(error);
-
-      return res.status(404).json({ message: error.message });
-    }
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };

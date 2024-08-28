@@ -21,6 +21,7 @@ const User_1 = __importDefault(require("../models/User"));
 const uuid_1 = require("uuid");
 const Attendance_1 = __importDefault(require("../models/Attendance"));
 const LectureHistory_1 = __importDefault(require("../models/LectureHistory"));
+const CustomError_1 = require("../utils/CustomError");
 class LectureService {
     constructor(lectureModel = Lecture_1.default) {
         this.lectureModel = lectureModel;
@@ -33,13 +34,13 @@ class LectureService {
                 Hall_1.default.findByPk(database.hallId),
             ]);
             if (!course) {
-                throw new Error("Course not found");
+                throw new CustomError_1.CustomError("Course not found", 404);
             }
             if (!professor || professor.role !== "Professor") {
-                throw new Error("Professor not found");
+                throw new CustomError_1.CustomError("Professor not found", 404);
             }
             if (!hall) {
-                throw new Error("Hall not found");
+                throw new CustomError_1.CustomError("Hall not found", 404);
             }
             const isTimeValid = yield this.lectureModel.findOne({
                 where: {
@@ -77,7 +78,7 @@ class LectureService {
                 },
             });
             if (isTimeValid) {
-                throw new Error("Lecture already exists at this time in the same hall");
+                throw new CustomError_1.CustomError("Lecture already exists at this time in the same hall", 400);
             }
             const lecture = yield this.lectureModel.create(Object.assign({ id: (0, uuid_1.v4)() }, database));
             return lecture;
@@ -167,7 +168,7 @@ class LectureService {
                 ],
             });
             if (!lecture) {
-                throw new Error("Lecture not found");
+                throw new CustomError_1.CustomError("Lecture not found", 404);
             }
             return lecture;
         });
@@ -181,13 +182,13 @@ class LectureService {
                 Lecture_1.default.findByPk(id),
             ]);
             if (!lecture)
-                throw new Error("Lecture not found");
+                throw new CustomError_1.CustomError("Lecture not found", 404);
             if (database.courseId && !course)
-                throw new Error("Course not found");
+                throw new CustomError_1.CustomError("Course not found", 404);
             if (database.professorId && (!professor || professor.role !== "Professor"))
-                throw new Error("Professor not found");
+                throw new CustomError_1.CustomError("Professor not found", 404);
             if (database.hallId && !hall)
-                throw new Error("Hall not found");
+                throw new CustomError_1.CustomError("Hall not found", 404);
             if (database.dayOfWeek || database.startTime || database.endTime) {
                 const isTimeConflict = yield this.lectureModel.findOne({
                     where: {
@@ -231,7 +232,7 @@ class LectureService {
                     },
                 });
                 if (isTimeConflict) {
-                    throw new Error("Lecture already exists at this time");
+                    throw new CustomError_1.CustomError("Lecture already exists at this time", 400);
                 }
             }
             lecture.courseId = database.courseId || lecture.courseId;
@@ -252,7 +253,7 @@ class LectureService {
         return __awaiter(this, void 0, void 0, function* () {
             const lecture = yield this.lectureModel.findByPk(id);
             if (!lecture) {
-                throw new Error("Lecture not found");
+                throw new CustomError_1.CustomError("Lecture not found", 404);
             }
             yield lecture.destroy();
         });
@@ -287,7 +288,7 @@ class LectureService {
         return __awaiter(this, void 0, void 0, function* () {
             const lecture = yield this.lectureModel.findByPk(lectureId);
             if (!lecture) {
-                throw new Error("Lecture not found");
+                throw new CustomError_1.CustomError("Lecture not found", 404);
             }
             const archivedLecture = yield LectureHistory_1.default.create(Object.assign(Object.assign({}, lecture.toJSON()), { id: (0, uuid_1.v4)(), lectureId: lecture.id, action: "Archived" }));
             yield lecture.destroy();

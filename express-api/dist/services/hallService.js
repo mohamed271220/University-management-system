@@ -17,6 +17,7 @@ const Department_1 = __importDefault(require("../models/Department"));
 const Hall_1 = __importDefault(require("../models/Hall"));
 const uuid_1 = require("uuid");
 const Lecture_1 = __importDefault(require("../models/Lecture"));
+const CustomError_1 = require("../utils/CustomError");
 class HallService {
     constructor(hallModel = Hall_1.default) {
         this.hallModel = hallModel;
@@ -25,7 +26,7 @@ class HallService {
         return __awaiter(this, void 0, void 0, function* () {
             const department = yield Department_1.default.findByPk(departmentId);
             if (!department) {
-                throw new Error("Department not found");
+                throw new CustomError_1.CustomError("Department not found", 404);
             }
             const hall = yield this.hallModel.create({
                 id: (0, uuid_1.v4)(),
@@ -45,6 +46,9 @@ class HallService {
     getHallById(hallId) {
         return __awaiter(this, void 0, void 0, function* () {
             const hall = yield this.hallModel.findByPk(hallId);
+            if (!hall) {
+                throw new CustomError_1.CustomError("Hall not found", 404);
+            }
             return hall;
         });
     }
@@ -52,7 +56,7 @@ class HallService {
         return __awaiter(this, void 0, void 0, function* () {
             const hall = yield this.hallModel.findByPk(hallId);
             if (!hall) {
-                throw new Error("Hall not found");
+                throw new CustomError_1.CustomError("Hall not found", 404);
             }
             if (name)
                 hall.name = name;
@@ -61,7 +65,7 @@ class HallService {
             if (departmentId) {
                 const department = yield Department_1.default.findByPk(departmentId);
                 if (!department) {
-                    throw new Error("Department not found");
+                    throw new CustomError_1.CustomError("Department not found", 404);
                 }
                 hall.departmentId = departmentId;
             }
@@ -73,7 +77,7 @@ class HallService {
         return __awaiter(this, void 0, void 0, function* () {
             const hall = yield this.hallModel.findByPk(hallId);
             if (!hall) {
-                throw new Error("Hall not found");
+                throw new CustomError_1.CustomError("Hall not found", 404);
             }
             yield hall.destroy();
             return hall;
@@ -83,7 +87,7 @@ class HallService {
         return __awaiter(this, void 0, void 0, function* () {
             const hall = yield this.hallModel.findByPk(hallId);
             if (!hall) {
-                throw new Error("Hall not found");
+                throw new CustomError_1.CustomError("Hall not found", 404);
             }
             const lectures = yield Lecture_1.default.findAll({
                 where: { hallId },

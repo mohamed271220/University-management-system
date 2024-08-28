@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAttendance = exports.updateAttendanceStatus = exports.getAttendanceByStudentAndLecture = exports.getAttendanceByLecture = exports.getAttendanceByStudent = exports.getAllAttendances = exports.createAttendance = void 0;
 const attendanceService_1 = require("../services/attendanceService");
 const attendanceService = new attendanceService_1.AttendanceService();
-const createAttendance = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createAttendance = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         const { studentId, lectureId, status, lectureDate } = req.body;
@@ -26,13 +26,11 @@ const createAttendance = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     catch (error) {
         console.log(error.message);
-        res
-            .status(500)
-            .json({ message: "Internal server error: " + error.message });
+        next(error);
     }
 });
 exports.createAttendance = createAttendance;
-const getAllAttendances = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllAttendances = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit) : 10;
         const offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -45,11 +43,11 @@ const getAllAttendances = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
     catch (error) {
         console.log(error.message);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAllAttendances = getAllAttendances;
-const getAttendanceByStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAttendanceByStudent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { studentId } = req.params;
         if (!studentId) {
@@ -61,15 +59,12 @@ const getAttendanceByStudent = (req, res) => __awaiter(void 0, void 0, void 0, f
             .json({ message: "Attendance records found", attendanceRecords });
     }
     catch (error) {
-        if (error.message === "Attendance records not found") {
-            return res.status(404).json({ message: error.message });
-        }
         console.log(error.message);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAttendanceByStudent = getAttendanceByStudent;
-const getAttendanceByLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAttendanceByLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { lectureId } = req.params;
         if (!lectureId) {
@@ -81,15 +76,12 @@ const getAttendanceByLecture = (req, res) => __awaiter(void 0, void 0, void 0, f
             .json({ message: "Attendance records found", attendanceRecords });
     }
     catch (error) {
-        if (error.message === "Attendance records not found") {
-            return res.status(404).json({ message: error.message });
-        }
         console.log(error.message);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAttendanceByLecture = getAttendanceByLecture;
-const getAttendanceByStudentAndLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAttendanceByStudentAndLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { studentId, lectureId } = req.params;
         if (!studentId || !lectureId) {
@@ -101,15 +93,12 @@ const getAttendanceByStudentAndLecture = (req, res) => __awaiter(void 0, void 0,
             .json({ message: "Attendance record found", attendanceRecord });
     }
     catch (error) {
-        if (error.message === "Attendance record not found") {
-            return res.status(404).json({ message: error.message });
-        }
         console.log(error.message);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAttendanceByStudentAndLecture = getAttendanceByStudentAndLecture;
-const updateAttendanceStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateAttendanceStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { attendanceRecordId } = req.params;
         const { status } = req.body;
@@ -123,11 +112,11 @@ const updateAttendanceStatus = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     catch (error) {
         console.log(error.message);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.updateAttendanceStatus = updateAttendanceStatus;
-const deleteAttendance = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteAttendance = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { attendanceRecordId } = req.params;
         if (!attendanceRecordId) {
@@ -138,7 +127,7 @@ const deleteAttendance = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     catch (error) {
         console.log(error.message);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.deleteAttendance = deleteAttendance;

@@ -14,10 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SemesterService = void 0;
 const Grade_1 = __importDefault(require("../models/Grade"));
+const Semester_1 = __importDefault(require("../models/Semester"));
 const uuid_1 = require("uuid");
 const StudentCourses_1 = __importDefault(require("../models/StudentCourses"));
+const CustomError_1 = require("../utils/CustomError");
 class SemesterService {
-    constructor(semesterModel) {
+    constructor(semesterModel = Semester_1.default) {
         this.semesterModel = semesterModel;
     }
     createSemester(semesterName, startDate, endDate) {
@@ -35,7 +37,7 @@ class SemesterService {
         return __awaiter(this, void 0, void 0, function* () {
             const semesters = yield this.semesterModel.findAll();
             if (!semesters) {
-                throw new Error("No semesters found");
+                throw new CustomError_1.CustomError("No semesters found", 404);
             }
             return semesters;
         });
@@ -44,7 +46,7 @@ class SemesterService {
         return __awaiter(this, void 0, void 0, function* () {
             const semester = yield this.semesterModel.findByPk(id);
             if (!semester) {
-                throw new Error("Semester not found");
+                throw new CustomError_1.CustomError("Semester not found", 404);
             }
             return semester;
         });
@@ -53,7 +55,7 @@ class SemesterService {
         return __awaiter(this, void 0, void 0, function* () {
             const semester = yield this.semesterModel.findByPk(id);
             if (!semester) {
-                throw new Error("Semester not found");
+                throw new CustomError_1.CustomError("Semester not found", 404);
             }
             // console.log(semesterName, startDate, endDate);
             if (semesterName !== undefined) {
@@ -73,7 +75,7 @@ class SemesterService {
         return __awaiter(this, void 0, void 0, function* () {
             const semester = yield this.semesterModel.findByPk(id);
             if (!semester) {
-                throw new Error("Semester not found");
+                throw new CustomError_1.CustomError("Semester not found", 404);
             }
             yield semester.destroy();
             return semester;
@@ -81,26 +83,34 @@ class SemesterService {
     }
     getSemesterGrades(semesterId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const semester = yield Semester_1.default.findByPk(semesterId);
+            if (!semester) {
+                throw new CustomError_1.CustomError("Semester not found", 404);
+            }
             const grades = yield Grade_1.default.findAll({
                 where: {
                     semesterId,
                 },
             });
             if (!grades) {
-                throw new Error("No grades found for this semester");
+                throw new CustomError_1.CustomError("No grades found for this semester", 404);
             }
             return grades;
         });
     }
     getStudentEnrolledCourses(semesterId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const semester = yield Semester_1.default.findByPk(semesterId);
+            if (!semester) {
+                throw new CustomError_1.CustomError("Semester not found", 404);
+            }
             const enrollments = yield StudentCourses_1.default.findAll({
                 where: {
                     semesterId,
                 },
             });
             if (!enrollments) {
-                throw new Error("No student enrollments found for this semester");
+                throw new CustomError_1.CustomError("No student enrollments found for this semester", 404);
             }
             return enrollments;
         });

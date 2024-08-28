@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getHistoryByLecture = exports.archiveLecture = exports.getAttendanceByLecture = exports.deleteLecture = exports.updateLecture = exports.getLectureById = exports.getAllLectures = exports.createLecture = void 0;
 const lectureService_1 = require("../services/lectureService");
 const lectureService = new lectureService_1.LectureService();
-const createLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { professorId, hallId, courseId, dayOfWeek, startTime, endTime, recurrencePattern, recurrenceEndDate, } = req.body;
         const lecture = yield lectureService.createLecture({
@@ -25,18 +25,15 @@ const createLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             recurrencePattern,
             recurrenceEndDate,
         });
-        res.status(201).json(lecture);
+        res.status(201).json({ message: "Lecture created successfully", lecture });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(404).json({ message: error.message });
-        }
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.createLecture = createLecture;
-const getAllLectures = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllLectures = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit) : 10;
         const offset = req.query.offset ? parseInt(req.query.offset) : 0;
@@ -50,11 +47,11 @@ const getAllLectures = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAllLectures = getAllLectures;
-const getLectureById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLectureById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { lectureId } = req.params;
         const lecture = yield lectureService.getLectureById(lectureId);
@@ -64,11 +61,11 @@ const getLectureById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getLectureById = getLectureById;
-const updateLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { lectureId } = req.params;
         const { professorId, hallId, courseId, dayOfWeek, startTime, endTime, recurrencePattern, recurrenceEndDate, } = req.body;
@@ -88,30 +85,24 @@ const updateLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(404).json({ message: error.message });
-        }
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.updateLecture = updateLecture;
-const deleteLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { lectureId } = req.params;
         yield lectureService.deleteLecture(lectureId);
         res.status(200).json({ message: "Lecture deleted successfully" });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(404).json({ message: error.message });
-        }
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.deleteLecture = deleteLecture;
-const getAttendanceByLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAttendanceByLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { lectureId } = req.params;
         const limit = req.query.limit ? parseInt(req.query.limit) : 10;
@@ -125,27 +116,24 @@ const getAttendanceByLecture = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAttendanceByLecture = getAttendanceByLecture;
-const archiveLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const archiveLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { lectureId } = req.params;
         yield lectureService.archiveLecture(lectureId);
         res.status(200).json({ message: "Lecture archived successfully" });
     }
     catch (error) {
-        if (error.message) {
-            return res.status(404).json({ message: error.message });
-        }
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.archiveLecture = archiveLecture;
 // TODO
-const getHistoryByLecture = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getHistoryByLecture = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { lectureId } = req.params;
         const history = yield lectureService.getLectureHistory(lectureId);
@@ -155,7 +143,7 @@ const getHistoryByLecture = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getHistoryByLecture = getHistoryByLecture;

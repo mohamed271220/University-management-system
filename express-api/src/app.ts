@@ -27,8 +27,10 @@ import hallRouter from "./routes/hall";
 import lectureRouter from "./routes/lecture";
 import timetableRouter from "./routes/timetable";
 import attendanceRouter from "./routes/attendance";
+import departmentYearCourseRouter from "./routes/departmentYearCourses";
 
-import swaggerRouter, { swaggerSpec } from "./config/swagger";
+import swaggerRouter from "./config/swagger";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 app.use(express.json());
@@ -69,7 +71,9 @@ app.use("/api/v1/halls", hallRouter);
 app.use("/api/v1/lectures", lectureRouter);
 app.use("/api/v1/timetables", timetableRouter);
 app.use("/api/v1/attendances", attendanceRouter);
+app.use("/api/v1/departmentYearCourses", departmentYearCourseRouter);
 
+app.use(errorHandler);
 
 // Swagger docs route
 app.use("/api/v1/official-docs/express-api-docs", swaggerRouter);

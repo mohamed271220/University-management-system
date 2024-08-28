@@ -16,6 +16,7 @@ exports.StudentYearService = void 0;
 const StudentYears_1 = __importDefault(require("../models/StudentYears"));
 const uuid_1 = require("uuid");
 const User_1 = __importDefault(require("../models/User"));
+const CustomError_1 = require("../utils/CustomError");
 class StudentYearService {
     constructor(studentYearModel = StudentYears_1.default) {
         this.studentYearModel = studentYearModel;
@@ -23,15 +24,21 @@ class StudentYearService {
     createStudentYear(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const { year, studentId, effectiveDate, departmentId } = data;
-            const existingStudentYear = yield this.studentYearModel.findOne({
-                where: { studentId, effectiveDate },
-            });
+            const [existingStudentYear, student] = yield Promise.all([
+                this.studentYearModel.findOne({
+                    where: { studentId, effectiveDate },
+                }),
+                User_1.default.findOne({ where: { id: studentId } }),
+            ]);
+            // const existingStudentYear = await this.studentYearModel.findOne({
+            //   where: { studentId, effectiveDate },
+            // });
             if (existingStudentYear) {
-                throw new Error("Student year already exists");
+                throw new CustomError_1.CustomError("Student year already exists", 400);
             }
-            const student = yield User_1.default.findOne({ where: { id: studentId } });
+            // const student = await User.findOne({ where: { id: studentId } });
             if (!student || student.role !== "Student") {
-                throw new Error("Student not found");
+                throw new CustomError_1.CustomError("Student not found", 404);
             }
             const newStudentYear = yield this.studentYearModel.create({
                 id: (0, uuid_1.v4)(),
@@ -51,11 +58,15 @@ class StudentYearService {
     }
     getYearRecordsByStudent(studentId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const student = yield User_1.default.findByPk(studentId);
+            if (!student || student.role !== "Student") {
+                throw new CustomError_1.CustomError("Student not found", 404);
+            }
             const studentYears = yield this.studentYearModel.findAll({
                 where: { studentId },
             });
             if (!studentYears) {
-                throw new Error("no student year records not found");
+                throw new CustomError_1.CustomError("no student year records not found", 404);
             }
             return studentYears;
         });
@@ -65,7 +76,7 @@ class StudentYearService {
             const { year, studentId, effectiveDate, departmentId } = data;
             const studentYear = yield this.studentYearModel.findOne({ where: { id } });
             if (!studentYear) {
-                throw new Error("Student year not found");
+                throw new CustomError_1.CustomError("Student year not found", 404);
             }
             if (year !== undefined)
                 studentYear.year = year;
@@ -83,7 +94,7 @@ class StudentYearService {
         return __awaiter(this, void 0, void 0, function* () {
             const studentYear = yield this.studentYearModel.findOne({ where: { id } });
             if (!studentYear) {
-                throw new Error("Student year not found");
+                throw new CustomError_1.CustomError("Student year not found", 404);
             }
             yield studentYear.destroy();
             return studentYear;

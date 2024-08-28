@@ -18,6 +18,7 @@ const Department_1 = __importDefault(require("../models/Department"));
 const uuid_1 = require("uuid");
 const Hall_1 = __importDefault(require("../models/Hall"));
 const sequelize_1 = require("sequelize");
+const CustomError_1 = require("../utils/CustomError");
 class DepartmentService {
     constructor(departmentModel = Department_1.default) {
         this.departmentModel = departmentModel;
@@ -29,7 +30,7 @@ class DepartmentService {
                 where: { [sequelize_1.Op.or]: [{ code }, { name }] },
             });
             if (exitingDepartment)
-                throw new Error("Department already exists");
+                throw new CustomError_1.CustomError("Department already exists", 400);
             const department = yield this.departmentModel.create({
                 id: (0, uuid_1.v4)(),
                 name,
@@ -59,6 +60,8 @@ class DepartmentService {
                 nextPage: hasNextPage ? currentPage + 1 : null,
                 previousPage: hasPreviousPage ? currentPage - 1 : null,
             };
+            if (!departments)
+                throw new CustomError_1.CustomError("Departments not found", 404);
             return { departments, pagination };
             // return departments;
         });
@@ -66,6 +69,8 @@ class DepartmentService {
     getDepartmentById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const department = yield this.departmentModel.findByPk(id);
+            if (!department)
+                throw new CustomError_1.CustomError("Department not found", 404);
             return department;
         });
     }
@@ -73,7 +78,7 @@ class DepartmentService {
         return __awaiter(this, void 0, void 0, function* () {
             const department = yield this.departmentModel.findByPk(id);
             if (!department)
-                throw new Error("Department not found");
+                throw new CustomError_1.CustomError("Department not found", 404);
             const existingDepartment = yield this.departmentModel.findOne({
                 where: {
                     [sequelize_1.Op.or]: [{ code: updates.code || "" }, { name: updates.name || "" }],
@@ -82,10 +87,10 @@ class DepartmentService {
             });
             if (existingDepartment) {
                 if (existingDepartment.code === updates.code) {
-                    throw new Error("Department code already exists");
+                    throw new CustomError_1.CustomError("Department code already exists", 400);
                 }
                 if (existingDepartment.name === updates.name) {
-                    throw new Error("Department name already exists");
+                    throw new CustomError_1.CustomError("Department name already exists", 400);
                 }
             }
             if (updates.name)
@@ -100,27 +105,33 @@ class DepartmentService {
         return __awaiter(this, void 0, void 0, function* () {
             const department = yield this.departmentModel.findByPk(id);
             if (!department)
-                throw new Error("Department not found");
+                throw new CustomError_1.CustomError("Department not found", 404);
             yield department.destroy();
         });
     }
     getCoursesByDepartment(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            const department = yield this.departmentModel.findByPk(id);
+            if (!department)
+                throw new CustomError_1.CustomError("Department not found", 404);
             const courses = yield Course_1.default.findAll({
                 where: { departmentId: id },
             });
-            if (!courses)
-                throw new Error("Department has no courses");
+            if (!courses.length)
+                throw new CustomError_1.CustomError("Department has no courses", 404);
             return courses;
         });
     }
     getHallsByDepartment(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            const departmentId = yield this.departmentModel.findByPk(id);
+            if (!departmentId)
+                throw new CustomError_1.CustomError("Department not found", 404);
             const department = yield Hall_1.default.findAll({
                 where: { departmentId: id },
             });
-            if (!department)
-                throw new Error("Department has no halls");
+            if (!department.length)
+                throw new CustomError_1.CustomError("Department has no halls", 404);
             return department;
         });
     }

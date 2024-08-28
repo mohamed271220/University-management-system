@@ -2,6 +2,7 @@ import Department from "../models/Department";
 import Hall from "../models/Hall";
 import { v4 as uuid } from "uuid";
 import Lecture from "../models/Lecture";
+import { CustomError } from "../utils/CustomError";
 
 export class HallService {
   constructor(private hallModel: typeof Hall = Hall) {}
@@ -9,7 +10,7 @@ export class HallService {
   async createHall(name: string, isLab: boolean, departmentId: string) {
     const department = await Department.findByPk(departmentId);
     if (!department) {
-      throw new Error("Department not found");
+      throw new CustomError("Department not found", 404);
     }
     const hall = await this.hallModel.create({
       id: uuid(),
@@ -27,6 +28,9 @@ export class HallService {
 
   async getHallById(hallId: string) {
     const hall = await this.hallModel.findByPk(hallId);
+    if (!hall) {
+      throw new CustomError("Hall not found", 404);
+    }
     return hall;
   }
 
@@ -38,7 +42,7 @@ export class HallService {
   ) {
     const hall = await this.hallModel.findByPk(hallId);
     if (!hall) {
-      throw new Error("Hall not found");
+      throw new CustomError("Hall not found", 404);
     }
 
     if (name) hall.name = name;
@@ -46,7 +50,7 @@ export class HallService {
     if (departmentId) {
       const department = await Department.findByPk(departmentId);
       if (!department) {
-        throw new Error("Department not found");
+        throw new CustomError("Department not found", 404);
       }
       hall.departmentId = departmentId;
     }
@@ -57,7 +61,7 @@ export class HallService {
   async deleteHall(hallId: string) {
     const hall = await this.hallModel.findByPk(hallId);
     if (!hall) {
-      throw new Error("Hall not found");
+      throw new CustomError("Hall not found", 404);
     }
     await hall.destroy();
     return hall;
@@ -66,7 +70,7 @@ export class HallService {
   async getLecturesByHall(hallId: string) {
     const hall = await this.hallModel.findByPk(hallId);
     if (!hall) {
-      throw new Error("Hall not found");
+      throw new CustomError("Hall not found", 404);
     }
     const lectures = await Lecture.findAll({
       where: { hallId },

@@ -15,19 +15,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProfessorCourseService = void 0;
 const Course_1 = __importDefault(require("../models/Course"));
 const User_1 = __importDefault(require("../models/User"));
+const CustomError_1 = require("../utils/CustomError");
 class ProfessorCourseService {
     constructor(professorCourseModel) {
         this.professorCourseModel = professorCourseModel;
     }
     createProfessorCourse(courseId, professorId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const professor = yield User_1.default.findByPk(professorId);
+            const [professor, course] = yield Promise.all([
+                User_1.default.findByPk(professorId),
+                Course_1.default.findByPk(courseId),
+            ]);
+            // const professor = await User.findByPk(professorId);
             if (!professor || professor.role !== "Professor") {
-                throw new Error("Professor not found");
+                throw new CustomError_1.CustomError("Professor not found", 404);
             }
-            const course = yield Course_1.default.findByPk(courseId);
+            // const course = await Course.findByPk(courseId);
             if (!course) {
-                throw new Error("Course not found");
+                throw new CustomError_1.CustomError("Course not found", 404);
             }
             const professorCourse = yield this.professorCourseModel.create({
                 courseId,
@@ -40,7 +45,7 @@ class ProfessorCourseService {
         return __awaiter(this, void 0, void 0, function* () {
             const course = yield Course_1.default.findByPk(courseId);
             if (!course) {
-                throw new Error("Course not found");
+                throw new CustomError_1.CustomError("Course not found", 404);
             }
             const courseProf = yield this.professorCourseModel.findAll({
                 where: { courseId },
@@ -58,7 +63,7 @@ class ProfessorCourseService {
         return __awaiter(this, void 0, void 0, function* () {
             const professor = yield User_1.default.findByPk(professorId);
             if (!professor || professor.role !== "Professor") {
-                throw new Error("Professor not found");
+                throw new CustomError_1.CustomError("Professor not found", 404);
             }
             const professorCourses = yield this.professorCourseModel.findAll({
                 where: { professorId },
@@ -106,19 +111,23 @@ class ProfessorCourseService {
     }
     deleteProfessorCourse(courseId, professorId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const course = yield Course_1.default.findByPk(courseId);
+            const [professor, course] = yield Promise.all([
+                User_1.default.findByPk(professorId),
+                Course_1.default.findByPk(courseId),
+            ]);
+            // const course = await Course.findByPk(courseId);
             if (!course) {
-                throw new Error("Course not found");
+                throw new CustomError_1.CustomError("Course not found", 404);
             }
-            const professor = yield User_1.default.findByPk(professorId);
+            // const professor = await User.findByPk(professorId);
             if (!professor || professor.role !== "Professor") {
-                throw new Error("Professor not found");
+                throw new CustomError_1.CustomError("Professor not found", 404);
             }
             const professorCourse = yield this.professorCourseModel.findOne({
                 where: { courseId, professorId },
             });
             if (!professorCourse) {
-                throw new Error("Professor course not found");
+                throw new CustomError_1.CustomError("Professor course not found", 404);
             }
             yield professorCourse.destroy();
         });

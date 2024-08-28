@@ -25,7 +25,7 @@ describe("getProfile", () => {
     it("should return the profile if found", () => __awaiter(void 0, void 0, void 0, function* () {
         const profile = { id: "1", firstName: "First", lastName: "Last" };
         profileService_1.ProfileService.prototype.getProfile.mockResolvedValue(profile);
-        yield (0, profile_1.getProfile)(req, res);
+        yield (0, profile_1.getProfile)(req, res, next);
         expect(profileService_1.ProfileService.prototype.getProfile).toHaveBeenCalledWith("1");
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
@@ -36,14 +36,14 @@ describe("getProfile", () => {
     it("should return a 404 status if profile not found", () => __awaiter(void 0, void 0, void 0, function* () {
         const errorMessage = "Profile not found";
         profileService_1.ProfileService.prototype.getProfile.mockRejectedValue(new Error(errorMessage));
-        yield (0, profile_1.getProfile)(req, res);
+        yield (0, profile_1.getProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
     }));
     it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
         const errorMessage = "Internal server error";
         profileService_1.ProfileService.prototype.getProfile.mockRejectedValue(new Error(errorMessage));
-        yield (0, profile_1.getProfile)(req, res);
+        yield (0, profile_1.getProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
     }));
@@ -61,7 +61,7 @@ describe("createProfile", () => {
     it("should create and return the profile", () => __awaiter(void 0, void 0, void 0, function* () {
         const profile = { id: "1", firstName: "First", lastName: "Last" };
         profileService_1.ProfileService.prototype.createProfile.mockResolvedValue(profile);
-        yield (0, profile_1.createProfile)(req, res);
+        yield (0, profile_1.createProfile)(req, res, next);
         expect(profileService_1.ProfileService.prototype.createProfile).toHaveBeenCalledWith("1", req.body);
         expect(res.status).toHaveBeenCalledWith(201);
         expect(res.json).toHaveBeenCalledWith({
@@ -72,21 +72,21 @@ describe("createProfile", () => {
     it("should return a 400 status if profile already exists", () => __awaiter(void 0, void 0, void 0, function* () {
         const errorMessage = "Profile already exists";
         profileService_1.ProfileService.prototype.createProfile.mockRejectedValue(new Error(errorMessage));
-        yield (0, profile_1.createProfile)(req, res);
+        yield (0, profile_1.createProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
     }));
     it("should return a 400 status if missing required profile data", () => __awaiter(void 0, void 0, void 0, function* () {
         const errorMessage = "Missing required profile data";
         profileService_1.ProfileService.prototype.createProfile.mockRejectedValue(new Error(errorMessage));
-        yield (0, profile_1.createProfile)(req, res);
+        yield (0, profile_1.createProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
     }));
     it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
         const errorMessage = "Internal server error";
         profileService_1.ProfileService.prototype.createProfile.mockRejectedValue(new Error(errorMessage));
-        yield (0, profile_1.createProfile)(req, res);
+        yield (0, profile_1.createProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
     }));
@@ -104,7 +104,7 @@ describe("updateProfile", () => {
     it("should update and return the profile", () => __awaiter(void 0, void 0, void 0, function* () {
         const profile = { id: "1", firstName: "First", lastName: "Last" };
         profileService_1.ProfileService.prototype.updateProfile.mockResolvedValue(profile);
-        yield (0, profile_1.updateProfile)(req, res);
+        yield (0, profile_1.updateProfile)(req, res, next);
         expect(profileService_1.ProfileService.prototype.updateProfile).toHaveBeenCalledWith("1", req.body);
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
@@ -115,7 +115,7 @@ describe("updateProfile", () => {
     it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
         const errorMessage = "Internal server error";
         profileService_1.ProfileService.prototype.updateProfile.mockRejectedValue(new Error(errorMessage));
-        yield (0, profile_1.updateProfile)(req, res);
+        yield (0, profile_1.updateProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
     }));
@@ -131,7 +131,7 @@ describe("deleteProfile", () => {
         next = jest.fn();
     });
     it("should delete the profile", () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, profile_1.deleteProfile)(req, res);
+        yield (0, profile_1.deleteProfile)(req, res, next);
         expect(profileService_1.ProfileService.prototype.deleteProfile).toHaveBeenCalledWith("1");
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
@@ -140,14 +140,14 @@ describe("deleteProfile", () => {
     }));
     it("should return a 401 status if unauthorized", () => __awaiter(void 0, void 0, void 0, function* () {
         req = { user: undefined };
-        yield (0, profile_1.deleteProfile)(req, res);
+        yield (0, profile_1.deleteProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({ message: "Unauthorized" });
     }));
     it("should return a 500 status if an error occurs", () => __awaiter(void 0, void 0, void 0, function* () {
         const errorMessage = "Internal server error";
         profileService_1.ProfileService.prototype.deleteProfile.mockRejectedValue(new Error(errorMessage));
-        yield (0, profile_1.deleteProfile)(req, res);
+        yield (0, profile_1.deleteProfile)(req, res, next);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
     }));

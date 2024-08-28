@@ -7,6 +7,7 @@ import User from "../models/User";
 import { v4 as uuid } from "uuid";
 import Attendance from "../models/Attendance";
 import LectureHistory from "../models/LectureHistory";
+import { CustomError } from "../utils/CustomError";
 
 export class LectureService {
   constructor(private lectureModel: typeof Lecture = Lecture) {}
@@ -19,13 +20,13 @@ export class LectureService {
     ]);
 
     if (!course) {
-      throw new Error("Course not found");
+      throw new CustomError("Course not found", 404);
     }
     if (!professor || professor.role !== "Professor") {
-      throw new Error("Professor not found");
+      throw new CustomError("Professor not found", 404);
     }
     if (!hall) {
-      throw new Error("Hall not found");
+      throw new CustomError("Hall not found", 404);
     }
 
     const isTimeValid = await this.lectureModel.findOne({
@@ -65,7 +66,10 @@ export class LectureService {
     });
 
     if (isTimeValid) {
-      throw new Error("Lecture already exists at this time in the same hall");
+      throw new CustomError(
+        "Lecture already exists at this time in the same hall",
+        400
+      );
     }
 
     const lecture = await this.lectureModel.create({
@@ -164,7 +168,7 @@ export class LectureService {
     });
 
     if (!lecture) {
-      throw new Error("Lecture not found");
+      throw new CustomError("Lecture not found", 404);
     }
 
     return lecture;
@@ -178,11 +182,12 @@ export class LectureService {
       Lecture.findByPk(id),
     ]);
 
-    if (!lecture) throw new Error("Lecture not found");
-    if (database.courseId && !course) throw new Error("Course not found");
+    if (!lecture) throw new CustomError("Lecture not found", 404);
+    if (database.courseId && !course)
+      throw new CustomError("Course not found", 404);
     if (database.professorId && (!professor || professor.role !== "Professor"))
-      throw new Error("Professor not found");
-    if (database.hallId && !hall) throw new Error("Hall not found");
+      throw new CustomError("Professor not found", 404);
+    if (database.hallId && !hall) throw new CustomError("Hall not found", 404);
 
     if (database.dayOfWeek || database.startTime || database.endTime) {
       const isTimeConflict = await this.lectureModel.findOne({
@@ -227,7 +232,7 @@ export class LectureService {
         },
       });
       if (isTimeConflict) {
-        throw new Error("Lecture already exists at this time");
+        throw new CustomError("Lecture already exists at this time", 400);
       }
     }
 
@@ -250,7 +255,7 @@ export class LectureService {
     const lecture = await this.lectureModel.findByPk(id);
 
     if (!lecture) {
-      throw new Error("Lecture not found");
+      throw new CustomError("Lecture not found", 404);
     }
 
     await lecture.destroy();
@@ -292,7 +297,7 @@ export class LectureService {
     const lecture = await this.lectureModel.findByPk(lectureId);
 
     if (!lecture) {
-      throw new Error("Lecture not found");
+      throw new CustomError("Lecture not found", 404);
     }
 
     const archivedLecture = await LectureHistory.create({

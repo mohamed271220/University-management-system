@@ -29,7 +29,7 @@ describe("getProfile", () => {
       profile
     );
 
-    await getProfile(req, res);
+    await getProfile(req, res, next);
 
     expect(ProfileService.prototype.getProfile).toHaveBeenCalledWith("1");
     expect(res.status).toHaveBeenCalledWith(200);
@@ -45,7 +45,7 @@ describe("getProfile", () => {
       new Error(errorMessage)
     );
 
-    await getProfile(req, res);
+    await getProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -57,7 +57,7 @@ describe("getProfile", () => {
       new Error(errorMessage)
     );
 
-    await getProfile(req, res);
+    await getProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -82,7 +82,7 @@ describe("createProfile", () => {
       profile
     );
 
-    await createProfile(req, res);
+    await createProfile(req, res, next);
 
     expect(ProfileService.prototype.createProfile).toHaveBeenCalledWith(
       "1",
@@ -101,7 +101,7 @@ describe("createProfile", () => {
       new Error(errorMessage)
     );
 
-    await createProfile(req, res);
+    await createProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -113,7 +113,7 @@ describe("createProfile", () => {
       new Error(errorMessage)
     );
 
-    await createProfile(req, res);
+    await createProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -125,7 +125,7 @@ describe("createProfile", () => {
       new Error(errorMessage)
     );
 
-    await createProfile(req, res);
+    await createProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -150,7 +150,7 @@ describe("updateProfile", () => {
       profile
     );
 
-    await updateProfile(req, res);
+    await updateProfile(req, res, next);
 
     expect(ProfileService.prototype.updateProfile).toHaveBeenCalledWith(
       "1",
@@ -169,7 +169,7 @@ describe("updateProfile", () => {
       new Error(errorMessage)
     );
 
-    await updateProfile(req, res);
+    await updateProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
@@ -189,7 +189,7 @@ describe("deleteProfile", () => {
   });
 
   it("should delete the profile", async () => {
-    await deleteProfile(req, res);
+    await deleteProfile(req, res, next);
 
     expect(ProfileService.prototype.deleteProfile).toHaveBeenCalledWith("1");
     expect(res.status).toHaveBeenCalledWith(200);
@@ -201,7 +201,7 @@ describe("deleteProfile", () => {
   it("should return a 401 status if unauthorized", async () => {
     req = { user: undefined };
 
-    await deleteProfile(req, res);
+    await deleteProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ message: "Unauthorized" });
@@ -213,7 +213,7 @@ describe("deleteProfile", () => {
       new Error(errorMessage)
     );
 
-    await deleteProfile(req, res);
+    await deleteProfile(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: errorMessage });
