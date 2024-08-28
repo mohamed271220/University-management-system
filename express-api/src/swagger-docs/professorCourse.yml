@@ -1,0 +1,389 @@
+openapi: 3.0.0
+info:
+  title: Professor-Course API
+  description: API for managing professor-course associations.
+  version: 1.0.0
+paths:
+  /api/v1/professorCourses/courses/{courseId}/professors/{professorId}:
+    post:
+      summary: Assign a Professor to Course
+      description: Adds a professor to a specific course. Accessible by admin and staff.
+      tags:
+        - ProfessorCourse
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          description: ID of the course
+          schema:
+            type: string
+        - name: professorId
+          in: path
+          required: true
+          description: ID of the professor
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - staff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId:
+                  type: string
+                  example: "1"
+                professorId:
+                  type: string
+                  example: "1"
+      responses:
+        '201':
+          description: Professor added to course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professor course created"
+                  professorCourse:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "uuid"
+                      courseId:
+                        type: string
+                        example: "1"
+                      professorId:
+                        type: string
+                        example: "1"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Course ID and Professor ID are required"
+        '404':
+          description: Course or professor not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Course not found"
+        '500':
+          description: Internal server error
+
+  /api/v1/professorCourses/courses/{courseId}/professors/{professorId}/:
+    delete:
+      summary: Remove a Professor from Course
+      description: Removes a professor from a specific course. Accessible by admin and staff.
+      tags:
+        - ProfessorCourse
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          description: ID of the course
+          schema:
+            type: string
+        - name: professorId
+          in: path
+          required: true
+          description: ID of the professor
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - staff
+      responses:
+        '200':
+          description: Professor removed from course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professor course deleted successfully"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Course ID and Professor ID are required"
+        '404':
+          description: Course or professor not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professor course not found"
+        '500':
+          description: Internal server error
+
+  /api/v1/professorCourses/allProfessorCourses:
+    get:
+      summary: Retrieve all professor courses (every professor-course association)
+      description: Retrieves all professor-courses. Accessible by admin and staff.
+      tags:
+        - ProfessorCourse
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - staff
+      responses:
+        '200':
+          description: List of all professor courses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "All courses"
+                  courses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "uuid"
+                        courseId:
+                          type: string
+                          example: "1"
+                        professorId:
+                          type: string
+                          example: "1"
+        '500':
+          description: Internal server error
+
+  /api/v1/professorCourses/{id}:
+    get:
+      summary: Retrieve a specific professor course by its ID
+      description: Retrieves a specific professor course by its ID. Accessible by admin and staff.
+      tags:
+        - ProfessorCourse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the professor course
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - staff
+      responses:
+        '200':
+          description: Professor course found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professor course found"
+                  professorCourse:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "uuid"
+                      courseId:
+                        type: string
+                        example: "1"
+                      professorId:
+                        type: string
+                        example: "1"
+        '404':
+          description: Professor course not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professor course not found"
+        '500':
+          description: Internal server error
+
+  /api/v1/professorCourses/professors/{professorId}/courses:
+    get:
+      summary: Retrieve all courses associated with a specific professor
+      description: Retrieves all courses associated with a specific professor. Accessible by authenticated users.
+      tags:
+        - ProfessorCourse
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID of the professor
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all professor courses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "All professor courses"
+                  professorCourses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "uuid"
+                        courseId:
+                          type: string
+                          example: "1"
+                        professorId:
+                          type: string
+                          example: "1"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professor ID is required"
+        '404':
+          description: Professor not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professor not found"
+        '500':
+          description: Internal server error
+
+  /api/v1/professorCourses/courses/{courseId}/professors:
+    get:
+      summary: Retrieve all professors associated with a specific course
+      description: Retrieves all professors associated with a specific course. Accessible by authenticated users.
+      tags:
+        - ProfessorCourse
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          description: ID of the course
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all professors by course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Professors found"
+                  professors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "uuid"
+                        courseId:
+                          type: string
+                          example: "1"
+                        professorId:
+                          type: string
+                          example: "1"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Course ID is required"
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Course not found"
+        '500':
+          description: Internal server error
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ProfessorCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "uuid"
+        courseId:
+          type: string
+          example: "1"
+        professorId:
+          type: string
+          example: "1"
+    Error:
+      type: object
+      properties:
+        message:
+          type: string

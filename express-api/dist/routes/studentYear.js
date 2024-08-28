@@ -31,9 +31,11 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const studentYearController = __importStar(require("../controllers/studentYear"));
 const router = express_1.default.Router();
+// /api/v1/studentYears
 router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), studentYearController.createStudentYear);
-router.get("/", authMiddleware_1.authenticateToken, studentYearController.getAllStudentYears);
+router.get("/allStudentYears", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), studentYearController.getAllStudentYears);
+//get all student years records by student id
 router.get("/student/:studentId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), studentYearController.getYearRecordsByStudent);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), studentYearController.updateStudentYear);
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), studentYearController.deleteStudentYear);
+router.put("/:studentYearId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), studentYearController.updateStudentYear);
+router.delete("/:studentYearId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), studentYearController.deleteStudentYear);
 exports.default = router;

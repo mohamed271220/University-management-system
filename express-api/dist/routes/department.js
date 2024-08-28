@@ -30,13 +30,14 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const departmentController = __importStar(require("../controllers/department"));
+const departmentValidators_1 = require("../middleware/validators/departmentValidators");
 const router = express_1.default.Router();
 // /api/v1/departments
-router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentController.createDepartment);
+router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentValidators_1.validateDepartment, departmentController.createDepartment);
 router.get("/allDepartments", authMiddleware_1.authenticateToken, departmentController.getAllDepartments);
 router.get("/:id", authMiddleware_1.authenticateToken, departmentController.getDepartmentById);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentController.updateDepartment);
+router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentValidators_1.validateUpdateDepartment, departmentController.updateDepartment);
 router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentController.deleteDepartment);
-router.get("/:id/course", authMiddleware_1.authenticateToken, departmentController.getCoursesByDepartment);
+router.get("/:id/courses", authMiddleware_1.authenticateToken, departmentController.getCoursesByDepartment);
 router.get("/:id/halls", authMiddleware_1.authenticateToken, departmentController.getHallsByDepartment);
 exports.default = router;

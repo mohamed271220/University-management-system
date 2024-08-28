@@ -29,13 +29,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const profileController = __importStar(require("../controllers/profile"));
+const profileValidators_1 = require("../middleware/validators/profileValidators");
 const router = express_1.default.Router();
-// ✅
+// User gets their profile
 router.get("/", authMiddleware_1.authenticateToken, profileController.getProfile);
-// ✅
-router.post("/create", authMiddleware_1.authenticateToken, profileController.createProfile);
-// ✅
-router.put("/update", authMiddleware_1.authenticateToken, profileController.updateProfile);
-// ✅
+// User creates their profile
+router.post("/create", authMiddleware_1.authenticateToken, profileValidators_1.validateProfile, profileController.createProfile);
+// User updates their profile
+router.put("/update", authMiddleware_1.authenticateToken, profileValidators_1.updateProfileValidation, profileController.updateProfile);
+// User deletes their profile
 router.delete("/delete", authMiddleware_1.authenticateToken, profileController.deleteProfile);
 exports.default = router;

@@ -26,6 +26,15 @@ StudentYear.init({
         type: sequelize_1.DataTypes.ENUM("1st Year", "2nd Year", "3rd Year", "4th Year"),
         allowNull: false,
     },
+    departmentId: {
+        type: sequelize_1.DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: "departments",
+            key: "id",
+        },
+        onDelete: "CASCADE",
+    },
     effectiveDate: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false,
@@ -50,6 +59,7 @@ StudentYear.init({
         },
         { fields: ["studentId"] },
         { fields: ["year"] },
+        { fields: ["departmentId"] },
     ],
 });
 exports.default = StudentYear;

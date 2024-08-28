@@ -11,70 +11,70 @@ Lecture.init({
     id: {
         type: sequelize_1.DataTypes.UUID,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
     },
     courseId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'courses',
-            key: 'id'
+            model: "courses",
+            key: "id",
         },
-        onDelete: 'CASCADE'
+        onDelete: "CASCADE",
     },
     professorId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'users',
-            key: 'id'
+            model: "users",
+            key: "id",
         },
-        onDelete: 'SET NULL'
+        onDelete: "SET NULL",
     },
     hallId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'halls',
-            key: 'id'
+            model: "halls",
+            key: "id",
         },
-        onDelete: 'SET NULL'
+        onDelete: "SET NULL",
     },
     dayOfWeek: {
-        type: sequelize_1.DataTypes.ENUM('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'),
-        allowNull: false
+        type: sequelize_1.DataTypes.ENUM("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+        allowNull: false,
     },
     startTime: {
         type: sequelize_1.DataTypes.TIME,
-        allowNull: false
+        allowNull: false,
     },
     endTime: {
         type: sequelize_1.DataTypes.TIME,
-        allowNull: false
+        allowNull: false,
     },
     recurrencePattern: {
-        type: sequelize_1.DataTypes.TEXT
+        type: sequelize_1.DataTypes.TEXT,
     },
     recurrenceEndDate: {
-        type: sequelize_1.DataTypes.DATE
+        type: sequelize_1.DataTypes.DATE,
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
+        defaultValue: sequelize_1.DataTypes.NOW,
     },
     updatedAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
-    }
+        defaultValue: sequelize_1.DataTypes.NOW,
+    },
 }, {
     sequelize: database_1.default,
-    modelName: 'Lecture',
-    tableName: 'lectures',
+    modelName: "Lecture",
+    tableName: "lectures",
     timestamps: true,
     indexes: [
-        { fields: ['professorId'] },
-        { fields: ['hallId'] },
-        { fields: ['courseId'] }
-    ]
+        { fields: ["professorId"] },
+        { fields: ["hallId"] },
+        { fields: ["courseId"] },
+    ],
 });
 exports.default = Lecture;

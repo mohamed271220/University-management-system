@@ -28,19 +28,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
-const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const timetableController = __importStar(require("../controllers/timetable"));
 const router = express_1.default.Router();
 // /api/v1/timetables
-// Create a new timetable entry.
-router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), timetableController.createTimetable);
-router.get("/allTimetables", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), timetableController.getAllTimetables);
-router.get("/departments/:departmentId", authMiddleware_1.authenticateToken, timetableController.getTimetableByDepartment);
-// student or staff gets the timetable by student id (but the id should match the logged user if it's a student)
-router.get("/student/:studentId", authMiddleware_1.authenticateToken, timetableController.getTimetableByStudent);
-router.get("/professors/:professorId", authMiddleware_1.authenticateToken, timetableController.getTimetableByProfessor);
-router.get("halls/:hallId", authMiddleware_1.authenticateToken, timetableController.getTimetableByHall);
-router.get("/lectures/:lectureId", authMiddleware_1.authenticateToken, timetableController.getTimetableByLecture);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), timetableController.updateTimetable);
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), timetableController.deleteTimetable);
+// get student timetable
+router.get("/students/:studentId/:semesterId", authMiddleware_1.authenticateToken, timetableController.getStudentTimetable);
+// get professor timetable
+router.get("/professors/:professorId", authMiddleware_1.authenticateToken, timetableController.getProfessorTimetable);
+// get the timetable for a department
+router.get("/departments/:departmentId", authMiddleware_1.authenticateToken, timetableController.getDepartmentTimetable);
+// get the timetable for a hall
+router.get("/halls/:hallId", authMiddleware_1.authenticateToken, timetableController.getHallTimetable);
+// get the timetable for a certain class (student year) in a department
+router.get("/departments/:departmentId/years", authMiddleware_1.authenticateToken, timetableController.getDepartmentYearTimetable);
 exports.default = router;

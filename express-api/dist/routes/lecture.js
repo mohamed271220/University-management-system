@@ -33,12 +33,15 @@ const lectureController = __importStar(require("../controllers/lecture"));
 const router = express_1.default.Router();
 // /api/v1/lectures
 router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), lectureController.createLecture);
-router.get("/allLectures", authMiddleware_1.authenticateToken, lectureController.getAllLectures);
-router.get("/:id", authMiddleware_1.authenticateToken, lectureController.getLectureById);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), lectureController.updateLecture);
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), lectureController.deleteLecture);
-//  Retrieve attendance records for a specific lecture by its ID.
-router.get("/:id/attendance", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), lectureController.getAttendanceByLecture);
-// Retrieve historical records for a specific lecture by its ID.
-router.get("/:id/history", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), lectureController.getHistoryByLecture);
+// TODOs add day based filters
+router.get("/allLectures", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), lectureController.getAllLectures);
+router.get("/:lectureId", authMiddleware_1.authenticateToken, lectureController.getLectureById);
+router.put("/:lectureId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), lectureController.updateLecture);
+router.delete("/:lectureId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), lectureController.deleteLecture);
+//  Retrieve attendance records for a specific lecture by its LECTUREID.
+router.get("/:lectureId/attendance", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), lectureController.getAttendanceByLecture);
+// Archive a lecture by its LECTUREID.
+router.put("/:lectureId/archive", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), lectureController.archiveLecture);
+// Retrieve historical records for a specific lecture by its LECTUREID.
+router.get("/:lectureId/archive/history", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), lectureController.getHistoryByLecture);
 exports.default = router;

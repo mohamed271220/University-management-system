@@ -11,65 +11,65 @@ LectureHistory.init({
     id: {
         type: sequelize_1.DataTypes.UUID,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
     },
     lectureId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'lectures',
-            key: 'id'
+            model: "lectures",
+            key: "id",
         },
-        onDelete: 'CASCADE'
+        onDelete: "CASCADE",
     },
     courseId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'courses',
-            key: 'id'
+            model: "courses",
+            key: "id",
         },
-        onDelete: 'CASCADE'
+        onDelete: "CASCADE",
     },
     professorId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'users',
-            key: 'id'
+            model: "users",
+            key: "id",
         },
-        onDelete: 'SET NULL'
+        onDelete: "SET NULL",
     },
     hallId: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'halls',
-            key: 'id'
+            model: "halls",
+            key: "id",
         },
-        onDelete: 'SET NULL'
+        onDelete: "SET NULL",
     },
     dayOfWeek: {
-        type: sequelize_1.DataTypes.ENUM('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday')
+        type: sequelize_1.DataTypes.ENUM("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
     },
     startTime: {
-        type: sequelize_1.DataTypes.TIME
+        type: sequelize_1.DataTypes.TIME,
     },
     endTime: {
-        type: sequelize_1.DataTypes.TIME
+        type: sequelize_1.DataTypes.TIME,
     },
     action: {
-        type: sequelize_1.DataTypes.ENUM('Created', 'Updated', 'Deleted'),
-        allowNull: false
+        type: sequelize_1.DataTypes.ENUM("Created", "Updated", "Deleted", "Archived"),
+        allowNull: false,
     },
     timestamp: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
-    }
+        defaultValue: sequelize_1.DataTypes.NOW,
+    },
 }, {
     sequelize: database_1.default,
-    modelName: 'LectureHistory',
-    tableName: 'lecture_history',
-    timestamps: false
+    modelName: "LectureHistory",
+    tableName: "lecture_history",
+    timestamps: false,
 });
 exports.default = LectureHistory;

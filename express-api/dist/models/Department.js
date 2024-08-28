@@ -11,29 +11,30 @@ Department.init({
     id: {
         type: sequelize_1.DataTypes.UUID,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
     },
     name: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false
+        unique: true,
+        allowNull: false,
     },
     code: {
         type: sequelize_1.DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
+        defaultValue: sequelize_1.DataTypes.NOW,
     },
     updatedAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
-    }
+        defaultValue: sequelize_1.DataTypes.NOW,
+    },
 }, {
     sequelize: database_1.default,
-    modelName: 'Department',
-    tableName: 'departments',
-    timestamps: true
+    modelName: "Department",
+    tableName: "departments",
+    timestamps: true,
 });
 exports.default = Department;

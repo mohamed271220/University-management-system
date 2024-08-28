@@ -30,12 +30,12 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const courseController = __importStar(require("../controllers/course"));
+const courseValidators_1 = require("../middleware/validators/courseValidators");
 const router = express_1.default.Router();
-// /api/v1/courses
-router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseController.createCourse);
+router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseValidators_1.validateCourse, courseController.createCourse);
 router.get("/allCourses", authMiddleware_1.authenticateToken, courseController.getAllCourses);
 router.get("/:id", authMiddleware_1.authenticateToken, courseController.getCourseById);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseController.updateCourse);
+router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseValidators_1.validateUpdateCourse, courseController.updateCourse);
 router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseController.deleteCourse);
 router.get("/:id/lectures", authMiddleware_1.authenticateToken, courseController.getLecturesByCourseId);
 exports.default = router;

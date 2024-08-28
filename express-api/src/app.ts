@@ -1,10 +1,11 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import dbConnection from "./config/database";
 import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import swaggerUi from "swagger-ui-express";
 
 dotenv.config();
 
@@ -21,8 +22,15 @@ import departmentRouter from "./routes/department";
 import professorCourseRouter from "./routes/professorCourse";
 import studentCourseRouter from "./routes/studentCourse";
 import semesterRouter from "./routes/semester";
+import studentYearRouter from "./routes/studentYear";
+import hallRouter from "./routes/hall";
+import lectureRouter from "./routes/lecture";
+import timetableRouter from "./routes/timetable";
+import attendanceRouter from "./routes/attendance";
+import departmentYearCourseRouter from "./routes/departmentYearCourses";
 
 import swaggerRouter from "./config/swagger";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 app.use(express.json());
@@ -58,18 +66,17 @@ app.use("/api/v1/departments", departmentRouter);
 app.use("/api/v1/professorCourses", professorCourseRouter);
 app.use("/api/v1/studentCourses", studentCourseRouter);
 app.use("/api/v1/semesters", semesterRouter);
+app.use("/api/v1/studentYears", studentYearRouter);
+app.use("/api/v1/halls", hallRouter);
+app.use("/api/v1/lectures", lectureRouter);
+app.use("/api/v1/timetables", timetableRouter);
+app.use("/api/v1/attendances", attendanceRouter);
+app.use("/api/v1/departmentYearCourses", departmentYearCourseRouter);
 
+app.use(errorHandler);
 
-app.get(
-  "/protected",
-  authenticateToken,
-  authorizeRoles("admin"),
-  (req, res) => {
-    res.send("This is a protected route for admin users.");
-  }
-);
-
-app.use("/api-doc", swaggerRouter);
+// Swagger docs route
+app.use("/api/v1/official-docs/express-api-docs", swaggerRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

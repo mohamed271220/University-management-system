@@ -14,47 +14,50 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.getUserById = exports.getAllUsers = void 0;
 const userService_1 = __importDefault(require("../services/userService"));
-const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const userService = new userService_1.default();
+const getAllUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit) : 10;
         const offset = req.query.offset ? parseInt(req.query.offset) : 0;
-        const users = yield userService_1.default.getAllUsers(limit, offset);
-        res.status(200).json({ message: "Users retrieved successfully", users });
+        const { users, pagination } = yield userService.getAllUsers(limit, offset);
+        res
+            .status(200)
+            .json({ message: "Users retrieved successfully", users, pagination });
     }
     catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 });
 exports.getAllUsers = getAllUsers;
-const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield userService_1.default.getUserById(req.params.id);
+        const user = yield userService.getUserById(req.params.id);
         res.status(200).json({ message: "User found successfully", user });
     }
     catch (error) {
-        res.status(404).json({ message: error.message });
+        next(error);
     }
 });
 exports.getUserById = getUserById;
-const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const updatedUser = yield userService_1.default.updateUser(req.params.id, req.body, req);
+        const updatedUser = yield userService.updateUser(req.params.id, req.body, req);
         res
             .status(200)
             .json({ message: "User updated successfully", user: updatedUser });
     }
     catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 });
 exports.updateUser = updateUser;
-const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield userService_1.default.deleteUser(req.params.id);
+        yield userService.deleteUser(req.params.id);
         res.status(200).json({ message: "User deleted successfully" });
     }
     catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 });
 exports.deleteUser = deleteUser;

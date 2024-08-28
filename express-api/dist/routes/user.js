@@ -30,13 +30,15 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const userController = __importStar(require("../controllers/user"));
+const userValidators_1 = require("../middleware/validators/userValidators");
 const router = express_1.default.Router();
 // /api/v1/users
-// ✅
+// Get all users
 router.get("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), userController.getAllUsers);
-// ✅
+// Get user by id
 router.get("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), userController.getUserById);
-// ✅
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "professor", "admin", "staff"), userController.updateUser);
+// Update user
+router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "professor", "admin", "staff"), userValidators_1.updateUserValidator, userController.updateUser);
+// Delete user
 router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), userController.deleteUser);
 exports.default = router;

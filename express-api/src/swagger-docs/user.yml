@@ -1,0 +1,263 @@
+openapi: 3.0.1
+info:
+  title: University Management System API
+  description: API documentation for managing users in the university system.
+  version: 1.0.0
+
+paths:
+  /api/v1/users:
+    get:
+      tags:
+        - User
+      summary: Get All Users
+      description: Retrieves a list of all users with pagination. accessible to admin and staff only.
+      parameters:
+        - name: limit
+          in: query
+          description: Number of users to retrieve per page.
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of users to skip before starting to retrieve.
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Successfully retrieved users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Users retrieved successfully
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        username:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      totalPages:
+                        type: integer
+                      hasNextPage:
+                        type: boolean
+                      hasPreviousPage:
+                        type: boolean
+                      nextPage:
+                        type: integer
+                        nullable: true
+                      previousPage:
+                        type: integer
+                        nullable: true
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - staff
+
+  /api/v1/users/{id}:
+    get:
+      tags:
+        - User
+      summary: Get User By ID
+      description: Retrieves a user by their ID. accessible to professor, admin and staff only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User found successfully
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+      x-roles:
+        - professor
+        - admin
+        - staff
+
+    put:
+      tags:
+        - User
+      summary: Update User
+      description: Updates the details of a specific user. accessible to student, professor, admin and staff only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to update.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                role:
+                  type: string
+                  enum:
+                    - student
+                    - professor
+                    - staff
+                    - admin
+      responses:
+        '200':
+          description: Successfully updated user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User updated successfully
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+        '400':
+          description: Bad request due to validation errors.
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+      x-roles:
+        - student
+        - professor
+        - admin
+        - staff
+
+    delete:
+      tags:
+        - User
+      summary: Delete User
+      description: Deletes a specific user. accessible to admin and staff only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to delete.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully deleted user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User deleted successfully
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - staff
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+    Pagination:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+        itemsPerPage:
+          type: integer
+        currentPage:
+          type: integer
+        totalPages:
+          type: integer
+        hasNextPage:
+          type: boolean
+        hasPreviousPage:
+          type: boolean
+        nextPage:
+          type: integer
+          nullable: true
+        previousPage:
+          type: integer
+          nullable: true

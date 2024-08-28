@@ -30,10 +30,11 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const professorCourseController = __importStar(require("../controllers/professorCourse"));
+const professorCourseValidators_1 = require("../middleware/validators/professorCourseValidators");
 const router = express_1.default.Router();
 // api/v1/professorCourses
 // Add Professor to Course
-router.post("/courses/:courseId/professors/:professorId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.createProfessorCourse);
+router.post("/courses/:courseId/professors/:professorId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseValidators_1.createProfessorCourseValidation, professorCourseController.createProfessorCourse);
 // Remove Professor from Course
 router.delete("/courses/:courseId/professors/:professorId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), professorCourseController.deleteProfessorCourse);
 // Retrieve all courses associated with a specific professor. ✅

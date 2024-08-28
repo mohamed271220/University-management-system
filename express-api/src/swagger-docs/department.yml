@@ -1,0 +1,436 @@
+openapi: 3.0.0
+info:
+  title: University Department API
+  description: API for managing university departments, courses, and halls.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+paths:
+  /api/v1/departments:
+    post:
+      summary: Create a new department
+      description: Creates a new department with the specified name and code. Only accessible by users with the 'admin' role.
+      tags:
+        - Department
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Computer Science
+                code:
+                  type: string
+                  example: CS
+      responses:
+        '201':
+          description: Department created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department created successfully
+                  department:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: uuid
+                      name:
+                        type: string
+                        example: Computer Science
+                      code:
+                        type: string
+                        example: CS
+        '400':
+          description: Bad request (e.g., department creation failed or already exists)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department creation failed
+
+  /api/v1/departments/allDepartments:
+    get:
+      summary: Get all departments
+      description: Retrieves a list of all departments with pagination.
+      tags:
+        - Department
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            example: 10
+          description: Number of departments to return.
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            example: 0
+          description: Number of departments to skip before starting to collect the result set.
+      responses:
+        '200':
+          description: List of departments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: All departments
+                  departments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: uuid
+                        name:
+                          type: string
+                          example: Computer Science
+                        code:
+                          type: string
+                          example: CS
+                  pagination:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                        example: 50
+                      itemsPerPage:
+                        type: integer
+                        example: 10
+                      currentPage:
+                        type: integer
+                        example: 1
+                      totalPages:
+                        type: integer
+                        example: 5
+                      hasNextPage:
+                        type: boolean
+                        example: true
+                      hasPreviousPage:
+                        type: boolean
+                        example: false
+                      nextPage:
+                        type: integer
+                        example: 2
+                      previousPage:
+                        type: integer
+                        example: null
+        '500':
+          description: Internal server error
+
+  /api/v1/departments/{id}:
+    get:
+      summary: Get a department by ID
+      description: Retrieves the details of a specific department by its ID.
+      tags:
+        - Department
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: uuid
+          description: The ID of the department to retrieve.
+      responses:
+        '200':
+          description: Department found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department found
+                  department:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: uuid
+                      name:
+                        type: string
+                        example: Computer Science
+                      code:
+                        type: string
+                        example: CS
+        '404':
+          description: Department not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update a department
+      description: Updates the details of a specific department by its ID. Only accessible by users with the 'admin' role.
+      tags:
+        - Department
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: uuid
+          description: The ID of the department to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Computer Science
+                code:
+                  type: string
+                  example: CS
+      responses:
+        '200':
+          description: Department updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department updated
+                  updatedDepartment:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: uuid
+                      name:
+                        type: string
+                        example: Computer Science
+                      code:
+                        type: string
+                        example: CS
+        '404':
+          description: Department not found or code/name already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a department
+      description: Deletes a specific department by its ID. Only accessible by users with the 'admin' role.
+      tags:
+        - Department
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: uuid
+          description: The ID of the department to delete.
+      responses:
+        '200':
+          description: Department deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department deleted
+                  deletedDepartment:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: uuid
+                      name:
+                        type: string
+                        example: Computer Science
+                      code:
+                        type: string
+                        example: CS
+        '404':
+          description: Department not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department not found
+        '500':
+          description: Internal server error
+
+  /api/v1/departments/{id}/courses:
+    get:
+      summary: Get courses by department ID
+      description: Retrieves all courses associated with a specific department by its ID.
+      tags:
+        - Department
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: uuid
+          description: The ID of the department to retrieve courses for.
+      responses:
+        '200':
+          description: Courses found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Courses found
+                  courses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: uuid
+                        name:
+                          type: string
+                          example: Data Structures
+                        code:
+                          type: string
+                          example: CS101
+        '404':
+          description: Department has no courses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department has no courses
+        '500':
+          description: Internal server error
+
+  /api/v1/departments/{id}/halls:
+    get:
+      summary: Get halls by department ID
+      description: Retrieves all halls associated with a specific department by its ID.
+      tags:
+        - Department
+      security:
+        - bearerAuth: []
+      x-roles:
+        - admin
+        - user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: uuid
+          description: The ID of the department to retrieve halls for.
+      responses:
+        '200':
+          description: Halls found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Halls found
+                  halls:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: uuid
+                        name:
+                          type: string
+                          example: Hall A
+                        capacity:
+                          type: integer
+                          example: 100
+        '404':
+          description: Department has no halls
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department has no halls
+        '500':
+          description: Internal server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

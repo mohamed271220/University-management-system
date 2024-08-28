@@ -1,18 +1,23 @@
 import Course from "../models/Course";
 import ProfessorCourse from "../models/ProfessorCourses";
 import User from "../models/User";
+import { CustomError } from "../utils/CustomError";
 
 export class ProfessorCourseService {
   constructor(private professorCourseModel: typeof ProfessorCourse) {}
 
   async createProfessorCourse(courseId: string, professorId: string) {
-    const professor = await User.findByPk(professorId);
+    const [professor, course] = await Promise.all([
+      User.findByPk(professorId),
+      Course.findByPk(courseId),
+    ])
+    // const professor = await User.findByPk(professorId);
     if (!professor || professor.role !== "Professor") {
-      throw new Error("Professor not found");
+      throw new CustomError("Professor not found", 404);
     }
-    const course = await Course.findByPk(courseId);
+    // const course = await Course.findByPk(courseId);
     if (!course) {
-      throw new Error("Course not found");
+      throw new CustomError("Course not found", 404);
     }
     const professorCourse = await this.professorCourseModel.create({
       courseId,
@@ -24,7 +29,7 @@ export class ProfessorCourseService {
   async getProfessorsByCourseId(courseId: string) {
     const course = await Course.findByPk(courseId);
     if (!course) {
-      throw new Error("Course not found");
+      throw new CustomError("Course not found", 404);
     }
     const courseProf = await this.professorCourseModel.findAll({
       where: { courseId },
@@ -41,7 +46,7 @@ export class ProfessorCourseService {
   async getAllProfessorCourses(professorId: string) {
     const professor = await User.findByPk(professorId);
     if (!professor || professor.role !== "Professor") {
-      throw new Error("Professor not found");
+      throw new CustomError("Professor not found", 404);
     }
     const professorCourses = await this.professorCourseModel.findAll({
       where: { professorId },
@@ -86,20 +91,24 @@ export class ProfessorCourseService {
   }
 
   async deleteProfessorCourse(courseId: string, professorId: string) {
-    const course = await Course.findByPk(courseId);
+    const [professor, course] = await Promise.all([
+      User.findByPk(professorId),
+      Course.findByPk(courseId),
+    ])
+    // const course = await Course.findByPk(courseId);
     if (!course) {
-      throw new Error("Course not found");
+      throw new CustomError("Course not found", 404);
     }
-    const professor = await User.findByPk(professorId);
+    // const professor = await User.findByPk(professorId);
     if (!professor || professor.role !== "Professor") {
-      throw new Error("Professor not found");
+      throw new CustomError("Professor not found", 404);
     }
 
     const professorCourse = await this.professorCourseModel.findOne({
       where: { courseId, professorId },
     });
     if (!professorCourse) {
-      throw new Error("Professor course not found");
+      throw new CustomError("Professor course not found", 404);
     }
     await professorCourse.destroy();
   }

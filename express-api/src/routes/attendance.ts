@@ -8,7 +8,6 @@ const router = express.Router();
 // /api/v1/attendances
 
 // Creates a new attendance record.
-// body should contain the specific lecture id and the student id.
 router.post(
   "/",
   authenticateToken,
@@ -26,7 +25,7 @@ router.get(
 
 // Retrieve attendance records for a specific student.
 router.get(
-  "student/:studentId",
+  "/students/:studentId",
   authenticateToken,
   authorizeRoles("student", "professor", "admin", "staff"),
   attendanceController.getAttendanceByStudent
@@ -34,22 +33,31 @@ router.get(
 
 //Retrieve attendance records for a specific lecture.
 router.get(
-  "lecture/:lectureId",
+  "/lectures/:lectureId",
   authenticateToken,
   authorizeRoles("professor", "admin", "staff"),
   attendanceController.getAttendanceByLecture
 );
 
-router.put(
-  "/:id",
+// Retrieve attendance records for a student in a specific lecture.
+router.get(
+  "/students/:studentId/lectures/:lectureId",
   authenticateToken,
   authorizeRoles("professor", "admin", "staff"),
-  attendanceController.updateAttendance
+  attendanceController.getAttendanceByStudentAndLecture
+);
+
+
+router.put(
+  "/:attendanceRecordId/status",
+  authenticateToken,
+  authorizeRoles("professor", "admin", "staff"),
+  attendanceController.updateAttendanceStatus
 );
 
 // Deletes an attendance record.
 router.delete(
-  "/:id",
+  "/:attendanceRecordId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   attendanceController.deleteAttendance

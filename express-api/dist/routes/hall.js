@@ -30,13 +30,14 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const hallController = __importStar(require("../controllers/hall"));
+const hallValidators_1 = require("../middleware/validators/hallValidators");
 const router = express_1.default.Router();
 // /api/v1/halls
-router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), hallController.createHall);
+router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), hallValidators_1.createHallValidator, hallController.createHall);
 router.get("/allHalls", authMiddleware_1.authenticateToken, hallController.getAllHalls);
-router.get("/:id", authMiddleware_1.authenticateToken, hallController.getHallById);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), hallController.updateHall);
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), hallController.deleteHall);
-// Retrieve all lectures scheduled in a specific hall by its ID.
-router.get("/:id/lectures", authMiddleware_1.authenticateToken, hallController.getLecturesByHall);
+router.get("/:hallId", authMiddleware_1.authenticateToken, hallController.getHallById);
+router.put("/:hallId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), hallValidators_1.updateHallValidator, hallController.updateHall);
+router.delete("/:hallId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), hallController.deleteHall);
+// Retrieve all lectures scheduled in a specific hall by its id.
+router.get("/:hallId/lectures", authMiddleware_1.authenticateToken, hallController.getLecturesByHall);
 exports.default = router;

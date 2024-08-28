@@ -7,7 +7,6 @@ import Hall from "./Hall";
 import Lecture from "./Lecture";
 import Attendance from "./Attendance";
 import Grade from "./Grade";
-import Timetable from "./Timetable";
 import LectureHistory from "./LectureHistory";
 import AuditLog from "./AuditLog";
 import CourseCache from "./CourseCache";
@@ -15,6 +14,7 @@ import ProfessorCourse from "./ProfessorCourses";
 import StudentCourse from "./StudentCourses";
 import Semester from "./Semester";
 import StudentYear from "./StudentYears";
+import DepartmentYearCourses from "./DepartmentYearCourses";
 
 // Define the models
 export const models = {
@@ -26,7 +26,6 @@ export const models = {
   Lecture,
   Attendance,
   Grade,
-  Timetable,
   LectureHistory,
   AuditLog,
   CourseCache,
@@ -34,6 +33,7 @@ export const models = {
   StudentCourse,
   Semester,
   StudentYear,
+  DepartmentYearCourses,
 };
 
 // Define associations
@@ -70,6 +70,7 @@ Grade.belongsTo(User, { foreignKey: "studentId" });
 Semester.hasMany(Grade, { foreignKey: "semesterId" });
 Grade.belongsTo(Semester, { foreignKey: "semesterId" });
 
+// Professors can teach many courses and courses can have many professors
 Course.belongsToMany(User, {
   through: ProfessorCourse,
   foreignKey: "courseId",
@@ -81,6 +82,7 @@ User.belongsToMany(Course, {
   as: "teachingCourses",
 });
 
+// Students can enroll in many courses and courses can have many students
 Course.belongsToMany(User, {
   through: StudentCourse,
   foreignKey: "courseId",
@@ -105,10 +107,28 @@ User.hasMany(StudentCourse, { foreignKey: "studentId" });
 StudentCourse.belongsTo(Course, { foreignKey: "courseId" });
 Course.hasMany(StudentCourse, { foreignKey: "courseId" });
 
+// a semester has many student courses
 Semester.hasMany(StudentCourse, { foreignKey: "semesterId" });
 StudentCourse.belongsTo(Semester, { foreignKey: "semesterId" });
 
+// a student has many student years records and a student year record belongs to a student
 User.hasMany(StudentYear, { foreignKey: "studentId" });
 StudentYear.belongsTo(User, { foreignKey: "studentId" });
+
+DepartmentYearCourses.belongsTo(Department, { foreignKey: "departmentId" });
+Department.hasMany(DepartmentYearCourses, { foreignKey: "departmentId" });
+
+DepartmentYearCourses.belongsTo(Course, { foreignKey: "courseId" });
+Course.hasMany(DepartmentYearCourses, { foreignKey: "courseId" });
+
+StudentYear.belongsTo(Department, { foreignKey: "departmentId" });
+Department.hasMany(StudentYear, { foreignKey: "departmentId" });
+
+StudentYear.belongsTo(User, { foreignKey: "studentId" });
+User.hasMany(StudentYear, { foreignKey: "studentId" });
+
+Lecture.belongsTo(Course, { as: "course" });
+Lecture.belongsTo(User, { as: "professor" });
+Lecture.belongsTo(Hall, { as: "hall" });
 
 export default models;

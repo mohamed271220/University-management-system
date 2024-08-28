@@ -1,44 +1,131 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { DepartmentService } from "../services/departmentService";
-import Department from "../models/Department";
+import { CustomError } from "../utils/CustomError";
 
-const departmentService = new DepartmentService(Department);
+const departmentService = new DepartmentService();
 
-export const createDepartment = async (req: Request, res: Response) => {
+export const createDepartment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const department = await departmentService.createDepartment(req.body);
     if (!department) {
-      return res.status(400).json({ message: "Department creation failed" });
+      throw new CustomError("Failed to create department", 500);
     }
     res
       .status(201)
       .json({ message: "Department created successfully", department });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
-export const getAllDepartments = async (req: Request, res: Response) => {
+export const getAllDepartments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-  } catch (error) {}
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+    const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+    const { departments, pagination } =
+      await departmentService.getAllDepartments(limit, offset);
+    res.status(200).json({
+      message: "All departments",
+      departments,
+      pagination,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 };
-export const getDepartmentById = async (req: Request, res: Response) => {
+export const getDepartmentById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-  } catch (error) {}
+    const department = await departmentService.getDepartmentById(req.params.id);
+    if (!department) {
+      throw new CustomError("Department not found", 404);
+    }
+    res.status(200).json({ message: "Department found", department });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 };
-export const updateDepartment = async (req: Request, res: Response) => {
+export const updateDepartment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-  } catch (error) {}
+    const updatedDepartment = await departmentService.updateDepartment(
+      req.params.id,
+      req.body
+    );
+    res.status(200).json({ message: "Department updated", updatedDepartment });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
 };
-export const deleteDepartment = async (req: Request, res: Response) => {
+export const deleteDepartment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-  } catch (error) {}
+    const deletedDepartment = await departmentService.deleteDepartment(
+      req.params.id
+    );
+    res.status(200).json({ message: "Department deleted", deletedDepartment });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
 };
-export const getCoursesByDepartment = async (req: Request, res: Response) => {
+
+export const getCoursesByDepartment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-  } catch (error) {}
+    const departmentId = req.params.id;
+    if (!departmentId) {
+      throw new CustomError("Department ID is required", 400);
+    }
+
+    const courses = await departmentService.getCoursesByDepartment(
+      departmentId
+    );
+    res.status(200).json({ message: "Courses found", courses });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
 };
-export const getHallsByDepartment = async (req: Request, res: Response) => {
+
+export const getHallsByDepartment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-  } catch (error) {}
+    const departmentId = req.params.id;
+    if (!departmentId) {
+      throw new CustomError("Department ID is required", 400);
+    }
+
+    const halls = await departmentService.getHallsByDepartment(departmentId);
+    res.status(200).json({ message: "Halls found", halls });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
 };

@@ -1,0 +1,377 @@
+openapi: 3.0.0
+info:
+  title: University Attendance API
+  description: API for managing attendance records in a university system.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Local development server
+
+tags:
+  - name: Attendances
+    description: Operations related to attendance records
+
+paths:
+  /api/v1/attendances:
+    post:
+      tags:
+        - Attendances
+      summary: Create a new attendance record
+      description: Creates a new attendance record for a student in a specific lecture.
+      operationId: createAttendance
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentId:
+                  type: string
+                  example: 1d8f4a0e-7e98-4f3e-bc7e-8318b5a8d11f
+                lectureId:
+                  type: string
+                  example: 2b0f4e1d-a3b5-4cdd-9a67-489c9a1d09f3
+                status:
+                  type: string
+                  enum: [present, absent, late, excused]
+                  example: present
+                lectureDate:
+                  type: string
+                  format: date
+                  example: 2023-09-15
+      responses:
+        201:
+          description: Signed student successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Signed student successfully
+                  attendanceRecord:
+                    $ref: '#/components/schemas/Attendance'
+        400:
+          description: Missing required fields
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /api/v1/attendances/allAttendances:
+    get:
+      tags:
+        - Attendances
+      summary: Get all attendance records
+      description: Retrieves all attendance records with pagination.
+      operationId: getAllAttendances
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Number of records to return
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: offset
+          in: query
+          description: Offset of the first record to return
+          required: false
+          schema:
+            type: integer
+            example: 0
+      responses:
+        200:
+          description: All attendance records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: All attendance records
+                  attendanceRecords:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Attendance'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /api/v1/attendances/students/{studentId}:
+    get:
+      tags:
+        - Attendances
+      summary: Get attendance records by student
+      description: Retrieves attendance records for a specific student.
+      operationId: getAttendanceByStudent
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          description: ID of the student
+          schema:
+            type: string
+            example: 1d8f4a0e-7e98-4f3e-bc7e-8318b5a8d11f
+      responses:
+        200:
+          description: Attendance records found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Attendance records found
+                  attendanceRecords:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Attendance'
+        400:
+          description: Missing required fields
+        404:
+          description: Attendance records not found
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /api/v1/attendances/lectures/{lectureId}:
+    get:
+      tags:
+        - Attendances
+      summary: Get attendance records by lecture
+      description: Retrieves attendance records for a specific lecture.
+      operationId: getAttendanceByLecture
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: lectureId
+          in: path
+          required: true
+          description: ID of the lecture
+          schema:
+            type: string
+            example: 2b0f4e1d-a3b5-4cdd-9a67-489c9a1d09f3
+      responses:
+        200:
+          description: Attendance records found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Attendance records found
+                  attendanceRecords:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Attendance'
+        400:
+          description: Missing required fields
+        404:
+          description: Attendance records not found
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /api/v1/attendances/students/{studentId}/lectures/{lectureId}:
+    get:
+      tags:
+        - Attendances
+      summary: Get attendance records by student and lecture
+      description: Retrieves attendance records for a specific student in a specific lecture.
+      operationId: getAttendanceByStudentAndLecture
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          description: ID of the student
+          schema:
+            type: string
+            example: 1d8f4a0e-7e98-4f3e-bc7e-8318b5a8d11f
+        - name: lectureId
+          in: path
+          required: true
+          description: ID of the lecture
+          schema:
+            type: string
+            example: 2b0f4e1d-a3b5-4cdd-9a67-489c9a1d09f3
+      responses:
+        200:
+          description: Attendance record found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Attendance record found
+                  attendanceRecord:
+                    $ref: '#/components/schemas/Attendance'
+        400:
+          description: Missing required fields
+        404:
+          description: Attendance record not found
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /api/v1/attendances/{attendanceRecordId}/status:
+    put:
+      tags:
+        - Attendances
+      summary: Update attendance status
+      description: Updates the status of an existing attendance record.
+      operationId: updateAttendanceStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: attendanceRecordId
+          in: path
+          required: true
+          description: ID of the attendance record
+          schema:
+            type: string
+            example: 3c9f5d6e-bca7-4f8f-a1c1-bcdf95a76ec5
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [present, absent, late, excused]
+                  example: excused
+      responses:
+        200:
+          description: Attendance record updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Attendance record updated
+                  attendanceRecord:
+                    $ref: '#/components/schemas/Attendance'
+        400:
+          description: Missing required fields
+        404:
+          description: Attendance record not found
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+  /api/v1/attendances/{attendanceRecordId}:
+    delete:
+      tags:
+        - Attendances
+      summary: Delete attendance record
+      description: Deletes an existing attendance record.
+      operationId: deleteAttendance
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: attendanceRecordId
+          in: path
+          required: true
+          description: ID of the attendance record
+          schema:
+            type: string
+            example: 3c9f5d6e-bca7-4f8f-a1c1-bcdf95a76ec5
+      responses:
+        200:
+          description: Attendance record deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Attendance record deleted
+        400:
+          description: Missing required fields
+        404:
+          description: Attendance record not found
+        401:
+          description: Unauthorized
+        500:
+          description: Internal server error
+
+components:
+  schemas:
+    Attendance:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 3c9f5d6e-bca7-4f8f-a1c1-bcdf95a76ec5
+        studentId:
+          type: string
+          example: 1d8f4a0e-7e98-4f3e-bc7e-8318b5a8d11f
+        lectureId:
+          type: string
+          example: 2b0f4e1d-a3b5-4cdd-9a67-489c9a1d09f3
+        status:
+          type: string
+          enum: [present, absent, late, excused]
+          example: present
+        lectureDate:
+          type: string
+          format: date
+          example: 2023-09-15
+        createdAt:
+          type: string
+          format: date-time
+          example: 2023-09-15T09:00:00.000Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2023-09-15T09:00:00.000Z
+
+    Pagination:
+      type: object
+      properties:
+        totalRecords:
+          type: integer
+          example: 100
+        totalPages:
+          type: integer
+          example: 10
+        currentPage:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

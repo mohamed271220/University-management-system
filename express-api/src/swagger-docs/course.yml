@@ -1,0 +1,421 @@
+openapi: 3.0.0
+info:
+  title: Course API
+  description: API for managing courses
+  version: 1.0.0
+paths:
+  /api/v1/courses:
+    post:
+      summary: Create a new course
+      description: Only accessible by users with the 'admin' or 'staff' role.
+      tags:
+        - Courses
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - departmentId
+                - professorId
+              properties:
+                name:
+                  type: string
+                  description: Name of the course
+                departmentId:
+                  type: string
+                  format: uuid
+                  description: ID of the department the course belongs to
+                professorId:
+                  type: string
+                  format: uuid
+                  description: ID of the professor teaching the course
+      responses:
+        '201':
+          description: Course created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  course:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      credits:
+                        type: integer
+                      departmentId:
+                        type: string
+                        format: uuid
+                      professorId:
+                        type: string
+                        format: uuid
+        '400':
+          description: Bad request, invalid data
+        '401':
+          description: Unauthorized, invalid or missing token
+        '403':
+          description: Forbidden, insufficient role permissions
+        '404':
+          description: Department or professor not found
+        '500':
+          description: Internal server error
+
+  /api/v1/courses/allCourses:
+    get:
+      summary: Retrieve all courses
+      tags:
+        - Courses
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all courses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  courses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        code:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        credits:
+                          type: integer
+                        departmentId:
+                          type: string
+                          format: uuid
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        professorId:
+                          type: string
+                          format: uuid
+                        Department:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            code:
+                              type: string
+                        professor:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+        '401':
+          description: Unauthorized, invalid or missing token
+        '500':
+          description: Internal server error
+
+  /api/v1/courses/{id}:
+    get:
+      summary: Retrieve a course by ID
+      tags:
+        - Courses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique identifier for the course
+      responses:
+        '200':
+          description: Course found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  course:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      credits:
+                        type: integer
+                      departmentId:
+                        type: string
+                        format: uuid
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      professorId:
+                        type: string
+                        format: uuid
+                      Department:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          code:
+                            type: string
+                      professor:
+                        type: object
+                        properties:
+                          username:
+                            type: string
+        '401':
+          description: Unauthorized, invalid or missing token
+        '404':
+          description: Course not found
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update a course
+      description: Only accessible by users with the 'admin' or 'staff' role.
+      tags:
+        - Courses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                departmentId:
+                  type: string
+                  format: uuid
+                professorId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Course updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  updatedCourse:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      code:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      credits:
+                        type: integer
+                      departmentId:
+                        type: string
+                        format: uuid
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      professorId:
+                        type: string
+                        format: uuid
+                      Department:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          code:
+                            type: string
+                      professor:
+                        type: object
+                        properties:
+                          username:
+                            type: string
+
+        '400':
+          description: Bad request, invalid data
+        '401':
+          description: Unauthorized, invalid or missing token
+        '403':
+          description: Forbidden, insufficient role permissions
+        '404':
+          description: Course not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a course
+      description: Only accessible by users with the 'admin' or 'staff' role.
+      tags:
+        - Courses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Course deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  deletedCourse:
+                    type: object
+        '401':
+          description: Unauthorized, invalid or missing token
+        '403':
+          description: Forbidden, insufficient role permissions
+        '404':
+          description: Course not found
+        '500':
+          description: Internal server error
+
+  /api/v1/courses/{id}/lectures:
+    get:
+      summary: Retrieve all lectures for a specific course
+      tags:
+        - Courses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Unique identifier for the course
+      responses:
+        '200':
+          description: Lectures found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  lectures:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        courseId:
+                          type: string
+                          format: uuid
+                        professorId:
+                          type: string
+                          format: uuid
+                        hallId:
+                          type: string
+                          format: uuid
+                        dayOfWeek:
+                          type: string
+                        startTime:
+                          type: date
+                          format: time
+                        endTime:
+                          type: date
+                          format: time
+                        recurrencePattern:
+                          type: string
+                        recurrenceEndDate:
+                          type: string
+                          format: date-time
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        Hall:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+        '401':
+          description: Unauthorized, invalid or missing token
+        '404':
+          description: Course not found or no lectures for the course
+        '500':
+          description: Internal server error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,25 +1,23 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SemesterService } from "../services/semesterService";
-import Semester from "../models/Semester";
+import { CustomError } from "../utils/CustomError";
 
-const semesterService = new SemesterService(Semester);
+const semesterService = new SemesterService();
 
-export const createSemester = async (req: Request, res: Response) => {
+export const createSemester = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { name, startDate, endDate } = req.body;
-    if (!name || !startDate || !endDate) {
-      return res.status(400).json({
-        message: "Semester name, start date, and end date are required",
-      });
-    }
     const semester = await semesterService.createSemester(
       name,
       startDate,
       endDate
     );
-
     if (!semester) {
-      return res.status(500).json({ message: "Failed to create semester" });
+      throw new CustomError("Semester not created", 500);
     }
 
     res.status(201).json({
@@ -28,12 +26,117 @@ export const createSemester = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
-export const getAllSemesters = () => {};
-export const getSemesterById = () => {};
-export const updateSemester = () => {};
-export const deleteSemester = () => {};
-export const getSemesterGrades = () => {};
-export const getStudentEnrolledCourses = () => {};
+
+export const getAllSemesters = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const semesters = await semesterService.getAllSemesters();
+    res.status(200).json({ semesters });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const getSemesterById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { semesterId } = req.params;
+    if (!semesterId) {
+      throw new CustomError("Semester ID is required", 400);
+    }
+    const semester = await semesterService.getSemesterById(semesterId);
+    res.status(200).json({ semester });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const updateSemester = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { semesterId } = req.params;
+    const { name, startDate, endDate } = req.body;
+    const semester = await semesterService.updateSemester(
+      semesterId,
+      name,
+      startDate,
+      endDate
+    );
+    res
+      .status(200)
+      .json({ message: "Semester updated successfully", semester });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const deleteSemester = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { semesterId } = req.params;
+    if (!semesterId) {
+      throw new CustomError("Semester ID is required", 400);
+    }
+    await semesterService.deleteSemester(semesterId);
+    res.status(200).json({ message: "Semester deleted successfully" });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const getSemesterGrades = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { semesterId } = req.params;
+    if (!semesterId) {
+      throw new CustomError("Semester ID is required", 400);
+    }
+    const grades = await semesterService.getSemesterGrades(semesterId);
+    res.status(200).json({ grades });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const getStudentEnrolledCourses = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { semesterId } = req.params;
+    if (!semesterId) {
+      throw new CustomError("Semester ID is required", 400);
+    }
+    const studentCourses = await semesterService.getStudentEnrolledCourses(
+      semesterId
+    );
+    res.status(200).json({ studentCourses });
+  } catch (error: any) {
+    console.error(error);
+    next(error);
+  }
+};

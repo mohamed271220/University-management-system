@@ -1,0 +1,289 @@
+openapi: 3.0.1
+info:
+  title: University Management System API
+  description: API documentation for managing timetables in the university system.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+paths:
+  /api/v1/timetables/students/{studentId}/{semesterId}:
+    get:
+      tags:
+        - Timetable
+      summary: Get Student Timetable
+      description: Retrieves the timetable for a specific student in a given semester.
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          description: ID of the student.
+          schema:
+            type: string
+        - name: semesterId
+          in: path
+          required: true
+          description: ID of the semester.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the student's timetable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Student timetable found
+                  timetable:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        courseId:
+                          type: string
+                        courseName:
+                          type: string
+                        professorName:
+                          type: string
+                        hallName:
+                          type: string
+                        time:
+                          type: string
+                          format: date-time
+        '400':
+          description: Bad request due to missing parameters.
+        '404':
+          description: Timetable not found for the student.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+
+  /api/v1/timetables/professors/{professorId}:
+    get:
+      tags:
+        - Timetable
+      summary: Get Professor Timetable
+      description: Retrieves the timetable for a specific professor.
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          description: ID of the professor.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the professor's timetable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Professor timetable found
+                  timetable:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        courseId:
+                          type: string
+                        courseName:
+                          type: string
+                        hallName:
+                          type: string
+                        time:
+                          type: string
+                          format: date-time
+        '400':
+          description: Bad request due to missing parameters.
+        '404':
+          description: Timetable not found for the professor.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+
+  /api/v1/timetables/departments/{departmentId}:
+    get:
+      tags:
+        - Timetable
+      summary: Get Department Timetable
+      description: Retrieves the timetable for a specific department.
+      parameters:
+        - name: departmentId
+          in: path
+          required: true
+          description: ID of the department.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the department's timetable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department timetable found
+                  timetable:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        courseId:
+                          type: string
+                        courseName:
+                          type: string
+                        professorName:
+                          type: string
+                        hallName:
+                          type: string
+                        time:
+                          type: string
+                          format: date-time
+        '400':
+          description: Bad request due to missing parameters.
+        '404':
+          description: Timetable not found for the department.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+
+  /api/v1/timetables/halls/{hallId}:
+    get:
+      tags:
+        - Timetable
+      summary: Get Hall Timetable
+      description: Retrieves the timetable for a specific hall.
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          description: ID of the hall.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the hall's timetable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hall timetable found
+                  timetable:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        courseId:
+                          type: string
+                        courseName:
+                          type: string
+                        professorName:
+                          type: string
+                        time:
+                          type: string
+                          format: date-time
+        '400':
+          description: Bad request due to missing parameters.
+        '404':
+          description: Timetable not found for the hall.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+
+  /api/v1/timetables/departments/{departmentId}/years:
+    get:
+      tags:
+        - Timetable
+      summary: Get Department Year Timetable
+      description: Retrieves the timetable for a specific year within a department.
+      parameters:
+        - name: departmentId
+          in: path
+          required: true
+          description: ID of the department.
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: true
+          description: The year of the students.
+          schema:
+            type: string
+            enum:
+              - 1st Year
+              - 2nd Year
+              - 3rd Year
+              - 4th Year
+      responses:
+        '200':
+          description: Successfully retrieved the department year timetable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Department year timetable found
+                  timetable:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        courseId:
+                          type: string
+                        courseName:
+                          type: string
+                        professorName:
+                          type: string
+                        hallName:
+                          type: string
+                        time:
+                          type: string
+                          format: date-time
+        '400':
+          description: Bad request due to missing parameters.
+        '404':
+          description: Timetable not found for the department year.
+        '500':
+          description: Internal server error.
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Timetable:
+      type: object
+      properties:
+        courseId:
+          type: string
+        courseName:
+          type: string
+        professorName:
+          type: string
+        hallName:
+          type: string
+        time:
+          type: string
+          format: date-time

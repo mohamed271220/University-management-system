@@ -2,6 +2,10 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as semesterController from "../controllers/semester";
+import {
+  validateCreateSemester,
+  validateUpdateSemester,
+} from "../middleware/validators/semesterValidators";
 
 const router = express.Router();
 
@@ -9,43 +13,50 @@ router.post(
   "/",
   authenticateToken,
   authorizeRoles("admin", "staff"),
+  validateCreateSemester,
   semesterController.createSemester
 );
+
 router.get(
-  "/",
+  "/allSemesters",
   authenticateToken,
-  authorizeRoles("admin", "staff"),
   semesterController.getAllSemesters
 );
+
 router.get(
-  "/:id",
+  "/:semesterId",
   authenticateToken,
-  authorizeRoles("admin", "staff"),
   semesterController.getSemesterById
 );
+
 router.put(
-  "/:id",
+  "/:semesterId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
+  validateUpdateSemester,
   semesterController.updateSemester
 );
+
 router.delete(
-  "/:id",
+  "/:semesterId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   semesterController.deleteSemester
 );
 
-//Retrieve all grades associated with a specific
+//Retrieve all grades associated with a specific semester.
 router.get(
-  "/:id/grades",
+  "/:semesterId/grades",
   authenticateToken,
+  authorizeRoles("admin", "staff"),
   semesterController.getSemesterGrades
 );
+
 // Retrieve all student enrollments associated with a specific semester.
 router.get(
-  "/:id/student-courses",
+  "/:semesterId/student-courses",
   authenticateToken,
+  authorizeRoles("admin", "staff"),
   semesterController.getStudentEnrolledCourses
 );
 

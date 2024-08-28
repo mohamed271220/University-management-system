@@ -14,6 +14,7 @@ class StudentYear extends Model<
   declare studentId: string;
   declare year: "1st Year" | "2nd Year" | "3rd Year" | "4th Year";
   declare effectiveDate: Date;
+  declare departmentId: string;
   declare createdAt?: Date;
   declare updatedAt?: Date;
 }
@@ -37,6 +38,15 @@ StudentYear.init(
     year: {
       type: DataTypes.ENUM("1st Year", "2nd Year", "3rd Year", "4th Year"),
       allowNull: false,
+    },
+    departmentId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: "departments",
+        key: "id",
+      },
+      onDelete: "CASCADE",
     },
     effectiveDate: {
       type: DataTypes.DATE,
@@ -63,6 +73,7 @@ StudentYear.init(
       },
       { fields: ["studentId"] },
       { fields: ["year"] },
+      { fields: ["departmentId"] },
     ],
   }
 );

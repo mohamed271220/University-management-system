@@ -33,15 +33,16 @@ const attendanceController = __importStar(require("../controllers/attendance"));
 const router = express_1.default.Router();
 // /api/v1/attendances
 // Creates a new attendance record.
-// body should contain the specific lecture id and the student id.
 router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), attendanceController.createAttendance);
 // Gets all attendance records.
 router.get("/allAttendances", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), attendanceController.getAllAttendances);
 // Retrieve attendance records for a specific student.
-router.get("student/:studentId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "professor", "admin", "staff"), attendanceController.getAttendanceByStudent);
+router.get("/students/:studentId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "professor", "admin", "staff"), attendanceController.getAttendanceByStudent);
 //Retrieve attendance records for a specific lecture.
-router.get("lecture/:lectureId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), attendanceController.getAttendanceByLecture);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), attendanceController.updateAttendance);
+router.get("/lectures/:lectureId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), attendanceController.getAttendanceByLecture);
+// Retrieve attendance records for a student in a specific lecture.
+router.get("/students/:studentId/lectures/:lectureId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), attendanceController.getAttendanceByStudentAndLecture);
+router.put("/:attendanceRecordId/status", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin", "staff"), attendanceController.updateAttendanceStatus);
 // Deletes an attendance record.
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), attendanceController.deleteAttendance);
+router.delete("/:attendanceRecordId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), attendanceController.deleteAttendance);
 exports.default = router;

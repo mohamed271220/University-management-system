@@ -1,0 +1,302 @@
+openapi: 3.0.0
+info:
+  title: Hall Management API
+  version: 1.0.0
+  description: API for managing lecture halls within the university system.
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: /api/v1
+
+paths:
+  /api/v1/halls:
+    post:
+      summary: Create a new hall
+      description: Create a new hall. Only accessible by users with the 'admin' or 'staff' role.
+      security:
+        - bearerAuth: []
+      tags:
+        - Halls
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - isLab
+                - departmentId
+              properties:
+                name:
+                  type: string
+                  example: "Lecture Hall A"
+                isLab:
+                  type: boolean
+                  example: false
+                departmentId:
+                  type: string
+                  example: "d1f9eb88-3e73-4c49-a0d5-b4cc6b5c9f1f"
+      responses:
+        "201":
+          description: Hall created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hall created"
+                  hall:
+                    $ref: '#/components/schemas/Hall'
+        "400":
+          description: Bad request, missing or invalid data
+        "401":
+          description: Unauthorized, JWT token missing or invalid
+        "403":
+          description: Forbidden, insufficient role (admin or staff required)
+        "500":
+          description: Internal server error
+      x-roles:
+        - admin
+        - staff
+
+  /api/v1/halls/allHalls:
+    get:
+      summary: Retrieve all halls
+      description: Retrieve a list of all halls. Accessible by all authenticated users.
+      security:
+        - bearerAuth: []
+      tags:
+        - Halls
+      responses:
+        "200":
+          description: List of all halls retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hall'
+        "401":
+          description: Unauthorized, JWT token missing or invalid
+        "500":
+          description: Internal server error
+      x-roles:
+        - admin
+        - staff
+        - professor
+        - student
+
+  /api/v1/halls/{hallId}:
+    get:
+      summary: Retrieve a hall by its ID
+      description: Retrieve details of a specific hall by its ID. Accessible by all authenticated users.
+      security:
+        - bearerAuth: []
+      tags:
+        - Halls
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          description: Unique identifier of the hall
+          schema:
+            type: string
+            example: "b5a9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+      responses:
+        "200":
+          description: Hall found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hall'
+        "404":
+          description: Hall not found
+        "401":
+          description: Unauthorized, JWT token missing or invalid
+        "500":
+          description: Internal server error
+      x-roles:
+        - admin
+        - staff
+        - professor
+        - student
+
+    put:
+      summary: Update a hall by its ID
+      description: Update details of a specific hall by its ID. Only accessible by users with the 'admin' or 'staff' role.
+      security:
+        - bearerAuth: []
+      tags:
+        - Halls
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          description: Unique identifier of the hall
+          schema:
+            type: string
+            example: "b5a9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Updated Lecture Hall A"
+                isLab:
+                  type: boolean
+                  example: false
+                departmentId:
+                  type: string
+                  example: "d1f9eb88-3e73-4c49-a0d5-b4cc6b5c9f1f"
+      responses:
+        "200":
+          description: Hall updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hall'
+        "400":
+          description: Bad request, missing or invalid data
+        "401":
+          description: Unauthorized, JWT token missing or invalid
+        "403":
+          description: Forbidden, insufficient role (admin or staff required)
+        "404":
+          description: Hall not found
+        "500":
+          description: Internal server error
+      x-roles:
+        - admin
+        - staff
+
+    delete:
+      summary: Delete a hall by its ID
+      description: Delete a specific hall by its ID. Only accessible by users with the 'admin' or 'staff' role.
+      security:
+        - bearerAuth: []
+      tags:
+        - Halls
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          description: Unique identifier of the hall
+          schema:
+            type: string
+            example: "b5a9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+      responses:
+        "200":
+          description: Hall deleted successfully
+        "401":
+          description: Unauthorized, JWT token missing or invalid
+        "403":
+          description: Forbidden, insufficient role (admin or staff required)
+        "404":
+          description: Hall not found
+        "500":
+          description: Internal server error
+      x-roles:
+        - admin
+        - staff
+
+  /api/v1/halls/{hallId}/lectures:
+    get:
+      summary: Retrieve all lectures scheduled in a specific hall
+      description: Retrieve a list of all lectures scheduled in a specific hall. Accessible by all authenticated users.
+      security:
+        - bearerAuth: []
+      tags:
+        - Halls
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          description: Unique identifier of the hall
+          schema:
+            type: string
+            example: "b5a9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+      responses:
+        "200":
+          description: List of all lectures in the hall retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lecture'
+        "404":
+          description: Hall not found
+        "401":
+          description: Unauthorized, JWT token missing or invalid
+        "500":
+          description: Internal server error
+      x-roles:
+        - admin
+        - staff
+        - professor
+        - student
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Hall:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "b5a9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+        name:
+          type: string
+          example: "Lecture Hall A"
+        isLab:
+          type: boolean
+          example: false
+        departmentId:
+          type: string
+          example: "d1f9eb88-3e73-4c49-a0d5-b4cc6b5c9f1f"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-08-24T18:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-08-24T18:30:00.000Z"
+
+    Lecture:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "c5a9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+        courseId:
+          type: string
+          example: "e2a7e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+        professorId:
+          type: string
+          example: "a2b9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+        hallId:
+          type: string
+          example: "b5a9e2c3-1d47-4e99-8a89-f13d3d67c9d4"
+        startTime:
+          type: string
+          format: date-time
+          example: "2024-08-24T10:00:00.000Z"
+        endTime:
+          type: string
+          format: date-time
+          example: "2024-08-24T12:00:00.000Z"

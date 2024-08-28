@@ -13,32 +13,50 @@ router.post(
   authorizeRoles("professor", "admin", "staff"),
   lectureController.createLecture
 );
-router.get("/allLectures", authenticateToken, lectureController.getAllLectures);
-router.get("/:id", authenticateToken, lectureController.getLectureById);
+
+// TODOs add day based filters
+router.get(
+  "/allLectures",
+  authenticateToken,
+  authorizeRoles("professor", "admin", "staff"),
+  lectureController.getAllLectures
+);
+
+router.get("/:lectureId", authenticateToken, lectureController.getLectureById);
+
 router.put(
-  "/:id",
+  "/:lectureId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   lectureController.updateLecture
 );
+
 router.delete(
-  "/:id",
+  "/:lectureId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   lectureController.deleteLecture
 );
 
-//  Retrieve attendance records for a specific lecture by its ID.
+//  Retrieve attendance records for a specific lecture by its LECTUREID.
 router.get(
-  "/:id/attendance",
+  "/:lectureId/attendance",
   authenticateToken,
   authorizeRoles("professor", "admin", "staff"),
   lectureController.getAttendanceByLecture
 );
 
-// Retrieve historical records for a specific lecture by its ID.
+// Archive a lecture by its LECTUREID.
+router.put(
+  "/:lectureId/archive",
+  authenticateToken,
+  authorizeRoles("admin", "staff"),
+  lectureController.archiveLecture
+);
+
+// Retrieve historical records for a specific lecture by its LECTUREID.
 router.get(
-  "/:id/history",
+  "/:lectureId/archive/history",
   authenticateToken,
   authorizeRoles("professor", "admin", "staff"),
   lectureController.getHistoryByLecture

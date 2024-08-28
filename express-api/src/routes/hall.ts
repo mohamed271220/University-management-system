@@ -2,6 +2,10 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as hallController from "../controllers/hall";
+import {
+  createHallValidator,
+  updateHallValidator,
+} from "../middleware/validators/hallValidators";
 
 const router = express.Router();
 
@@ -11,27 +15,29 @@ router.post(
   "/",
   authenticateToken,
   authorizeRoles("admin", "staff"),
+  createHallValidator,
   hallController.createHall
 );
 
 router.get("/allHalls", authenticateToken, hallController.getAllHalls);
-router.get("/:id", authenticateToken, hallController.getHallById);
+router.get("/:hallId", authenticateToken, hallController.getHallById);
 router.put(
-  "/:id",
+  "/:hallId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
+  updateHallValidator,
   hallController.updateHall
 );
 router.delete(
-  "/:id",
+  "/:hallId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   hallController.deleteHall
 );
 
-// Retrieve all lectures scheduled in a specific hall by its ID.
+// Retrieve all lectures scheduled in a specific hall by its id.
 router.get(
-  "/:id/lectures",
+  "/:hallId/lectures",
   authenticateToken,
   hallController.getLecturesByHall
 );

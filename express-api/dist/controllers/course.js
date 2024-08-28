@@ -17,41 +17,42 @@ const courseService_1 = require("../services/courseService");
 const Course_1 = __importDefault(require("../models/Course"));
 const User_1 = __importDefault(require("../models/User"));
 const Department_1 = __importDefault(require("../models/Department"));
+const CustomError_1 = require("../utils/CustomError");
 const courseService = new courseService_1.CourseService(Course_1.default);
-const createCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
         const department = yield Department_1.default.findByPk(req.body.departmentId);
         if (!department) {
-            return res.status(404).json({ message: "Department not found" });
+            throw new CustomError_1.CustomError("Department not found", 404);
         }
         const professor = yield User_1.default.findByPk(req.body.professorId);
         if (!professor) {
-            return res.status(404).json({ message: "Professor not found" });
+            throw new CustomError_1.CustomError("Professor not found", 404);
         }
         const course = yield courseService.createCourse(data);
         if (!course)
-            return res.status(400).json({ message: "Course not created" });
+            throw new CustomError_1.CustomError("Failed to create course", 500);
         res.status(201).json({ message: "Course created successfully", course });
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.createCourse = createCourse;
-const getAllCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllCourses = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const courses = yield courseService.getAllCourses();
         res.status(200).json({ message: "All courses", courses });
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getAllCourses = getAllCourses;
-const getCourseById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCourseById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const course = yield courseService.getCourseById(req.params.id);
         if (!course)
@@ -60,43 +61,40 @@ const getCourseById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getCourseById = getCourseById;
-const updateCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const updatedCourse = yield courseService.updateCourse(req.params.id, req.body);
+        if (!updatedCourse) {
+            throw new CustomError_1.CustomError("Course not found", 404);
+        }
         res.status(200).json({ message: "Course updated", updatedCourse });
     }
     catch (error) {
-        if (error.message === "Course not found") {
-            return res.status(404).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.updateCourse = updateCourse;
-const deleteCourse = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteCourse = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const deletedCourse = yield courseService.deleteCourse(req.params.id);
         res.status(200).json({ message: "Course deleted", deletedCourse });
     }
     catch (error) {
-        if (error.message === "Course not found") {
-            return res.status(404).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.deleteCourse = deleteCourse;
-const getLecturesByCourseId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLecturesByCourseId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const courseId = req.params.id;
         if (!courseId) {
-            return res.status(400).json({ message: "Course ID is required" });
+            throw new CustomError_1.CustomError("Course ID is required", 400);
         }
         const courseLectures = yield courseService.getLecturesByCourseId(courseId);
         res
@@ -104,11 +102,8 @@ const getLecturesByCourseId = (req, res) => __awaiter(void 0, void 0, void 0, fu
             .json({ message: "Lectures found", lectures: courseLectures });
     }
     catch (error) {
-        if (error.message === "Course not found") {
-            return res.status(404).json({ message: error.message });
-        }
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 exports.getLecturesByCourseId = getLecturesByCourseId;
