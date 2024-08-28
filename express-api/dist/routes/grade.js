@@ -33,9 +33,19 @@ const gradeController = __importStar(require("../controllers/grade"));
 const router = express_1.default.Router();
 // /api/v1/grades
 router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin"), gradeController.createGrade);
-router.get("/allGrades", authMiddleware_1.authenticateToken, gradeController.getAllGrades);
-router.get("/:id", authMiddleware_1.authenticateToken, gradeController.getGradeById);
-router.get("/student/:id", authMiddleware_1.authenticateToken, gradeController.getGradesByStudent);
+// for administrative purposes
+router.get("/allGrades", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("staff", "admin"), gradeController.getAllGrades);
+router.get("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("staff", "admin"), gradeController.getGradeById);
+// get all grades by student id (if role is student, only return grades for that student)
+router.get("/student/:studentId", authMiddleware_1.authenticateToken, gradeController.getGradesByStudent);
+// get all grades by student id and semester id
+router.get("/student/:studentId/semester/:semesterId", authMiddleware_1.authenticateToken, gradeController.getGradesByStudentAndSemester);
+// get all grades by course id
+router.get("/course/:courseId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("staff", "admin"), gradeController.getGradesByCourse);
+// get all grades by semester id
+router.get("/semester/:semesterId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("staff", "admin"), gradeController.getGradesBySemester);
+// get all grades for courses taught by professor
+router.get("/professor/:professorId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin"), gradeController.getGradesByProfessor);
 router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("professor", "admin"), gradeController.updateGrade);
 router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), gradeController.deleteGrade);
 exports.default = router;

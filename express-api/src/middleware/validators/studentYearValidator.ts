@@ -5,8 +5,13 @@ export const validateCreateStudentYear = [
   body("year")
     .notEmpty()
     .withMessage("Year is required")
-    .isInt({ min: 1 })
-    .withMessage("Year must be a positive integer"),
+    .isIn([
+      "1st Year",
+      "2nd Year",
+      "3rd Year",
+      "4th Year",
+    ])
+    .withMessage("Year must be 1st Year, 2nd Year, 3rd Year, or 4th Year"),
 
   body("studentId")
     .notEmpty()
@@ -33,8 +38,13 @@ export const validateUpdateStudentYear = [
 
   body("year")
     .optional()
-    .isInt({ min: 1 })
-    .withMessage("Year must be a positive integer"),
+    .isIn([
+      "1st Year",
+      "2nd Year",
+      "3rd Year",
+      "4th Year",
+    ])
+    .withMessage("Year must be 1st Year, 2nd Year, 3rd Year, or 4th Year"),
 
   body("studentId")
     .optional()

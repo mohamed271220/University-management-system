@@ -2,6 +2,10 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as studentYearController from "../controllers/studentYear";
+import {
+  validateCreateStudentYear,
+  validateUpdateStudentYear,
+} from "../middleware/validators/studentYearValidator";
 
 const router = express.Router();
 
@@ -11,6 +15,7 @@ router.post(
   "/",
   authenticateToken,
   authorizeRoles("admin", "staff"),
+  validateCreateStudentYear,
   studentYearController.createStudentYear
 );
 
@@ -33,6 +38,7 @@ router.put(
   "/:studentYearId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
+  validateUpdateStudentYear,
   studentYearController.updateStudentYear
 );
 

@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  title: Department Year Courses API
+  description: API for managing courses assigned to specific years within departments.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:5000/api/v1
+
+paths:
+  /departmentYearCourses:
+    post:
+      summary: Add a course to a specific department year
+      tags:
+        - Department Year Courses
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - departmentId
+                - courseId
+                - year
+              properties:
+                departmentId:
+                  type: string
+                  example: "3d3f5583-6b7b-4a9b-b4b3-d3b2f44bfb34"
+                courseId:
+                  type: string
+                  example: "a7d3f223-2342-4d67-b4d3-2f3e4f2f3a34"
+                year:
+                  type: string
+                  enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+                  example: "1st Year"
+      responses:
+        '201':
+          description: Course successfully added to the department's specific year.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Course added to department specific year"
+                  data:
+                    $ref: '#/components/schemas/DepartmentYearCourse'
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Department or Course not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      summary: Get all courses for a specific department year
+      tags:
+        - Department Year Courses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: departmentId
+          schema:
+            type: string
+            example: "3d3f5583-6b7b-4a9b-b4b3-d3b2f44bfb34"
+          required: true
+          description: ID of the department.
+        - in: query
+          name: year
+          schema:
+            type: string
+            enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+            example: "1st Year"
+          required: true
+          description: Year within the department.
+      responses:
+        '200':
+          description: Courses found for the department's specific year.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Courses found for department specific year"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DepartmentYearCourse'
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Courses not found for the specified department year.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Edit a course for a specific department year
+      tags:
+        - Department Year Courses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: "6d6f7583-6b7b-4a9b-b4b3-d3b2f44bfb45"
+          required: true
+          description: ID of the department year course to edit.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                departmentId:
+                  type: string
+                  example: "3d3f5583-6b7b-4a9b-b4b3-d3b2f44bfb34"
+                courseId:
+                  type: string
+                  example: "a7d3f223-2342-4d67-b4d3-2f3e4f2f3a34"
+                year:
+                  type: string
+                  enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+                  example: "2nd Year"
+      responses:
+        '200':
+          description: Course successfully edited for the department's specific year.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Course edited for department specific year"
+                  course:
+                    $ref: '#/components/schemas/DepartmentYearCourse'
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Course or Department not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete a course for a specific department year
+      tags:
+        - Department Year Courses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: "6d6f7583-6b7b-4a9b-b4b3-d3b2f44bfb45"
+          required: true
+          description: ID of the department year course to delete.
+      responses:
+        '200':
+          description: Course successfully deleted for the department's specific year.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Course deleted for department specific year"
+        '404':
+          description: Course not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    DepartmentYearCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "6d6f7583-6b7b-4a9b-b4b3-d3b2f44bfb45"
+        departmentId:
+          type: string
+          example: "3d3f5583-6b7b-4a9b-b4b3-d3b2f44bfb34"
+        courseId:
+          type: string
+          example: "a7d3f223-2342-4d67-b4d3-2f3e4f2f3a34"
+        year:
+          type: string
+          enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+          example: "1st Year"
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "An error occurred"
+        errors:
+          type: array
+          items:
+            type: string
+          example: ["Department not found", "Course not found"]
+
+tags:
+  - name: Department Year Courses
+    description: Endpoints for managing department year courses
