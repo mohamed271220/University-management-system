@@ -31,7 +31,7 @@ export class StudentCourseService {
       where: {
         studentId,
         semesterId,
-        courseId: courses, // Correctly handles array with 'Op.in'
+        courseId: courses,
       },
     });
 

@@ -2,6 +2,11 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as gradeController from "../controllers/grade";
+import {
+  createGradeValidation,
+  getGradeByIdValidation,
+  updateGradeValidation,
+} from "../middleware/validators/gradeValidator";
 
 const router = express.Router();
 
@@ -11,6 +16,7 @@ router.post(
   "/",
   authenticateToken,
   authorizeRoles("professor", "admin"),
+  createGradeValidation,
   gradeController.createGrade
 );
 
@@ -26,26 +32,27 @@ router.get(
   "/:id",
   authenticateToken,
   authorizeRoles("staff", "admin"),
+  getGradeByIdValidation,
   gradeController.getGradeById
 );
 
 // get all grades by student id (if role is student, only return grades for that student)
 router.get(
-  "/student/:studentId",
+  "/students/:studentId",
   authenticateToken,
   gradeController.getGradesByStudent
 );
 
 // get all grades by student id and semester id
 router.get(
-  "/student/:studentId/semester/:semesterId",
+  "/students/:studentId/semesters/:semesterId",
   authenticateToken,
   gradeController.getGradesByStudentAndSemester
 );
 
 // get all grades by course id
 router.get(
-  "/course/:courseId",
+  "/courses/:courseId",
   authenticateToken,
   authorizeRoles("staff", "admin"),
   gradeController.getGradesByCourse
@@ -53,7 +60,7 @@ router.get(
 
 // get all grades by semester id
 router.get(
-  "/semester/:semesterId",
+  "/semesters/:semesterId",
   authenticateToken,
   authorizeRoles("staff", "admin"),
   gradeController.getGradesBySemester
@@ -61,7 +68,7 @@ router.get(
 
 // get all grades for courses taught by professor
 router.get(
-  "/professor/:professorId",
+  "/professors/:professorId",
   authenticateToken,
   authorizeRoles("professor", "admin"),
   gradeController.getGradesByProfessor
@@ -71,6 +78,7 @@ router.put(
   "/:id",
   authenticateToken,
   authorizeRoles("professor", "admin"),
+  updateGradeValidation,
   gradeController.updateGrade
 );
 

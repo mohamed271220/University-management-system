@@ -15,7 +15,11 @@ export const enrollCourses = async (
     const { studentId } = req.params;
     const { courses, semesterId } = req.body;
 
-    if (studentId !== req.user?.id && req.user?.role !== "student") {
+    if (
+      studentId !== req.user?.id &&
+      req.user?.role !== "student" &&
+      req.user?.role !== "admin"
+    ) {
       throw new CustomError("Unauthorized", 401);
     }
 

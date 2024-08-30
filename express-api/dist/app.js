@@ -27,6 +27,7 @@ const lecture_1 = __importDefault(require("./routes/lecture"));
 const timetable_1 = __importDefault(require("./routes/timetable"));
 const attendance_1 = __importDefault(require("./routes/attendance"));
 const departmentYearCourses_1 = __importDefault(require("./routes/departmentYearCourses"));
+const grade_1 = __importDefault(require("./routes/grade"));
 const swagger_1 = __importDefault(require("./config/swagger"));
 const errorHandler_1 = require("./middleware/errorHandler");
 const app = (0, express_1.default)();
@@ -65,6 +66,7 @@ app.use("/api/v1/lectures", lecture_1.default);
 app.use("/api/v1/timetables", timetable_1.default);
 app.use("/api/v1/attendances", attendance_1.default);
 app.use("/api/v1/departmentYearCourses", departmentYearCourses_1.default);
+app.use("/api/v1/grades", grade_1.default);
 app.use(errorHandler_1.errorHandler);
 // Swagger docs route
 app.use("/api/v1/official-docs/express-api-docs", swagger_1.default);
