@@ -36,7 +36,6 @@ The University Management System is a solution designed to manage various aspect
 
 - Node.js (v14 or later)
 - PostgreSQL (for the Express API)
-- React (for the SPA)
 
 ### Backend (Express API)
 
