@@ -50,8 +50,10 @@ paths:
                         type: string
                         example: 123e4567-e89b-12d3-a456-426614174002
                       year:
-                        type: integer
-                        example: 2024
+                          type: string
+                          enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+                          example: "2nd Year"
+                          
                       studentId:
                         type: string
                         example: 123e4567-e89b-12d3-a456-426614174001
@@ -144,8 +146,10 @@ paths:
                           type: string
                           example: 123e4567-e89b-12d3-a456-426614174004
                         year:
-                          type: integer
-                          example: 2024
+                          type: string
+                          enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+                          example: "2nd Year"
+                          
                         studentId:
                           type: string
                           example: 123e4567-e89b-12d3-a456-426614174001
@@ -218,8 +222,10 @@ paths:
                         type: string
                         example: 123e4567-e89b-12d3-a456-426614174005
                       year:
-                        type: integer
-                        example: 2024
+                          type: string
+                          enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+                          example: "2nd Year"
+                          
                       studentId:
                         type: string
                         example: 123e4567-e89b-12d3-a456-426614174001

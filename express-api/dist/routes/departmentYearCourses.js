@@ -27,14 +27,15 @@ const express_1 = require("express");
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const departmentYearCoursesController = __importStar(require("../controllers/departmentYearCourse"));
+const departmentYearCoursesValidator_1 = require("../middleware/validators/departmentYearCoursesValidator");
 const router = (0, express_1.Router)();
 // /api/v1/departmentYearCourses
 // add course to department specific year
-router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentYearCoursesController.addCourseToDepartmentYear);
+router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentYearCoursesValidator_1.addCourseToDepartmentYearValidator, departmentYearCoursesController.addCourseToDepartmentYear);
 // get all courses for a department specific year
-router.get("/", authMiddleware_1.authenticateToken, departmentYearCoursesController.getCoursesByDepartmentYear);
+router.get("/", authMiddleware_1.authenticateToken, departmentYearCoursesValidator_1.getCoursesByDepartmentYearValidator, departmentYearCoursesController.getCoursesByDepartmentYear);
 // edit course for a department specific year
-router.put("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentYearCoursesController.editCourseForDepartmentYear);
+router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentYearCoursesValidator_1.editCourseForDepartmentYearValidator, departmentYearCoursesController.editCourseForDepartmentYear);
 // delete course for a department specific year
-router.delete("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentYearCoursesController.deleteCourseForDepartmentYear);
+router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin"), departmentYearCoursesValidator_1.deleteCourseForDepartmentYearValidator, departmentYearCoursesController.deleteCourseForDepartmentYear);
 exports.default = router;

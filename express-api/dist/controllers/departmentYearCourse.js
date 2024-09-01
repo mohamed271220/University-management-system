@@ -30,6 +30,13 @@ const addCourseToDepartmentYear = (req, res, next) => __awaiter(void 0, void 0, 
 exports.addCourseToDepartmentYear = addCourseToDepartmentYear;
 const getCoursesByDepartmentYear = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { departmentId, year } = req.body;
+        const courses = yield departmentYearCoursesService.getCoursesByDepartmentYear(departmentId, year);
+        res.status(200).json({
+            success: true,
+            message: "Courses found for department specific year",
+            data: courses,
+        });
     }
     catch (error) {
         console.log(error.message);
@@ -39,6 +46,14 @@ const getCoursesByDepartmentYear = (req, res, next) => __awaiter(void 0, void 0,
 exports.getCoursesByDepartmentYear = getCoursesByDepartmentYear;
 const editCourseForDepartmentYear = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { id } = req.params;
+        const { departmentId, courseId, year } = req.body;
+        const course = yield departmentYearCoursesService.editCourseForDepartmentYear(id, departmentId, courseId, year);
+        res.status(200).json({
+            success: true,
+            message: "Course edited for department specific year",
+            course,
+        });
     }
     catch (error) {
         console.log(error.message);
@@ -48,6 +63,12 @@ const editCourseForDepartmentYear = (req, res, next) => __awaiter(void 0, void 0
 exports.editCourseForDepartmentYear = editCourseForDepartmentYear;
 const deleteCourseForDepartmentYear = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { id } = req.params;
+        yield departmentYearCoursesService.deleteCourseForDepartmentYear(id);
+        res.status(200).json({
+            success: true,
+            message: "Course deleted for department specific year",
+        });
     }
     catch (error) {
         console.log(error.message);

@@ -1,0 +1,276 @@
+openapi: 3.0.0
+info:
+  title: Grade Management API
+  description: API for managing grades, including creation, retrieval, update, and deletion of grades.
+  version: 1.0.0
+
+paths:
+  /api/v1/grades:
+    post:
+      summary: Create a new grade
+      description: Allows professors and admins to create a new grade record.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      requestBody:
+        description: Grade details to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentId:
+                  type: string
+                courseId:
+                  type: string
+                semesterId:
+                  type: string
+                grade:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Grade created successfully
+        '400':
+          description: Bad Request
+
+  /api/v1/grades/allGrades:
+    get:
+      summary: Get all grades
+      description: Retrieves all grade records, accessible by staff and admins.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      responses:
+        '200':
+          description: List of all grades
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /api/v1/grades/{id}:
+    get:
+      summary: Get grade by ID
+      description: Retrieves a grade record by its ID, accessible by staff and admins.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grade record found
+        '404':
+          description: Grade not found
+
+    put:
+      summary: Update a grade
+      description: Updates an existing grade record, accessible by professors and admins.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updated grade details.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                studentId:
+                  type: string
+                courseId:
+                  type: string
+                semesterId:
+                  type: string
+                grade:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Grade updated successfully
+        '400':
+          description: Bad Request
+        '404':
+          description: Grade not found
+
+    delete:
+      summary: Delete a grade
+      description: Deletes a grade record, accessible only by admins.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grade deleted successfully
+        '404':
+          description: Grade not found
+
+  /api/v1/grades/students/{studentId}:
+    get:
+      summary: Get grades by student ID
+      description: Retrieves grades for a specific student. The endpoint returns grades only for the authenticated student if the user is a student.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grades retrieved successfully
+        '404':
+          description: Student or grades not found
+
+  /api/v1/grades/students/{studentId}/semesters/{semesterId}:
+    get:
+      summary: Get grades by student ID and semester ID
+      description: Retrieves grades for a student for a specific semester.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: semesterId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grades retrieved successfully
+        '404':
+          description: Student, semester, or grades not found
+
+  /api/v1/grades/courses/{courseId}:
+    get:
+      summary: Get grades by course ID
+      description: Retrieves grades for a specific course, accessible by staff and admins.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grades retrieved successfully
+        '404':
+          description: Course or grades not found
+
+  /api/v1/grades/semesters/{semesterId}:
+    get:
+      summary: Get grades by semester ID
+      description: Retrieves grades for a specific semester, accessible by staff and admins.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: semesterId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grades retrieved successfully
+        '404':
+          description: Semester or grades not found
+
+  /api/v1/grades/professors/{professorId}:
+    get:
+      summary: Get grades by professor ID
+      description: Retrieves grades for courses taught by a specific professor, accessible by professors and admins.
+      security:
+        - bearerAuth: []
+      tags:
+        - Grades
+      parameters:
+        - name: professorId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Grades retrieved successfully
+        '404':
+          description: Professor or grades not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Grade:
+      type: object
+      properties:
+        id:
+          type: string
+        studentId:
+          type: string
+        courseId:
+          type: string
+        semesterId:
+          type: string
+        grade:
+          type: string
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

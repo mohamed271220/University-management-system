@@ -34,7 +34,7 @@ const studentCourseValidators_1 = require("../middleware/validators/studentCours
 const router = express_1.default.Router();
 // /api/v1/studentCourses
 // Enroll a student in a course.
-router.post("/enroll/:studentId/courses", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student"), studentCourseValidators_1.enrollCoursesValidation, studentCourseController.enrollCourses);
+router.post("/enroll/:studentId/courses", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "admin"), studentCourseValidators_1.enrollCoursesValidation, studentCourseController.enrollCourses);
 // Retrieve all courses a student is enrolled in.
 router.get("/students/:studentId/courses", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("student", "admin", "staff"), studentCourseController.getAllCoursesByStudentId);
 // Retrieve all students enrolled in a course.

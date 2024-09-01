@@ -7,8 +7,13 @@ exports.validateCreateStudentYear = [
     (0, express_validator_1.body)("year")
         .notEmpty()
         .withMessage("Year is required")
-        .isInt({ min: 1 })
-        .withMessage("Year must be a positive integer"),
+        .isIn([
+        "1st Year",
+        "2nd Year",
+        "3rd Year",
+        "4th Year",
+    ])
+        .withMessage("Year must be 1st Year, 2nd Year, 3rd Year, or 4th Year"),
     (0, express_validator_1.body)("studentId")
         .notEmpty()
         .withMessage("Student ID is required")
@@ -29,8 +34,13 @@ exports.validateUpdateStudentYear = [
         .withMessage("Student Year ID must be a valid UUID"),
     (0, express_validator_1.body)("year")
         .optional()
-        .isInt({ min: 1 })
-        .withMessage("Year must be a positive integer"),
+        .isIn([
+        "1st Year",
+        "2nd Year",
+        "3rd Year",
+        "4th Year",
+    ])
+        .withMessage("Year must be 1st Year, 2nd Year, 3rd Year, or 4th Year"),
     (0, express_validator_1.body)("studentId")
         .optional()
         .isUUID()

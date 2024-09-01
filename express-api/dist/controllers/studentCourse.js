@@ -18,11 +18,13 @@ const StudentCourses_1 = __importDefault(require("../models/StudentCourses"));
 const CustomError_1 = require("../utils/CustomError");
 const studentCourseService = new studentCourseService_1.StudentCourseService(StudentCourses_1.default);
 const enrollCourses = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c;
     try {
         const { studentId } = req.params;
         const { courses, semesterId } = req.body;
-        if (studentId !== ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) && ((_b = req.user) === null || _b === void 0 ? void 0 : _b.role) !== "student") {
+        if (studentId !== ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) &&
+            ((_b = req.user) === null || _b === void 0 ? void 0 : _b.role) !== "student" &&
+            ((_c = req.user) === null || _c === void 0 ? void 0 : _c.role) !== "admin") {
             throw new CustomError_1.CustomError("Unauthorized", 401);
         }
         if (!studentId || !courses || !semesterId) {
