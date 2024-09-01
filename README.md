@@ -5,9 +5,8 @@
 The University Management System is a solution designed to manage various aspects of a university's operations, including student enrollment, course management, scheduling, and more. The system is composed of the following components:
 
 1. **Express API**: A backend service built with Express.js and TypeScript, providing RESTful endpoints for managing university resources.
-2. **React SPA**: A Single Page Application built with React, offering a user-friendly interface for students, professors, and administrative staff.
-3. **Landing Page**: A static landing page designed to showcase the features of the University Management System and provide access to the application.
-4. **Future Plans**: The API will be rebuilt using NestJS to leverage advanced features like dependency injection, modular architecture, and built-in validation.
+2. **Landing Page**: A static landing page designed to showcase the features of the University Management System and provide access to the application.
+3. **Future Plans**: The API will be rebuilt using NestJS to leverage advanced features like dependency injection, modular architecture, and built-in validation.
 
 ## Features
 
@@ -19,13 +18,6 @@ The University Management System is a solution designed to manage various aspect
 - **Department & Hall Management**: Manage departments and their associated resources, such as lecture halls.
 - **Timetable & Attendance Tracking**: Track and manage lecture schedules and student attendance.
 - **Grades & Reports**: Manage and retrieve grades for students across various courses and semesters.
-
-### React SPA
-
-- **User Dashboard**: Personalized dashboards for students, professors, and administrators.
-- **Course Enrollment**: Students can browse and enroll in courses, while professors can manage the courses they teach.
-- **Profile Management**: Users can view and update their profiles, including contact details and academic records.
-- **Real-time Notifications**: Users receive updates on course schedules, grade postings, and other relevant information.
 
 ### Landing Page
 
@@ -73,25 +65,6 @@ The University Management System is a solution designed to manage various aspect
    npm start
    ```
 
-### Frontend (React SPA)
-
-1. Navigate to the frontend directory:
-
-   ```bash
-   cd university-management-system/frontend
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm start
-   ```
-
 ### Landing Page
 
 1. Navigate to the landing page directory:
@@ -107,14 +80,6 @@ The University Management System is a solution designed to manage various aspect
 ### Backend
 
 Run tests for the Express API:
-
-```bash
-npm run test
-```
-
-### Frontend
-
-Run tests for the React SPA:
 
 ```bash
 npm run test
@@ -136,5 +101,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 
 - [Express.js](https://expressjs.com/)
-- [React](https://reactjs.org/)
 - [NestJS](https://nestjs.com/) (planned for future development)
