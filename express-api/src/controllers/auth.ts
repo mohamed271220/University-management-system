@@ -13,6 +13,20 @@ import jwt from "jsonwebtoken";
 import { userRequest } from "../interfaces";
 import { CustomError } from "../utils/CustomError";
 
+export const getProfile = async (
+  req: userRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    res.status(200).json({ userId: user!.id, role: user!.role });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 export const signup = async (
   req: Request,
   res: Response,

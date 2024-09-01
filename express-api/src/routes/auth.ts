@@ -7,6 +7,8 @@ import {
 } from "../middleware/validators/authValidators";
 const router = express.Router();
 
+router.get("/profile", authenticateToken, authController.getProfile);
+
 router.post("/signup", validateSignup, authController.signup);
 
 router.post("/login", validateLogin, authController.login);
