@@ -6,10 +6,8 @@ import {
   verifyToken,
 } from "../utils/jwt";
 import User from "../models/User";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { v4 as uuid } from "uuid";
-import { Op } from "sequelize";
-import jwt from "jsonwebtoken";
 import { userRequest } from "../interfaces";
 import { CustomError } from "../utils/CustomError";
 

@@ -12,12 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshToken = exports.logout = exports.validateSession = exports.login = exports.signup = void 0;
+exports.refreshToken = exports.logout = exports.validateSession = exports.login = exports.signup = exports.getProfile = void 0;
 const jwt_1 = require("../utils/jwt");
 const User_1 = __importDefault(require("../models/User"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const uuid_1 = require("uuid");
 const CustomError_1 = require("../utils/CustomError");
+const getProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        res.status(200).json({ userId: user.id, role: user.role });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.getProfile = getProfile;
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, password, email } = req.body;
@@ -25,7 +36,7 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         if (user) {
             throw new CustomError_1.CustomError("User already exists", 400);
         }
-        const passwordHash = yield bcrypt_1.default.hash(password, 12);
+        const passwordHash = yield bcryptjs_1.default.hash(password, 12);
         const id = (0, uuid_1.v4)();
         const savedUser = yield User_1.default.create({
             id,
@@ -74,7 +85,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         });
         if (!user)
             throw new CustomError_1.CustomError("Invalid credentials", 400);
-        const isPasswordValid = yield bcrypt_1.default.compare(req.body.password, user.passwordHash);
+        const isPasswordValid = yield bcryptjs_1.default.compare(req.body.password, user.passwordHash);
         if (!isPasswordValid)
             throw new CustomError_1.CustomError("Invalid credentials", 400);
         const token = (0, jwt_1.generateToken)({ id: user.id, role: user.role });

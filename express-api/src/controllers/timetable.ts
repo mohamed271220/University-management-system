@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { TimetableService } from "../services/timetableService";
 import { Year } from "../interfaces";
 import { CustomError } from "../utils/CustomError";
+import redisClient from "../config/redisClient";
 
 const timetableService = new TimetableService();
 
@@ -25,6 +26,10 @@ export const getStudentTimetable = async (
     if (!timetable) {
       throw new CustomError("Student timetable not found", 404);
     }
+
+    await redisClient.set(req.originalUrl, JSON.stringify(timetable), {
+      EX: 3600, // Expire after 3600 seconds (1 hour)
+    });
 
     res.status(200).json({ message: "Student timetable found", timetable });
   } catch (error: any) {
@@ -50,6 +55,10 @@ export const getProfessorTimetable = async (
     if (!timetable) {
       throw new CustomError("Professor timetable not found", 404);
     }
+
+    await redisClient.set(req.originalUrl, JSON.stringify(timetable), {
+      EX: 3600, // Expire after 3600 seconds (1 hour)
+    });
 
     res.status(200).json({ message: "Professor timetable found", timetable });
   } catch (error: any) {
@@ -78,6 +87,10 @@ export const getDepartmentTimetable = async (
       throw new CustomError("Department timetable not found", 404);
     }
 
+    await redisClient.set(req.originalUrl, JSON.stringify(timetable), {
+      EX: 3600, // Expire after 3600 seconds (1 hour)
+    });
+
     res.status(200).json({ message: "Department timetable found", timetable });
   } catch (error: any) {
     console.error(error);
@@ -102,6 +115,10 @@ export const getHallTimetable = async (
     if (!timetable) {
       throw new CustomError("Hall timetable not found", 404);
     }
+
+    await redisClient.set(req.originalUrl, JSON.stringify(timetable), {
+      EX: 3600, // Expire after 3600 seconds (1 hour)
+    });
 
     res.status(200).json({ message: "Hall timetable found", timetable });
   } catch (error: any) {
@@ -131,6 +148,10 @@ export const getDepartmentYearTimetable = async (
     if (!timetable) {
       throw new CustomError("Department year timetable not found", 404);
     }
+
+    await redisClient.set(req.originalUrl, JSON.stringify(timetable), {
+      EX: 3600, // Expire after 3600 seconds (1 hour)
+    });
 
     res
       .status(200)

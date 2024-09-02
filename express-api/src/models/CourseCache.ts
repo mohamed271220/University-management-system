@@ -2,6 +2,7 @@ import { DataTypes, Model, InferAttributes, InferCreationAttributes } from 'sequ
 import sequelize from '../config/database';
 
 class CourseCache extends Model<InferAttributes<CourseCache>, InferCreationAttributes<CourseCache>> {
+  declare id: string;
   declare courseId: string;
   declare courseName?: string;
   declare departmentName?: string;
@@ -10,6 +11,11 @@ class CourseCache extends Model<InferAttributes<CourseCache>, InferCreationAttri
 }
 
 CourseCache.init({
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true,
+    allowNull: false
+  },
   courseId: {
     type: DataTypes.UUID,
     primaryKey: true,

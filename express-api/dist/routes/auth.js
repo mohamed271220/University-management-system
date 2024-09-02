@@ -31,6 +31,7 @@ const authController = __importStar(require("../controllers/auth"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const authValidators_1 = require("../middleware/validators/authValidators");
 const router = express_1.default.Router();
+router.get("/profile", authMiddleware_1.authenticateToken, authController.getProfile);
 router.post("/signup", authValidators_1.validateSignup, authController.signup);
 router.post("/login", authValidators_1.validateLogin, authController.login);
 router.get("/logout", authController.logout);

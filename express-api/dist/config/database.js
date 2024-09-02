@@ -11,8 +11,9 @@ const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PWD;
 console.log(dbName, dbUser, dbPassword);
 const dbConnection = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, {
-    host: "localhost",
+    host: process.env.DB_HOST || "localhost",
     dialect: "postgres",
+    port: parseInt(process.env.DB_PORT) || 5432,
     // logging: console.log,
     logging: false,
 });
