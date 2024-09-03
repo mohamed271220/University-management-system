@@ -1,5 +1,4 @@
 import { IsString, Matches, MaxLength, MinLength, IsIn } from 'class-validator';
-import { Role } from 'src/shared/types';
 
 export class AuthCredentialsDto {
   @IsString()
@@ -21,5 +20,5 @@ export class AuthCredentialsDto {
   email: string;
 
   @IsIn(['Professor', 'Student', 'Admin', 'Staff'])
-  role: Role;
+  role: string;
 }

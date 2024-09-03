@@ -15,7 +15,7 @@ export class AuthService {
   constructor(private jwtService: JwtService) {}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { username, password, email, role = 'Student' } = authCredentialsDto;
+    const { username, password, email } = authCredentialsDto;
 
     // Check if user already exists
     const existingUser = await User.findOne({ where: { username } });
@@ -30,7 +30,6 @@ export class AuthService {
         username,
         passwordHash: hashedPassword,
         email,
-        role,
       });
     } catch (error) {
       throw new InternalServerErrorException();
@@ -44,7 +43,7 @@ export class AuthService {
     const user = await User.findOne({ where: { username } });
 
     if (user && (await bcrypt.compare(password, user.passwordHash))) {
-      const payload: JwtPayload = { username };
+      const payload: JwtPayload = { username, role: user.role };
       const accessToken = this.jwtService.sign(payload);
       return { accessToken };
     } else {

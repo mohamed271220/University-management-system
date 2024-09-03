@@ -19,6 +19,8 @@ import { AuditLog } from './entities/audit-log.entity';
 import { Course } from './entities/course.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './auth/role.guard';
 
 @Module({
   imports: [
@@ -52,6 +54,12 @@ import { UserModule } from './user/user.module';
     CourseCacheModule,
     AuthModule,
     UserModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}
