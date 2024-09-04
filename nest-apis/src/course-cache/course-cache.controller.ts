@@ -13,14 +13,15 @@ import { CreateCourseCacheDto, UpdateCourseCacheDto } from './dto';
 import { CourseCache } from '../entities/course-cache.entity';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/role.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('course-cache')
+@UseGuards(AuthGuard(), RolesGuard) // Combining both guards at the controller level
 export class CourseCacheController {
   constructor(private readonly courseCacheService: CourseCacheService) {}
 
   @Post()
-  @Roles('Admin', 'Staff') // Protects this route to be accessible only by Admins
-  @UseGuards(RolesGuard) // Protects this route to be accessible only by Admins
+  @Roles('Admin', 'Staff')
   create(
     @Body() createCourseCacheDto: CreateCourseCacheDto,
   ): Promise<CourseCache> {
@@ -28,22 +29,19 @@ export class CourseCacheController {
   }
 
   @Get()
-  @Roles('Admin', 'Staff') // Protects this route to be accessible only by Admins
-  @UseGuards(RolesGuard) // Protects this route to be accessible only by Admins
+  @Roles('Admin', 'Staff')
   findAll(): Promise<CourseCache[]> {
     return this.courseCacheService.findAll();
   }
 
   @Get(':courseId')
-  @Roles('Admin', 'Staff') // Protects this route to be accessible only by Admins
-  @UseGuards(RolesGuard) // Protects this route to be accessible only by Admins
+  @Roles('Admin', 'Staff')
   findOne(@Param('courseId') courseId: string): Promise<CourseCache> {
     return this.courseCacheService.findOne(courseId);
   }
 
   @Put(':courseId')
-  @Roles('Admin', 'Staff') // Protects this route to be accessible only by Admins
-  @UseGuards(RolesGuard) // Protects this route to be accessible only by Admins
+  @Roles('Admin', 'Staff')
   update(
     @Param('courseId') courseId: string,
     @Body() updateCourseCacheDto: UpdateCourseCacheDto,
@@ -52,8 +50,7 @@ export class CourseCacheController {
   }
 
   @Delete(':courseId')
-  @Roles('Admin', 'Staff') // Protects this route to be accessible only by Admins
-  @UseGuards(RolesGuard) // Protects this route to be accessible only by Admins
+  @Roles('Admin', 'Staff')
   remove(@Param('courseId') courseId: string): Promise<void> {
     return this.courseCacheService.remove(courseId);
   }

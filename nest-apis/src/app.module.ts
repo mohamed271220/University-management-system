@@ -21,35 +21,56 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/role.guard';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configValidationSchema } from './config.schema';
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      models: [
-        User,
-        CourseCache,
-        Profile,
-        Attendance,
-        Grade,
-        ProfessorCourse,
-        StudentCourse,
-        StudentYear,
-        Lecture,
-        Semester,
-        LectureHistory,
-        Department,
-        DepartmentYearCourses,
-        StudentCourse,
-        Hall,
-        AuditLog,
-        Course,
-      ],
+    ConfigModule.forRoot({
+      envFilePath: [`.env.stage.${process.env.STAGE}`],
+      validationSchema: configValidationSchema, // validate the configuration (to determine which variables are required)
+    }),
+    SequelizeModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const isProduction = configService.get('STAGE') === 'prod';
+        return {
+          dialect: 'postgres',
+          host: configService.get('DB_HOST'),
+          port: Number(configService.get('DB_PORT')),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
+          database: configService.get('DB_NAME'),
+          models: [
+            User,
+            CourseCache,
+            Profile,
+            Attendance,
+            Grade,
+            ProfessorCourse,
+            StudentCourse,
+            StudentYear,
+            Lecture,
+            Semester,
+            LectureHistory,
+            Department,
+            DepartmentYearCourses,
+            Hall,
+            AuditLog,
+            Course,
+          ],
+          dialectOptions: isProduction
+            ? {
+                ssl: {
+                  require: true,
+                  rejectUnauthorized: false, // This ensures that SSL works even with self-signed certificates
+                },
+              }
+            : {},
+          synchronize: true, // Auto-create tables based on your models (use with caution in production)
+        };
+      },
     }),
     CourseCacheModule,
     AuthModule,

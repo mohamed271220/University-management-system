@@ -23,7 +23,14 @@ router.get(
 
 router.get("/refresh-token", authController.refreshToken);
 
-// router.post("/forgot-password", authController.forgotPassword);
-// router.post("/reset-password", authController.resetPassword);
+router.post("/forgot-password", authController.forgotPassword);
+
+router.post("/reset-password/:token", authController.resetPassword);
+
+router.post(
+  "/change-password",
+  authenticateToken,
+  authController.changePassword
+);
 
 export default router;

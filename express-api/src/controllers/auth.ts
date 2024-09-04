@@ -10,6 +10,9 @@ import bcrypt from "bcryptjs";
 import { v4 as uuid } from "uuid";
 import { userRequest } from "../interfaces";
 import { CustomError } from "../utils/CustomError";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+import { Op } from "sequelize";
 
 export const getProfile = async (
   req: userRequest,
@@ -183,6 +186,122 @@ export const refreshToken = async (
     });
 
     return res.json({ message: "Token refreshed successfully" });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  {
+    const { email } = req.body;
+
+    try {
+      const user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        throw new CustomError("User not found", 404);
+      }
+
+      const token = crypto.randomBytes(32).toString("hex");
+      const tokenExpiration = Date.now() + 3600000; // 1 hour from now
+
+      user.resetPasswordToken = token;
+      user.resetPasswordExpires = new Date(tokenExpiration);
+      await user.save();
+
+      const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const mailOptions = {
+        to: user.email,
+        from: "password-reset@your-app.com",
+        subject: "Password Reset",
+        text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        ${resetLink}\n\n
+        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+      };
+
+      await transporter.sendMail(mailOptions);
+      res.status(200).send("Password reset email sent");
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const user = await User.findOne({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: { [Op.gt]: Date.now() }, // Token is still valid
+      },
+    });
+
+    if (!user) {
+      throw new CustomError("Invalid or expired token", 400);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.passwordHash = hashedPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+
+    res.status(200).send("Password has been reset");
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+export const changePassword = async (
+  req: userRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { currentPassword, newPassword } = req.body;
+  const id = req.user?.id;
+  try {
+    const user = await User.findByPk(id); // Assuming user is authenticated
+
+    if (!user) {
+      throw new CustomError("User not found", 404);
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isMatch) {
+      throw new CustomError("Invalid password", 400);
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.passwordHash = hashedPassword;
+    await user.save();
+
+    res.status(200).send("Password has been changed");
   } catch (error) {
     console.log(error);
     next(error);
