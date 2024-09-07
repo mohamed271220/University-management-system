@@ -2,27 +2,36 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CourseCacheModule } from './course-cache/course-cache.module';
 import { CourseCache } from './entities/course-cache.entity';
-import { User } from './entities/user.entity';
-import { Profile } from './entities/profile.entity';
+import { User } from './user/user.entity';
+import { Profile } from './profile/profile.entity';
 import { Attendance } from './entities/attendance.entity';
-import { Grade } from './entities/grade.entity';
+import { Grade } from './grade/grade.entity';
 import { ProfessorCourse } from './entities/professor-course.entity';
-import { StudentCourse } from './entities/student-course.entity';
-import { StudentYear } from './entities/student-year.entity';
-import { Lecture } from './entities/lecture.entity';
+import { StudentCourse } from './student-course/student-course.entity';
+import { StudentYear } from './student-year/student-year.entity';
+import { Lecture } from './lecture/lecture.entity';
 import { Semester } from './entities/semester.entity';
 import { LectureHistory } from './entities/lecture-history.entity';
-import { Department } from './entities/department.entity';
-import { DepartmentYearCourses } from './entities/department-year-courses.entity';
-import { Hall } from './entities/hall.entity';
+import { Department } from './department/department.entity';
+import { DepartmentYearCourses } from './department-year-courses/department-year-courses.entity';
+import { Hall } from './hall/hall.entity';
 import { AuditLog } from './entities/audit-log.entity';
-import { Course } from './entities/course.entity';
+import { Course } from './course/course.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth/role.guard';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
+import { TimetableModule } from './timetable/timetable.module';
+import { StudentYearModule } from './student-year/student-year.module';
+import { StudentCourseModule } from './student-course/student-course.module';
+import { ProfessorCourseModule } from './professor-course/professor-course.module';
+import { HallModule } from './hall/hall.module';
+import { GradeModule } from './grade/grade.module';
+import { DepartmentYearCoursesModule } from './department-year-courses/department-year-courses.module';
+import { LectureModule } from './lecture/lecture.module';
+import { DepartmentModule } from './department/department.module';
+import { CourseModule } from './course/course.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -40,7 +49,7 @@ import { configValidationSchema } from './config.schema';
           host: configService.get('DB_HOST'),
           port: Number(configService.get('DB_PORT')),
           username: configService.get('DB_USERNAME'),
-          password: configService.get('DB_PASSWORD'),
+          password: configService.get('DB_PWD'),
           database: configService.get('DB_NAME'),
           models: [
             User,
@@ -60,6 +69,7 @@ import { configValidationSchema } from './config.schema';
             AuditLog,
             Course,
           ],
+          logging: console.log, // Enable detailed logging
           dialectOptions: isProduction
             ? {
                 ssl: {
@@ -72,15 +82,21 @@ import { configValidationSchema } from './config.schema';
         };
       },
     }),
-    CourseCacheModule,
     AuthModule,
     UserModule,
-  ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    CourseCacheModule,
+    UserModule,
+    ProfileModule,
+    CourseModule,
+    DepartmentModule,
+    LectureModule,
+    DepartmentYearCoursesModule,
+    GradeModule,
+    HallModule,
+    ProfessorCourseModule,
+    StudentCourseModule,
+    StudentYearModule,
+    TimetableModule,
   ],
 })
 export class AppModule {}

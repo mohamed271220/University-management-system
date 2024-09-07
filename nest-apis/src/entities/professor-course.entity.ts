@@ -6,8 +6,8 @@ import {
   Index,
   DataType,
 } from 'sequelize-typescript';
-import { User } from './user.entity';
-import { Course } from './course.entity';
+import { User } from '../user/user.entity';
+import { Course } from '../course/course.entity';
 
 @Table({
   tableName: 'professor_courses',

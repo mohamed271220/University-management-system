@@ -11,38 +11,48 @@ User.init({
     id: {
         type: sequelize_1.DataTypes.UUID,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
     },
     username: {
         type: sequelize_1.DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
     },
     passwordHash: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     email: {
         type: sequelize_1.DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
     },
     role: {
-        type: sequelize_1.DataTypes.ENUM('Admin', 'Student', 'Professor', 'Staff'),
-        allowNull: false
+        type: sequelize_1.DataTypes.ENUM("Admin", "Student", "Professor", "Staff"),
+        allowNull: false,
+    },
+    resetPasswordToken: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true, // This field can be null
+        defaultValue: null,
+    },
+    resetPasswordExpires: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true, // This field can be null
+        defaultValue: null,
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
+        defaultValue: sequelize_1.DataTypes.NOW,
     },
     updatedAt: {
         type: sequelize_1.DataTypes.DATE,
-        defaultValue: sequelize_1.DataTypes.NOW
-    }
+        defaultValue: sequelize_1.DataTypes.NOW,
+    },
 }, {
     sequelize: database_1.default,
-    modelName: 'User',
-    tableName: 'users',
-    timestamps: true
+    modelName: "User",
+    tableName: "users",
+    timestamps: true,
 });
 exports.default = User;

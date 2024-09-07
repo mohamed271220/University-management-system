@@ -6,7 +6,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { User } from './user.entity';
+import { User } from '../user/user.entity';
 
 @Table({
   tableName: 'audit_logs',

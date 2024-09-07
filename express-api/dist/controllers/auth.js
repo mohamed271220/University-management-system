@@ -12,12 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshToken = exports.logout = exports.validateSession = exports.login = exports.signup = exports.getProfile = void 0;
+exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.refreshToken = exports.logout = exports.validateSession = exports.login = exports.signup = exports.getProfile = void 0;
 const jwt_1 = require("../utils/jwt");
 const User_1 = __importDefault(require("../models/User"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const uuid_1 = require("uuid");
 const CustomError_1 = require("../utils/CustomError");
+const crypto_1 = __importDefault(require("crypto"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const sequelize_1 = require("sequelize");
 const getProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
@@ -162,3 +165,93 @@ const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.refreshToken = refreshToken;
+const forgotPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    {
+        const { email } = req.body;
+        try {
+            const user = yield User_1.default.findOne({ where: { email } });
+            if (!user) {
+                throw new CustomError_1.CustomError("User not found", 404);
+            }
+            const token = crypto_1.default.randomBytes(32).toString("hex");
+            const tokenExpiration = Date.now() + 3600000; // 1 hour from now
+            user.resetPasswordToken = token;
+            user.resetPasswordExpires = new Date(tokenExpiration);
+            yield user.save();
+            const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+            const transporter = nodemailer_1.default.createTransport({
+                service: "Gmail",
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            });
+            const mailOptions = {
+                to: user.email,
+                from: "password-reset@your-app.com",
+                subject: "Password Reset",
+                text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        ${resetLink}\n\n
+        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+            };
+            yield transporter.sendMail(mailOptions);
+            res.status(200).send("Password reset email sent");
+        }
+        catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
+});
+exports.forgotPassword = forgotPassword;
+const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = req.params;
+    const { password } = req.body;
+    try {
+        const user = yield User_1.default.findOne({
+            where: {
+                resetPasswordToken: token,
+                resetPasswordExpires: { [sequelize_1.Op.gt]: Date.now() }, // Token is still valid
+            },
+        });
+        if (!user) {
+            throw new CustomError_1.CustomError("Invalid or expired token", 400);
+        }
+        const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
+        user.passwordHash = hashedPassword;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpires = null;
+        yield user.save();
+        res.status(200).send("Password has been reset");
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.resetPassword = resetPassword;
+const changePassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { currentPassword, newPassword } = req.body;
+    const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+    try {
+        const user = yield User_1.default.findByPk(id); // Assuming user is authenticated
+        if (!user) {
+            throw new CustomError_1.CustomError("User not found", 404);
+        }
+        const isMatch = yield bcryptjs_1.default.compare(currentPassword, user.passwordHash);
+        if (!isMatch) {
+            throw new CustomError_1.CustomError("Invalid password", 400);
+        }
+        const hashedPassword = yield bcryptjs_1.default.hash(newPassword, 10);
+        user.passwordHash = hashedPassword;
+        yield user.save();
+        res.status(200).send("Password has been changed");
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.changePassword = changePassword;

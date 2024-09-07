@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../entities/user.entity';
+import { User } from './user.entity';
 import * as bcrypt from 'bcryptjs';
 import { Role } from 'src/shared/types';
 
@@ -30,7 +30,7 @@ export class UserService {
 
   async updateUser(
     id: string,
-    updates: Partial<{ username: string; password: string; role: string }>,
+    updates: Partial<{ username: string; password: string; role: Role }>,
   ) {
     if (updates.password) {
       updates.password = await bcrypt.hash(updates.password, 10);

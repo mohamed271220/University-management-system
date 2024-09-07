@@ -23,25 +23,29 @@ services:
 
   api:
     build: .
-    depends_on:
-      - db
-      - redis
     ports:
       - "3000:3000"
+    restart: on-failure
     environment:
       DB_HOST: db
       DB_PORT: 5432
+      DB_USER: root
+      DB_PWD: 1234
+      DB_NAME: CollegeSystem
+      JWT_SECRET: yourseceret
+      JWT_REFRESH_SECRET: yourseceret
+      REDIS_URL: redis://redis:6379
       REDIS_HOST: redis
       REDIS_PORT: 6379
+    depends_on:
+      - db
+      - redis
+    entrypoint: ["./wait-for-it.sh", "db:5432", "--", "npm", "run", "serve"]
     networks:
       - app-network
 
 networks:
   app-network:
-    driver: bridge
 
 volumes:
   db-data:
-    driver: local
-# docker build -t api-name .
-# to start: docker-compose up --build

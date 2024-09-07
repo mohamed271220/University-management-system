@@ -25,7 +25,7 @@ const createAuditLog = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             tableName,
             changedBy: (_b = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id) !== null && _b !== void 0 ? _b : "",
         });
-        res.status(201).json(auditLog);
+        res.status(201).json({ message: "Audit log created successfully", auditLog });
     }
     catch (error) {
         console.log(error.message);
@@ -36,7 +36,7 @@ exports.createAuditLog = createAuditLog;
 const getAllAuditLogs = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const auditLogs = yield auditLogService.getAllAuditLogs();
-        res.status(200).json(auditLogs);
+        res.status(200).json({ message: "Audit logs fetched successfully", auditLogs });
     }
     catch (error) {
         console.log(error.message);
@@ -48,7 +48,7 @@ const getAuditLogById = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     try {
         const { id } = req.params;
         const auditLog = yield auditLogService.getAuditLogById(id);
-        res.status(200).json(auditLog);
+        res.status(200).json({ message: "Audit log fetched successfully", auditLog });
     }
     catch (error) {
         console.log(error.message);
@@ -60,7 +60,7 @@ const getAuditLogsByUser = (req, res, next) => __awaiter(void 0, void 0, void 0,
     try {
         const { userId } = req.params;
         const auditLogs = yield auditLogService.getAuditLogsByUserId(userId);
-        res.status(200).json(auditLogs);
+        res.status(200).json({ message: "Audit logs for user fetched successfully", auditLogs });
     }
     catch (error) {
         console.log(error.message);
@@ -72,7 +72,7 @@ const deleteAuditLog = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     try {
         const { id } = req.params;
         const auditLog = yield auditLogService.deleteAuditLog(id);
-        res.status(200).json(auditLog);
+        res.status(200).json({ message: "audit log deleted", auditLog });
     }
     catch (error) {
         console.log(error.message);

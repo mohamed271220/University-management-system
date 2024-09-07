@@ -5,10 +5,10 @@ import {
   Table,
   ForeignKey,
 } from 'sequelize-typescript';
-import { Course } from './course.entity';
-import { User } from './user.entity';
-import { Hall } from './hall.entity';
-import { Lecture } from './lecture.entity';
+import { Course } from '../course/course.entity';
+import { User } from '../user/user.entity';
+import { Hall } from '../hall/hall.entity';
+import { Lecture } from '../lecture/lecture.entity';
 
 @Table({
   tableName: 'lecture_history',

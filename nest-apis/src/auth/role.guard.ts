@@ -5,14 +5,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request } from 'express';
 import { ROLES_KEY } from './roles.decorator';
-
-interface userRequest extends Request {
-  user: {
-    role: string;
-  };
-}
+import jsonwebtoken from 'jsonwebtoken';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -25,11 +19,15 @@ export class RolesGuard implements CanActivate {
     );
 
     if (!requiredRoles) {
-      return true; // If no roles are defined, allow access
+      return true;
     }
 
-    const request = context.switchToHttp().getRequest<userRequest>();
+    const request = context.switchToHttp().getRequest();
     const user = request.user;
+
+    const tokenData = request.headers.authorization.split(' ')[1];
+
+    console.log('user', tokenData);
 
     if (!user || !requiredRoles.includes(user.role)) {
       throw new UnauthorizedException('You do not have the required role');
@@ -37,4 +35,10 @@ export class RolesGuard implements CanActivate {
 
     return true;
   }
+}
+function jwt_decode(tokenData: any) {
+  // Implement the logic to decode the JWT token here
+  // For example, you can use a library like jsonwebtoken to decode the token
+  const decodedToken = jsonwebtoken.decode(tokenData);
+  return decodedToken;
 }

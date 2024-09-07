@@ -6,8 +6,8 @@ import {
   Table,
   BelongsTo,
 } from 'sequelize-typescript';
-import { User } from './user.entity';
-import { Lecture } from './lecture.entity';
+import { User } from '../user/user.entity';
+import { Lecture } from '../lecture/lecture.entity';
 
 @Table({
   tableName: 'attendance',
