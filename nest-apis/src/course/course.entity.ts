@@ -13,7 +13,7 @@ import { Department } from '../department/department.entity';
 import { User } from '../user/user.entity';
 import { Lecture } from '../lecture/lecture.entity';
 import { Grade } from '../grade/grade.entity';
-import { ProfessorCourse } from '../entities/professor-course.entity';
+import { ProfessorCourse } from '../professor-course/professor-course.entity';
 import { StudentCourse } from '../student-course/student-course.entity';
 import { DepartmentYearCourses } from '../department-year-courses/department-year-courses.entity';
 

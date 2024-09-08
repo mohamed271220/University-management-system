@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CourseCacheModule } from './course-cache/course-cache.module';
-import { CourseCache } from './entities/course-cache.entity';
+import { CourseCache } from './course-cache/course-cache.entity';
 import { User } from './user/user.entity';
 import { Profile } from './profile/profile.entity';
-import { Attendance } from './entities/attendance.entity';
+import { Attendance } from './attendance/attendance.entity';
 import { Grade } from './grade/grade.entity';
-import { ProfessorCourse } from './entities/professor-course.entity';
+import { ProfessorCourse } from './professor-course/professor-course.entity';
 import { StudentCourse } from './student-course/student-course.entity';
 import { StudentYear } from './student-year/student-year.entity';
 import { Lecture } from './lecture/lecture.entity';
-import { Semester } from './entities/semester.entity';
-import { LectureHistory } from './entities/lecture-history.entity';
+import { Semester } from './semester/semester.entity';
+import { LectureHistory } from './lecture-history/lecture-history.entity';
 import { Department } from './department/department.entity';
 import { DepartmentYearCourses } from './department-year-courses/department-year-courses.entity';
 import { Hall } from './hall/hall.entity';
-import { AuditLog } from './entities/audit-log.entity';
+import { AuditLog } from './audit-log/audit-log.entity';
 import { Course } from './course/course.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
@@ -32,6 +32,10 @@ import { LectureModule } from './lecture/lecture.module';
 import { DepartmentModule } from './department/department.module';
 import { CourseModule } from './course/course.module';
 import { ProfileModule } from './profile/profile.module';
+import { SemesterModule } from './semester/semester.module';
+import { AttendanceModule } from './attendance/attendance.module';
+import { AuditLogModule } from './audit-log/audit-log.module';
+import { LectureHistoryModule } from './lecture-history/lecture-history.module';
 
 @Module({
   imports: [
@@ -97,6 +101,10 @@ import { ProfileModule } from './profile/profile.module';
     StudentCourseModule,
     StudentYearModule,
     TimetableModule,
+    SemesterModule,
+    AttendanceModule,
+    AuditLogModule,
+    LectureHistoryModule,
   ],
 })
 export class AppModule {}

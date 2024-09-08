@@ -14,10 +14,10 @@ const auth_module_1 = require("../auth/auth.module");
 const sequelize_1 = require("@nestjs/sequelize");
 const grade_entity_1 = require("./grade.entity");
 const user_entity_1 = require("../user/user.entity");
-const semester_entity_1 = require("../entities/semester.entity");
+const semester_entity_1 = require("../semester/semester.entity");
 const course_entity_1 = require("../course/course.entity");
 const student_course_entity_1 = require("../student-course/student-course.entity");
-const professor_course_entity_1 = require("../entities/professor-course.entity");
+const professor_course_entity_1 = require("../professor-course/professor-course.entity");
 let GradeModule = class GradeModule {
 };
 exports.GradeModule = GradeModule;

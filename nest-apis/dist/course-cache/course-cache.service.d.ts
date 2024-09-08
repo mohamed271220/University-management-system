@@ -1,4 +1,4 @@
-import { CourseCache } from '../entities/course-cache.entity';
+import { CourseCache } from './course-cache.entity';
 import { CreateCourseCacheDto, UpdateCourseCacheDto } from './dto';
 export declare class CourseCacheService {
     private readonly courseCacheModel;

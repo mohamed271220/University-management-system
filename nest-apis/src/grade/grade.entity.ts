@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from '../user/user.entity';
 import { Course } from '../course/course.entity';
-import { Semester } from '../entities/semester.entity';
+import { Semester } from '../semester/semester.entity';
 
 @Table({
   tableName: 'grades',

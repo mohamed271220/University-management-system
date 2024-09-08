@@ -13,7 +13,7 @@ exports.Grade = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const user_entity_1 = require("../user/user.entity");
 const course_entity_1 = require("../course/course.entity");
-const semester_entity_1 = require("../entities/semester.entity");
+const semester_entity_1 = require("../semester/semester.entity");
 let Grade = class Grade extends sequelize_typescript_1.Model {
 };
 exports.Grade = Grade;

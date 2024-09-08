@@ -10,9 +10,9 @@ import {
 import { Profile } from '../profile/profile.entity';
 import { Course } from '../course/course.entity';
 import { Lecture } from '../lecture/lecture.entity';
-import { Attendance } from '../entities/attendance.entity';
+import { Attendance } from '../attendance/attendance.entity';
 import { Grade } from '../grade/grade.entity';
-import { ProfessorCourse } from '../entities/professor-course.entity';
+import { ProfessorCourse } from '../professor-course/professor-course.entity';
 import { StudentCourse } from '../student-course/student-course.entity';
 import { StudentYear } from '../student-year/student-year.entity';
 

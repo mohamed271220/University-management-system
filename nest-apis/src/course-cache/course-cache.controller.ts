@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CourseCacheService } from './course-cache.service';
 import { CreateCourseCacheDto, UpdateCourseCacheDto } from './dto';
-import { CourseCache } from '../entities/course-cache.entity';
+import { CourseCache } from './course-cache.entity';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/role.guard';
 import { AuthGuard } from '@nestjs/passport';

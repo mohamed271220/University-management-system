@@ -24,7 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseCacheService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
-const course_cache_entity_1 = require("../entities/course-cache.entity");
+const course_cache_entity_1 = require("./course-cache.entity");
 let CourseCacheService = class CourseCacheService {
     constructor(courseCacheModel) {
         this.courseCacheModel = courseCacheModel;

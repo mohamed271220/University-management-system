@@ -10,11 +10,20 @@ exports.DepartmentYearCoursesModule = void 0;
 const common_1 = require("@nestjs/common");
 const department_year_courses_service_1 = require("./department-year-courses.service");
 const department_year_courses_controller_1 = require("./department-year-courses.controller");
+const department_entity_1 = require("../department/department.entity");
+const course_entity_1 = require("../course/course.entity");
+const department_year_courses_entity_1 = require("./department-year-courses.entity");
+const sequelize_1 = require("@nestjs/sequelize");
+const auth_module_1 = require("../auth/auth.module");
 let DepartmentYearCoursesModule = class DepartmentYearCoursesModule {
 };
 exports.DepartmentYearCoursesModule = DepartmentYearCoursesModule;
 exports.DepartmentYearCoursesModule = DepartmentYearCoursesModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            sequelize_1.SequelizeModule.forFeature([department_entity_1.Department, course_entity_1.Course, department_year_courses_entity_1.DepartmentYearCourses]),
+            auth_module_1.AuthModule,
+        ],
         providers: [department_year_courses_service_1.DepartmentYearCoursesService],
         controllers: [department_year_courses_controller_1.DepartmentYearCoursesController],
     })

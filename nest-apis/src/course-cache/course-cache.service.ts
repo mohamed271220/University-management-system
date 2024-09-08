@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CourseCache } from '../entities/course-cache.entity';
+import { CourseCache } from './course-cache.entity';
 import { CreateCourseCacheDto, UpdateCourseCacheDto } from './dto';
 
 @Injectable()

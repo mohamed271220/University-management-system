@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const course_cache_service_1 = require("./course-cache.service");
 const course_cache_controller_1 = require("./course-cache.controller");
-const course_cache_entity_1 = require("../entities/course-cache.entity");
+const course_cache_entity_1 = require("./course-cache.entity");
 const auth_module_1 = require("../auth/auth.module");
 let CourseCacheModule = class CourseCacheModule {
 };

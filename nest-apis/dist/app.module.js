@@ -19,21 +19,21 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const course_cache_module_1 = require("./course-cache/course-cache.module");
-const course_cache_entity_1 = require("./entities/course-cache.entity");
+const course_cache_entity_1 = require("./course-cache/course-cache.entity");
 const user_entity_1 = require("./user/user.entity");
 const profile_entity_1 = require("./profile/profile.entity");
-const attendance_entity_1 = require("./entities/attendance.entity");
+const attendance_entity_1 = require("./attendance/attendance.entity");
 const grade_entity_1 = require("./grade/grade.entity");
-const professor_course_entity_1 = require("./entities/professor-course.entity");
+const professor_course_entity_1 = require("./professor-course/professor-course.entity");
 const student_course_entity_1 = require("./student-course/student-course.entity");
 const student_year_entity_1 = require("./student-year/student-year.entity");
 const lecture_entity_1 = require("./lecture/lecture.entity");
-const semester_entity_1 = require("./entities/semester.entity");
-const lecture_history_entity_1 = require("./entities/lecture-history.entity");
+const semester_entity_1 = require("./semester/semester.entity");
+const lecture_history_entity_1 = require("./lecture-history/lecture-history.entity");
 const department_entity_1 = require("./department/department.entity");
 const department_year_courses_entity_1 = require("./department-year-courses/department-year-courses.entity");
 const hall_entity_1 = require("./hall/hall.entity");
-const audit_log_entity_1 = require("./entities/audit-log.entity");
+const audit_log_entity_1 = require("./audit-log/audit-log.entity");
 const course_entity_1 = require("./course/course.entity");
 const auth_module_1 = require("./auth/auth.module");
 const user_module_1 = require("./user/user.module");
@@ -50,6 +50,10 @@ const lecture_module_1 = require("./lecture/lecture.module");
 const department_module_1 = require("./department/department.module");
 const course_module_1 = require("./course/course.module");
 const profile_module_1 = require("./profile/profile.module");
+const semester_module_1 = require("./semester/semester.module");
+const attendance_module_1 = require("./attendance/attendance.module");
+const audit_log_module_1 = require("./audit-log/audit-log.module");
+const lecture_history_module_1 = require("./lecture-history/lecture-history.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -118,6 +122,10 @@ exports.AppModule = AppModule = __decorate([
             student_course_module_1.StudentCourseModule,
             student_year_module_1.StudentYearModule,
             timetable_module_1.TimetableModule,
+            semester_module_1.SemesterModule,
+            attendance_module_1.AttendanceModule,
+            audit_log_module_1.AuditLogModule,
+            lecture_history_module_1.LectureHistoryModule,
         ],
     })
 ], AppModule);

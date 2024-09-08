@@ -1,7 +1,7 @@
 import { Lecture } from './lecture.entity';
 import { User } from 'src/user/user.entity';
-import { Attendance } from 'src/entities/attendance.entity';
-import { LectureHistory } from 'src/entities/lecture-history.entity';
+import { Attendance } from 'src/attendance/attendance.entity';
+import { LectureHistory } from 'src/lecture-history/lecture-history.entity';
 import { CreateLectureDTO } from './dto/create-lecture.dto';
 import { Course } from 'src/course/course.entity';
 import { Hall } from 'src/hall/hall.entity';

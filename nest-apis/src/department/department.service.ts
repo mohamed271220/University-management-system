@@ -1,12 +1,10 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Department } from './department.entity';
 import { Course } from 'src/course/course.entity';
-import { User } from 'src/user/user.entity';
 import { Hall } from 'src/hall/hall.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateDepartmentDTO } from './dto/create-department.dto';

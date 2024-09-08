@@ -1,11 +1,11 @@
 import { Course } from 'src/course/course.entity';
-import { Semester } from 'src/entities/semester.entity';
+import { Semester } from 'src/semester/semester.entity';
 import { User } from 'src/user/user.entity';
 import { Grade } from './grade.entity';
 import { CreateGradeDTO } from './dto/create-grade.dto';
 import { StudentCourse } from 'src/student-course/student-course.entity';
-import { ProfessorCourse } from 'src/entities/professor-course.entity';
 import { UpdateGradeDTO } from './dto/update-grade.dto';
+import { ProfessorCourse } from 'src/professor-course/professor-course.entity';
 export declare class GradeService {
     private readonly gradeModel;
     private readonly userModel;

@@ -9,7 +9,5 @@ export const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   logging: console.log, // Enable detailed logging
-  models: [
-    
-  ], // Add your models here
+  models: [], // Add your models here
 });

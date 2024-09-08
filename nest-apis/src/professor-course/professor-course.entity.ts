@@ -5,6 +5,7 @@ import {
   ForeignKey,
   Index,
   DataType,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { User } from '../user/user.entity';
 import { Course } from '../course/course.entity';
@@ -32,4 +33,10 @@ export class ProfessorCourse extends Model<ProfessorCourse> {
 
   @Index({ unique: true })
   static uniqueIndex: void;
+
+  @BelongsTo(() => User)
+  professor: User;
+
+  @BelongsTo(() => Course)
+  course: Course;
 }

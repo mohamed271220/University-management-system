@@ -10,8 +10,8 @@ export declare class LectureController {
         pagination: any;
     }>;
     getLecture(lectureId: string): Promise<import("./lecture.entity").Lecture>;
-    getLectureAttendance(lectureId: string): Promise<import("../entities/attendance.entity").Attendance[]>;
-    getLectureArchived(lectureId: string): Promise<import("../entities/lecture-history.entity").LectureHistory[]>;
+    getLectureAttendance(lectureId: string): Promise<import("../attendance/attendance.entity").Attendance[]>;
+    getLectureArchived(lectureId: string): Promise<import("../lecture-history/lecture-history.entity").LectureHistory[]>;
     updateLecture(lectureId: string, updateLectureDto: UpdateLectureDTO): Promise<import("./lecture.entity").Lecture>;
     deleteLecture(lectureId: string): Promise<import("./lecture.entity").Lecture>;
 }
