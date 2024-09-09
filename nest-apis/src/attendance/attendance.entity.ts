@@ -12,12 +12,6 @@ import { Lecture } from '../lecture/lecture.entity';
 @Table({
   tableName: 'attendance',
   timestamps: true,
-  indexes: [
-    {
-      unique: true,
-      fields: ['studentId', 'lectureId'],
-    },
-  ],
 })
 export class Attendance extends Model<Attendance> {
   @Column({

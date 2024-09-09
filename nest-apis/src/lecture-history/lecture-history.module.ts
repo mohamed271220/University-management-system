@@ -4,6 +4,6 @@ import { LectureHistoryController } from './lecture-history.controller';
 
 @Module({
   providers: [LectureHistoryService],
-  controllers: [LectureHistoryController]
+  controllers: [LectureHistoryController],
 })
 export class LectureHistoryModule {}

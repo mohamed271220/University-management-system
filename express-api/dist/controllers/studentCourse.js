@@ -40,8 +40,14 @@ const enrollCourses = (req, res, next) => __awaiter(void 0, void 0, void 0, func
 });
 exports.enrollCourses = enrollCourses;
 const getAllCoursesByStudentId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     try {
         const studentId = req.params.studentId;
+        if (studentId !== ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) &&
+            ((_b = req.user) === null || _b === void 0 ? void 0 : _b.role) !== "student" &&
+            ((_c = req.user) === null || _c === void 0 ? void 0 : _c.role) !== "admin") {
+            throw new CustomError_1.CustomError("Unauthorized", 401);
+        }
         if (!studentId) {
             throw new CustomError_1.CustomError("Student ID is required", 400);
         }

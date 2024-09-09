@@ -40,12 +40,20 @@ export const enrollCourses = async (
 };
 
 export const getAllCoursesByStudentId = async (
-  req: Request,
+  req: userRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const studentId = req.params.studentId;
+
+    if (
+      studentId !== req.user?.id &&
+      req.user?.role !== "student" &&
+      req.user?.role !== "admin"
+    ) {
+      throw new CustomError("Unauthorized", 401);
+    }
 
     if (!studentId) {
       throw new CustomError("Student ID is required", 400);

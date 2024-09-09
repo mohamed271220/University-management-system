@@ -16,7 +16,7 @@ exports.LectureHistoryModule = LectureHistoryModule;
 exports.LectureHistoryModule = LectureHistoryModule = __decorate([
     (0, common_1.Module)({
         providers: [lecture_history_service_1.LectureHistoryService],
-        controllers: [lecture_history_controller_1.LectureHistoryController]
+        controllers: [lecture_history_controller_1.LectureHistoryController],
     })
 ], LectureHistoryModule);
 //# sourceMappingURL=lecture-history.module.js.map

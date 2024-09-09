@@ -80,12 +80,6 @@ exports.Attendance = Attendance = __decorate([
     (0, sequelize_typescript_1.Table)({
         tableName: 'attendance',
         timestamps: true,
-        indexes: [
-            {
-                unique: true,
-                fields: ['studentId', 'lectureId'],
-            },
-        ],
     })
 ], Attendance);
 //# sourceMappingURL=attendance.entity.js.map

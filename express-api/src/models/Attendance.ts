@@ -66,13 +66,6 @@ Attendance.init(
     modelName: "Attendance",
     tableName: "attendance",
     timestamps: true,
-
-    indexes: [
-      {
-        unique: true,
-        fields: ["studentId", "lectureId"],
-      },
-    ],
   }
 );
 

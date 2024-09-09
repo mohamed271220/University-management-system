@@ -10,13 +10,30 @@ exports.AttendanceModule = void 0;
 const common_1 = require("@nestjs/common");
 const attendance_service_1 = require("./attendance.service");
 const attendance_controller_1 = require("./attendance.controller");
+const auth_module_1 = require("../auth/auth.module");
+const attendance_entity_1 = require("./attendance.entity");
+const lecture_entity_1 = require("../lecture/lecture.entity");
+const user_entity_1 = require("../user/user.entity");
+const student_course_entity_1 = require("../student-course/student-course.entity");
+const hall_entity_1 = require("../hall/hall.entity");
+const sequelize_1 = require("@nestjs/sequelize");
 let AttendanceModule = class AttendanceModule {
 };
 exports.AttendanceModule = AttendanceModule;
 exports.AttendanceModule = AttendanceModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            auth_module_1.AuthModule,
+            sequelize_1.SequelizeModule.forFeature([
+                attendance_entity_1.Attendance,
+                lecture_entity_1.Lecture,
+                user_entity_1.User,
+                student_course_entity_1.StudentCourse,
+                hall_entity_1.Hall,
+            ]),
+        ],
         providers: [attendance_service_1.AttendanceService],
-        controllers: [attendance_controller_1.AttendanceController]
+        controllers: [attendance_controller_1.AttendanceController],
     })
 ], AttendanceModule);
 //# sourceMappingURL=attendance.module.js.map

@@ -1,3 +1,4 @@
+import { userRequest } from "../interfaces";
 import Course from "../models/Course";
 import Semester from "../models/Semester";
 import StudentCourse from "../models/StudentCourses";
