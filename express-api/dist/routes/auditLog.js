@@ -31,8 +31,10 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const roleMiddleware_1 = require("../middleware/roleMiddleware");
 const auditLogController = __importStar(require("../controllers/auditLog"));
 const router = express_1.default.Router();
-// /api/v1/auditLogs
+// /api/v1/audit-logs
+router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), auditLogController.createAuditLog);
 router.get("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), auditLogController.getAllAuditLogs);
 router.get("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), auditLogController.getAuditLogById);
-router.get("/user/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), auditLogController.getAuditLogsByUser);
+router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), auditLogController.deleteAuditLog);
+router.get("/user/:userId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), auditLogController.getAuditLogsByUser);
 exports.default = router;

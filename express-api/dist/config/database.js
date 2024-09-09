@@ -9,11 +9,12 @@ dotenv_1.default.config();
 const dbName = process.env.DB_NAME;
 const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PWD;
-console.log(dbName, dbUser, dbPassword);
+const dbHost = process.env.DB_HOST || "localhost";
+const dbPort = parseInt(process.env.DB_PORT) || 5432;
 const dbConnection = new sequelize_1.Sequelize(dbName, dbUser, dbPassword, {
-    host: "localhost",
+    host: dbHost,
     dialect: "postgres",
-    // logging: console.log,
-    logging: false,
+    port: dbPort,
+    logging: false, // Disable logging
 });
 exports.default = dbConnection;

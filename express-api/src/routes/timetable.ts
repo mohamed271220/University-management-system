@@ -2,6 +2,7 @@ import express from "express";
 import { authenticateToken } from "../middleware/authMiddleware";
 import { authorizeRoles } from "../middleware/roleMiddleware";
 import * as timetableController from "../controllers/timetable";
+import cacheMiddleware from "../middleware/cachingMiddleware";
 
 const router = express.Router();
 
@@ -11,6 +12,7 @@ const router = express.Router();
 router.get(
   "/students/:studentId/:semesterId",
   authenticateToken,
+  cacheMiddleware,
   timetableController.getStudentTimetable
 );
 
@@ -18,6 +20,7 @@ router.get(
 router.get(
   "/professors/:professorId",
   authenticateToken,
+  cacheMiddleware,
   timetableController.getProfessorTimetable
 );
 
@@ -25,6 +28,7 @@ router.get(
 router.get(
   "/departments/:departmentId",
   authenticateToken,
+  cacheMiddleware,
   timetableController.getDepartmentTimetable
 );
 
@@ -32,6 +36,7 @@ router.get(
 router.get(
   "/halls/:hallId",
   authenticateToken,
+  cacheMiddleware,
   timetableController.getHallTimetable
 );
 
@@ -39,6 +44,7 @@ router.get(
 router.get(
   "/departments/:departmentId/years",
   authenticateToken,
+  cacheMiddleware,
   timetableController.getDepartmentYearTimetable
 );
 export default router;

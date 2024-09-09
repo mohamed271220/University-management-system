@@ -29,6 +29,7 @@ import timetableRouter from "./routes/timetable";
 import attendanceRouter from "./routes/attendance";
 import departmentYearCourseRouter from "./routes/departmentYearCourses";
 import gradeRouter from "./routes/grade";
+import auditLogRouter from "./routes/auditLog";
 
 import swaggerRouter from "./config/swagger";
 import { errorHandler } from "./middleware/errorHandler";
@@ -74,6 +75,7 @@ app.use("/api/v1/timetables", timetableRouter);
 app.use("/api/v1/attendances", attendanceRouter);
 app.use("/api/v1/departmentYearCourses", departmentYearCourseRouter);
 app.use("/api/v1/grades", gradeRouter);
+app.use("/api/v1/audit-log",auditLogRouter )
 
 app.use(errorHandler);
 

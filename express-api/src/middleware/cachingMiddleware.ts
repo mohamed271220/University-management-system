@@ -22,6 +22,8 @@ const cacheMiddleware = async (
 export default cacheMiddleware;
 
 /*
+run: docker run --name redis -p 6379:6379 -d redis
+
 use:
 in controllers
   Store the data in Redis cache with a 1-hour expiration

@@ -8,6 +8,11 @@ const database_1 = __importDefault(require("../config/database"));
 class CourseCache extends sequelize_1.Model {
 }
 CourseCache.init({
+    id: {
+        type: sequelize_1.DataTypes.UUID,
+        primaryKey: true,
+        allowNull: false
+    },
     courseId: {
         type: sequelize_1.DataTypes.UUID,
         primaryKey: true,

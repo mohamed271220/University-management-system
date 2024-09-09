@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDepartmentYearTimetable = exports.getHallTimetable = exports.getDepartmentTimetable = exports.getProfessorTimetable = exports.getStudentTimetable = void 0;
 const timetableService_1 = require("../services/timetableService");
 const CustomError_1 = require("../utils/CustomError");
+const redisClient_1 = __importDefault(require("../config/redisClient"));
 const timetableService = new timetableService_1.TimetableService();
 const getStudentTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -23,6 +27,9 @@ const getStudentTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0
         if (!timetable) {
             throw new CustomError_1.CustomError("Student timetable not found", 404);
         }
+        yield redisClient_1.default.set(req.originalUrl, JSON.stringify(timetable), {
+            EX: 3600, // Expire after 3600 seconds (1 hour)
+        });
         res.status(200).json({ message: "Student timetable found", timetable });
     }
     catch (error) {
@@ -41,6 +48,9 @@ const getProfessorTimetable = (req, res, next) => __awaiter(void 0, void 0, void
         if (!timetable) {
             throw new CustomError_1.CustomError("Professor timetable not found", 404);
         }
+        yield redisClient_1.default.set(req.originalUrl, JSON.stringify(timetable), {
+            EX: 3600, // Expire after 3600 seconds (1 hour)
+        });
         res.status(200).json({ message: "Professor timetable found", timetable });
     }
     catch (error) {
@@ -59,6 +69,9 @@ const getDepartmentTimetable = (req, res, next) => __awaiter(void 0, void 0, voi
         if (!timetable) {
             throw new CustomError_1.CustomError("Department timetable not found", 404);
         }
+        yield redisClient_1.default.set(req.originalUrl, JSON.stringify(timetable), {
+            EX: 3600, // Expire after 3600 seconds (1 hour)
+        });
         res.status(200).json({ message: "Department timetable found", timetable });
     }
     catch (error) {
@@ -77,6 +90,9 @@ const getHallTimetable = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         if (!timetable) {
             throw new CustomError_1.CustomError("Hall timetable not found", 404);
         }
+        yield redisClient_1.default.set(req.originalUrl, JSON.stringify(timetable), {
+            EX: 3600, // Expire after 3600 seconds (1 hour)
+        });
         res.status(200).json({ message: "Hall timetable found", timetable });
     }
     catch (error) {
@@ -96,6 +112,9 @@ const getDepartmentYearTimetable = (req, res, next) => __awaiter(void 0, void 0,
         if (!timetable) {
             throw new CustomError_1.CustomError("Department year timetable not found", 404);
         }
+        yield redisClient_1.default.set(req.originalUrl, JSON.stringify(timetable), {
+            EX: 3600, // Expire after 3600 seconds (1 hour)
+        });
         res
             .status(200)
             .json({ message: "Student year timetable found", timetable });

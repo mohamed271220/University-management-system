@@ -5,7 +5,14 @@ import * as auditLogController from "../controllers/auditLog";
 
 const router = express.Router();
 
-// /api/v1/auditLogs
+// /api/v1/audit-logs
+
+router.post(
+  "/",
+  authenticateToken,
+  authorizeRoles("admin", "staff"),
+  auditLogController.createAuditLog
+);
 
 router.get(
   "/",
@@ -13,17 +20,30 @@ router.get(
   authorizeRoles("admin", "staff"),
   auditLogController.getAllAuditLogs
 );
+
+
 router.get(
   "/:id",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   auditLogController.getAuditLogById
 );
+
+router.delete(
+  "/:id",
+  authenticateToken,
+  authorizeRoles("admin", "staff"),
+  auditLogController.deleteAuditLog
+);
+
+
 router.get(
-  "/user/:id",
+  "/user/:userId",
   authenticateToken,
   authorizeRoles("admin", "staff"),
   auditLogController.getAuditLogsByUser
 );
+
+
 
 export default router;

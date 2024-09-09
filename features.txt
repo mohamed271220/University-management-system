@@ -1,0 +1,3 @@
+nest g module timetable --no-spec
+nest g service timetable --no-spec
+nest g controller timetable --no-spec

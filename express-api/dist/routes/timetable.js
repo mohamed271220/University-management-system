@@ -29,16 +29,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const timetableController = __importStar(require("../controllers/timetable"));
+const cachingMiddleware_1 = __importDefault(require("../middleware/cachingMiddleware"));
 const router = express_1.default.Router();
 // /api/v1/timetables
 // get student timetable
-router.get("/students/:studentId/:semesterId", authMiddleware_1.authenticateToken, timetableController.getStudentTimetable);
+router.get("/students/:studentId/:semesterId", authMiddleware_1.authenticateToken, cachingMiddleware_1.default, timetableController.getStudentTimetable);
 // get professor timetable
-router.get("/professors/:professorId", authMiddleware_1.authenticateToken, timetableController.getProfessorTimetable);
+router.get("/professors/:professorId", authMiddleware_1.authenticateToken, cachingMiddleware_1.default, timetableController.getProfessorTimetable);
 // get the timetable for a department
-router.get("/departments/:departmentId", authMiddleware_1.authenticateToken, timetableController.getDepartmentTimetable);
+router.get("/departments/:departmentId", authMiddleware_1.authenticateToken, cachingMiddleware_1.default, timetableController.getDepartmentTimetable);
 // get the timetable for a hall
-router.get("/halls/:hallId", authMiddleware_1.authenticateToken, timetableController.getHallTimetable);
+router.get("/halls/:hallId", authMiddleware_1.authenticateToken, cachingMiddleware_1.default, timetableController.getHallTimetable);
 // get the timetable for a certain class (student year) in a department
-router.get("/departments/:departmentId/years", authMiddleware_1.authenticateToken, timetableController.getDepartmentYearTimetable);
+router.get("/departments/:departmentId/years", authMiddleware_1.authenticateToken, cachingMiddleware_1.default, timetableController.getDepartmentYearTimetable);
 exports.default = router;

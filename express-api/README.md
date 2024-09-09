@@ -85,6 +85,12 @@ Replace db info and `your_jwt_secret` with appropriate values.
 
 ## Usage
 
+### Spin off a Redis instant
+
+```bash
+docker run --name redis -p 6379:6379 -d redis
+```
+
 ### Start the Development Server
 
 To start the development server with hot reloading:

@@ -41,7 +41,7 @@ AuditLog.init({
             model: 'users',
             key: 'id'
         },
-        onDelete: 'SET NULL'
+        onDelete: 'SET NULL',
     }
 }, {
     sequelize: database_1.default,

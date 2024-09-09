@@ -33,7 +33,12 @@ const courseCacheController = __importStar(require("../controllers/courseCache")
 const router = express_1.default.Router();
 // /api/v1/courseCaches
 router.post("/", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseCacheController.createCourseCache);
-router.get("/:id", courseCacheController.getCourseCacheById);
-router.put("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseCacheController.updateCourseCache);
-router.delete("/:id", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseCacheController.deleteCourseCache);
+router.get("/:courseId", courseCacheController.getCourseCacheById);
+router.get("/", courseCacheController.getAllCourseCaches);
+// Get all course cache entries for a specific course
+router.get("/courses/:courseId", courseCacheController.getCourseCacheByCourse);
+// Get all course cache entries for a specific department
+router.get("/departments/:departmentId", courseCacheController.getCourseCacheByDepartment);
+router.put("/:courseId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseCacheController.updateCourseCache);
+router.delete("/:courseId", authMiddleware_1.authenticateToken, (0, roleMiddleware_1.authorizeRoles)("admin", "staff"), courseCacheController.deleteCourseCache);
 exports.default = router;
