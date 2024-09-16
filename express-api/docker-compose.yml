@@ -3,16 +3,21 @@ version: "3.8"
 services:
   db:
     image: postgres:latest
+    restart: always
+    shm_size: 128mb
     environment:
-      POSTGRES_USER: root
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: CollegeSystem
+      POSTGRES_DB: collegesystem
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
     ports:
       - "5432:5432"
     networks:
       - app-network
-    volumes:
-      - db-data:/var/lib/postgresql/data
+
 
   redis:
     image: redis:latest
@@ -29,23 +34,21 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      DB_USER: root
+      DB_USER: postgres
       DB_PWD: 1234
-      DB_NAME: CollegeSystem
+      DB_NAME: collegesystem
       JWT_SECRET: yourseceret
       JWT_REFRESH_SECRET: yourseceret
       REDIS_URL: redis://redis:6379
       REDIS_HOST: redis
       REDIS_PORT: 6379
     depends_on:
-      - db
-      - redis
-    entrypoint: ["./wait-for-it.sh", "db:5432", "--", "npm", "run", "serve"]
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - app-network
 
 networks:
   app-network:
-
-volumes:
-  db-data:
